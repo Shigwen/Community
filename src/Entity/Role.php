@@ -39,9 +39,15 @@ class Role
      */
     private $characters;
 
+    /**
+     * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="role", orphanRemoval=true)
+     */
+    private $raidCharacters;
+
     public function __construct()
     {
         $this->characters = new ArrayCollection();
+        $this->raidCharacters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,6 +113,36 @@ class Role
     {
         if ($this->characters->removeElement($character)) {
             $character->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RaidCharacter[]
+     */
+    public function getRaidCharacters(): Collection
+    {
+        return $this->raidCharacters;
+    }
+
+    public function addRaidCharacter(RaidCharacter $raidCharacter): self
+    {
+        if (!$this->raidCharacters->contains($raidCharacter)) {
+            $this->raidCharacters[] = $raidCharacter;
+            $raidCharacter->setRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRaidCharacter(RaidCharacter $raidCharacter): self
+    {
+        if ($this->raidCharacters->removeElement($raidCharacter)) {
+            // set the owning side to null (unless already changed)
+            if ($raidCharacter->getRole() === $this) {
+                $raidCharacter->setRole(null);
+            }
         }
 
         return $this;

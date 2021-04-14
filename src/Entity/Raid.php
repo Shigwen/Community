@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RaidRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -82,6 +84,16 @@ class Raid
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="raid", orphanRemoval=true)
+     */
+    private $raidCharacters;
+
+    public function __construct()
+    {
+        $this->raidCharacters = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -240,6 +252,36 @@ class Raid
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RaidCharacter[]
+     */
+    public function getRaidCharacters(): Collection
+    {
+        return $this->raidCharacters;
+    }
+
+    public function addRaidCharacter(RaidCharacter $raidCharacter): self
+    {
+        if (!$this->raidCharacters->contains($raidCharacter)) {
+            $this->raidCharacters[] = $raidCharacter;
+            $raidCharacter->setRaid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRaidCharacter(RaidCharacter $raidCharacter): self
+    {
+        if ($this->raidCharacters->removeElement($raidCharacter)) {
+            // set the owning side to null (unless already changed)
+            if ($raidCharacter->getRaid() === $this) {
+                $raidCharacter->setRaid(null);
+            }
+        }
 
         return $this;
     }
