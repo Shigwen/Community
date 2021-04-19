@@ -13,6 +13,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+	const DELAY_AFTER_MAX_ATTEMPT = 5;
+	const NUMBER_MAX_OF_ATTEMPT = 5;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -40,6 +43,16 @@ class User implements UserInterface
      * @ORM\Column(type="smallint")
      */
     private $status;
+
+	/**
+     * @ORM\Column(type="smallint")
+     */
+    private $nbrOfAttempt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $lastAttempt;
 
 	/**
      * @var Date
@@ -160,6 +173,30 @@ class User implements UserInterface
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+	public function getNbrOfAttempt(): ?int
+    {
+        return $this->nbrOfAttempt;
+    }
+
+    public function setNbrOfAttempt(int $nbrOfAttempt): self
+    {
+        $this->nbrOfAttempt = $nbrOfAttempt;
+
+        return $this;
+    }
+
+    public function getLastAttempt(): ?\DateTimeInterface
+    {
+        return $this->lastAttempt;
+    }
+
+    public function setLastAttempt(\DateTimeInterface $lastAttempt): self
+    {
+        $this->lastAttempt = $lastAttempt;
 
         return $this;
     }
