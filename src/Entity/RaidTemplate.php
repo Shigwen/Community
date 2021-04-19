@@ -25,27 +25,27 @@ class RaidTemplate
     /**
      * @ORM\Column(type="smallint")
      */
-    private $raid_type;
+    private $raidType;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $expected_attendee;
+    private $expectedAttendee;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $day_of_week;
+    private $dayOfWeek;
 
 	/**
      * @ORM\Column(type="datetime")
      */
-    private $start_at;
+    private $startAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $end_at;
+    private $endAt;
 
     /**
      * @ORM\Column(type="text")
@@ -55,32 +55,32 @@ class RaidTemplate
     /**
      * @ORM\Column(type="smallint")
      */
-    private $min_tank;
+    private $minTank;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
-    private $max_tank;
+    private $maxTank;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $min_heal;
+    private $minHeal;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
-    private $max_heal;
+    private $maxHeal;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updated_at;
+    private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raidTemplates")
@@ -107,60 +107,60 @@ class RaidTemplate
 
     public function getRaidType(): ?int
     {
-        return $this->raid_type;
+        return $this->raidType;
     }
 
-    public function setRaidType(int $raid_type): self
+    public function setRaidType(int $raidType): self
     {
-        $this->raid_type = $raid_type;
+        $this->raidType = $raidType;
 
         return $this;
     }
 
     public function getExpectedAttendee(): ?int
     {
-        return $this->expected_attendee;
+        return $this->expectedAttendee;
     }
 
-    public function setExpectedAttendee(int $expected_attendee): self
+    public function setExpectedAttendee(int $expectedAttendee): self
     {
-        $this->expected_attendee = $expected_attendee;
+        $this->expectedAttendee = $expectedAttendee;
 
         return $this;
     }
 
     public function getDayOfWeek(): ?int
     {
-        return $this->day_of_week;
+        return $this->dayOfWeek;
     }
 
-    public function setDayOfWeek(int $day_of_week): self
+    public function setDayOfWeek(int $dayOfWeek): self
     {
-        $this->day_of_week = $day_of_week;
+        $this->dayOfWeek = $dayOfWeek;
 
         return $this;
     }
 
     public function getStartAt(): ?\DateTimeInterface
     {
-        return $this->start_at;
+        return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeInterface $start_at): self
+    public function setStartAt(\DateTimeInterface $startAt): self
     {
-        $this->start_at = $start_at;
+        $this->startAt = $startAt;
 
         return $this;
     }
 
     public function getEndAt(): ?\DateTimeInterface
     {
-        return $this->end_at;
+        return $this->endAt;
     }
 
-    public function setEndAt(\DateTimeInterface $end_at): self
+    public function setEndAt(\DateTimeInterface $endAt): self
     {
-        $this->end_at = $end_at;
+        $this->endAt = $endAt;
 
         return $this;
     }
@@ -179,72 +179,72 @@ class RaidTemplate
 
     public function getMinTank(): ?int
     {
-        return $this->min_tank;
+        return $this->minTank;
     }
 
-    public function setMinTank(int $min_tank): self
+    public function setMinTank(int $minTank): self
     {
-        $this->min_tank = $min_tank;
+        $this->minTank = $minTank;
 
         return $this;
     }
 
     public function getMaxTank(): ?int
     {
-        return $this->max_tank;
+        return $this->maxTank;
     }
 
-    public function setMaxTank(?int $max_tank): self
+    public function setMaxTank(?int $maxTank): self
     {
-        $this->max_tank = $max_tank;
+        $this->maxTank = $maxTank;
 
         return $this;
     }
 
     public function getMinHeal(): ?int
     {
-        return $this->min_heal;
+        return $this->minHeal;
     }
 
-    public function setMinHeal(int $min_heal): self
+    public function setMinHeal(int $minHeal): self
     {
-        $this->min_heal = $min_heal;
+        $this->minHeal = $minHeal;
 
         return $this;
     }
 
     public function getMaxHeal(): ?int
     {
-        return $this->max_heal;
+        return $this->maxHeal;
     }
 
-    public function setMaxHeal(?int $max_heal): self
+    public function setMaxHeal(?int $maxHeal): self
     {
-        $this->max_heal = $max_heal;
+        $this->maxHeal = $maxHeal;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
