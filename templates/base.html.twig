@@ -16,8 +16,9 @@
     <body>
 	<menu>
 		<a href="{{ path('home') }}">Accueil</a>
+		<a href="{{ path('user_account') }}">Mon compte</a>
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-			<a href="{{ path('app_logout') }}">Logout</a>
+			<a href="{{ path('logout') }}">Logout</a>
 		{% endif %}
 	</menu>
         {% block body %}{% endblock %}
