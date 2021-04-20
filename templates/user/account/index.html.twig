@@ -9,11 +9,41 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ user.email }} !</h1>
+    <span>Infos perso : </span>
+	<a href="{{ path('user_account_edit')}}">Modifier</a>
+    <p>email : {{ user.email }}</p>
+</div>
+<hr>
+<div class="example-wrapper">
+    <span>Liste des personnages : </span>
+	<a href="{{ path('user_character_add')}}">Ajouter</a>
 
-	{{ form_start(form) }}
-		{{ form_widget(form) }}
-			<button type="submit">Valider</button>
-	{{ form_end(form) }}
+	<table>
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Classe</th>
+				<th>Rôles</th>
+				<th>Serveur</th>
+				<th>Informations</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				{% for character in user.characters %}
+				<td>{{ character.name }}</td>
+				<td>{{ character.characterClass.name }}</td>
+				<td>{{ character.strRoles }}</td>
+				<td>{{ character.server.name }}</td>
+				<td>{{ character.information }}</td>
+				<td>
+					<a href="{{ path('user_character_edit', {id: character.id})}}">Modifier</a>
+					<a href="{{ path('user_character_delete', {id: character.id})}}">Supprimer</a>
+				</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
 </div>
 {% endblock %}

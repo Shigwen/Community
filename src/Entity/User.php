@@ -56,13 +56,13 @@ class User implements UserInterface
 
 	/**
      * @var Date
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
 	/**
      * @var Date
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -105,6 +105,11 @@ class User implements UserInterface
         $this->blockers = new ArrayCollection();
         $this->characters = new ArrayCollection();
     }
+
+	public function __toString()
+	{
+		return $this->email;
+	}
 
     public function getId(): ?int
     {
@@ -426,4 +431,13 @@ class User implements UserInterface
 
         return $this;
     }
+
+	public function hasCharacter(Character $character) : bool
+	{
+		if ($this->characters->contains($character)) {
+			return true;
+		}
+
+		return false;
+	}
 }

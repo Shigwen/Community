@@ -15,15 +15,26 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AccountController extends AbstractController
 {
     /**
-     * @Route("/account", name="account")
+     * @Route("/my-account", name="account")
      */
     public function index(Request $request, UserPasswordEncoderInterface $encoder): Response
+    {
+		$user =  $user = $this->getUser();
+
+        return $this->render('user/account/index.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * @Route("/my-account/edit", name="account_edit")
+     */
+    public function editAccount(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
 		$user =  $user = $this->getUser();
 		$oldPass = $user->getPassword();
 
 		$form = $this->createForm(UserType::class, $user);
-
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
@@ -43,7 +54,7 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
-        return $this->render('user/account/index.html.twig', [
+        return $this->render('user/account/edit.html.twig', [
             'user' => $user,
 			'form' => $form->createView(),
         ]);

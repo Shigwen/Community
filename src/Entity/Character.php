@@ -20,6 +20,11 @@ class Character
      */
     private $id;
 
+	/**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
     /**
      * @ORM\Column(type="text", nullable=true)
      */
@@ -72,6 +77,18 @@ class Character
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getInformation(): ?string
@@ -135,9 +152,9 @@ class Character
     }
 
 	public function getServer(): ?Server
-                   {
-                       return $this->server;
-                   }
+	{
+		return $this->server;
+	}
 
     public function setServer(?Server $server): self
     {
@@ -159,6 +176,25 @@ class Character
     public function getRoles(): Collection
     {
         return $this->roles;
+    }
+
+	/**
+	 * List of role in the following format : Tank / Heal / DPS
+     * @return string
+     */
+    public function getStrRoles(): string
+    {
+		$string = '';
+
+		foreach ($this->roles as $index => $role) {
+			$string .= $role->getName();
+
+			if($index + 1 < count($this->roles)) {
+				$string .= ' / ';
+			}
+		}
+
+        return $string;
     }
 
     public function addRole(Role $role): self
