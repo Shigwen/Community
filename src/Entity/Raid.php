@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Raid
 {
+	const IDENTIFIER_SIZE = 20;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

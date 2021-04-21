@@ -440,4 +440,13 @@ class User implements UserInterface
 
 		return false;
 	}
+
+	public function hasRaid(Raid $raid) : bool
+	{
+		if ($this->raids->contains($raid)) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RaidController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+	{{ form_start(form) }}
+		<div> {{ form_row(form.name) }}</div>
+		<div> {{ form_row(form.raidType) }}</div>
+		<div> {{ form_row(form.expectedAttendee) }}</div>
+		<div> {{ form_row(form.startAt) }}</div>
+		<div> {{ form_row(form.endAt) }}</div>
+		<div> {{ form_row(form.information) }}</div>
+		<div> {{ form_row(form.minTank) }}</div>
+		<div> {{ form_row(form.maxTank) }}</div>
+		<div> {{ form_row(form.minHeal) }}</div>
+		<div> {{ form_row(form.maxHeal) }}</div>
+		<div> {{ form_row(form.autoAccept) }}</div>
+		<button type="submit">Valider</button>
+	{{ form_end(form) }}
+</div>
+{% endblock %}
