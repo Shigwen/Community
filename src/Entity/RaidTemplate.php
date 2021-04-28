@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\RaidTemplateRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RaidTemplateRepository;
 
 /**
  * @ORM\Entity(repositoryClass=RaidTemplateRepository::class)
@@ -87,6 +88,11 @@ class RaidTemplate
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+	public function __construct()
+	{
+		$this->createdAt = new DateTime();
+	}
 
     public function getId(): ?int
     {
@@ -228,13 +234,6 @@ class RaidTemplate
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface

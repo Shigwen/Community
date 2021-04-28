@@ -4,6 +4,7 @@ namespace App\Controller\RaidLeader;
 
 use DateTime;
 use App\Entity\Raid;
+use App\Entity\RaidCharacter;
 use App\Form\RaidType;
 use App\Service\Raid\Identifier;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,8 +22,19 @@ class RaidController extends AbstractController
      */
     public function show(Raid $raid): Response
     {
+		$charactersAccepted = $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+			'raid' => $raid,
+			'status' => RaidCharacter::ACCEPT,
+		]);
+		$charactersWaiting = $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+			'raid' => $raid,
+			'status' => RaidCharacter::WAITING_CONFIRMATION,
+		]);
+
         return $this->render('raid_leader/raid/show.html.twig', [
             'raid' => $raid,
+			'charactersAccepted' => $charactersAccepted,
+			'charactersWaiting' => $charactersWaiting,
         ]);
     }
 
@@ -34,17 +46,30 @@ class RaidController extends AbstractController
 		$raid = new Raid();
 		$raid
 		->setUser($this->getUser())
-		->setCreatedAt(new DateTime())
 		->setIdentifier($identifier->generate(Raid::IDENTIFIER_SIZE));
 
-		$form = $this->createForm(RaidType::class, $raid);
+		$raidCharacter = new RaidCharacter();
+		$raidCharacter
+		->setRaid($raid)
+		->setStatus(RaidCharacter::ACCEPT);
+
+		$raid->addRaidCharacter($raidCharacter);
+
+		$form = $this->createForm(RaidType::class, $raid, [
+			'user' => $this->getUser(),
+		]);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-
 			$raid = $form->getData();
+			$raid->setServer($raidCharacter->getCharacterServer());
+
+			if(!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
+				throw $this->createNotFoundException('Une erreur est survenue');
+			}
+
             $this->getDoctrine()->getManager()->persist($raid);
-            $this->getDoctrine()->getManager()->flush();
+        	$this->getDoctrine()->getManager()->flush();
 
 			return $this->redirectToRoute('user_account');
 		}
@@ -63,13 +88,22 @@ class RaidController extends AbstractController
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
-		$form = $this->createForm(RaidType::class, $raid);
+		$form = $this->createForm(RaidType::class, $raid, [
+			'user' => $this->getUser(),
+		]);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
 
 			$raid = $form->getData();
 			$raid->setUpdatedAt(new DateTime());
+			$raidLeaderCharacter = $raid->getCharacterFromUser($this->getUser());
+			$raid->setServer($raidLeaderCharacter->getServer());
+
+			if(!$this->getUser()->hasCharacter($raidLeaderCharacter)) {
+				throw $this->createNotFoundException('Une erreur est survenue');
+			}
+
             $this->getDoctrine()->getManager()->flush();
 
 			return $this->redirectToRoute('user_account');

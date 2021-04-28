@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RaidRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -98,12 +99,19 @@ class Raid
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="raid", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="raid", cascade={"persist"}, orphanRemoval=true)
      */
     private $raidCharacters;
 
+	/**
+     * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="raids")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $server;
+
     public function __construct()
     {
+		$this->createdAt = new DateTime();
         $this->raidCharacters = new ArrayCollection();
     }
 
@@ -113,9 +121,9 @@ class Raid
     }
 
 	public function getIdentifier(): ?string
-	{
-		return $this->identifier;
-	}
+         	{
+         		return $this->identifier;
+         	}
 
     public function setIdentifier(string $identifier): self
     {
@@ -245,9 +253,9 @@ class Raid
     }
 
 	public function getAutoAccept(): ?bool
-    {
-        return $this->autoAccept;
-    }
+             {
+                 return $this->autoAccept;
+             }
 
     public function setAutoAccept(bool $autoAccept): self
     {
@@ -259,13 +267,6 @@ class Raid
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
@@ -300,6 +301,25 @@ class Raid
         return $this->raidCharacters;
     }
 
+	public function getCharacterFromUser(User $user): Character
+    {
+		foreach ($this->raidCharacters as $raidCharacter) {
+			if ($raidCharacter->getUser() === $user) {
+				return $raidCharacter->getUserCharacter();
+			}
+		}
+        return null;
+    }
+
+	public function hasCharacter(Character $character) {
+		foreach ($this->raidCharacters as $raidCharacter) {
+			if ($raidCharacter->getUserCharacter = $character) {
+				return true;
+			}
+		}
+		return false;
+	}
+
     public function addRaidCharacter(RaidCharacter $raidCharacter): self
     {
         if (!$this->raidCharacters->contains($raidCharacter)) {
@@ -318,6 +338,18 @@ class Raid
                 $raidCharacter->setRaid(null);
             }
         }
+
+        return $this;
+    }
+
+	public function getServer(): ?Server
+    {
+        return $this->server;
+    }
+
+    public function setServer(?Server $server): self
+    {
+        $this->server = $server;
 
         return $this;
     }

@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RoleRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=RoleRepository::class)
@@ -46,6 +47,7 @@ class Role
 
     public function __construct()
     {
+		$this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
     }
@@ -75,13 +77,6 @@ class Role
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface

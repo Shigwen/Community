@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -98,6 +99,7 @@ class User implements UserInterface
 
     public function __construct()
     {
+		$this->createdAt = new DateTime();
         $this->raidTemplates = new ArrayCollection();
         $this->raids = new ArrayCollection();
         $this->ips = new ArrayCollection();
@@ -212,17 +214,6 @@ class User implements UserInterface
     public function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    /**
-     * @param  \DateTime  $createdAt
-     * @return  self
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**

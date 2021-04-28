@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class RaidType extends AbstractType
 {
@@ -22,13 +24,23 @@ class RaidType extends AbstractType
 				],
 			])
             ->add('expectedAttendee')
-            ->add('startAt')
-            ->add('endAt')
+            ->add('startAt', DateTimeType::class, [
+				'widget' => 'single_text'
+			])
+            ->add('endAt', DateTimeType::class, [
+				'widget' => 'single_text'
+			])
             ->add('information')
             ->add('minTank')
             ->add('maxTank')
             ->add('minHeal')
             ->add('maxHeal')
+			->add('raidCharacters', CollectionType::class, [
+				'entry_type' => RaidCharacterType::class,
+				'entry_options' => [
+					'user' => $options['user']
+				],
+			])
             ->add('autoAccept');
     }
 
@@ -36,6 +48,7 @@ class RaidType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Raid::class,
-        ]);
+			'user' => null,
+			]);
     }
 }

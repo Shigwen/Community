@@ -10,6 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class RaidCharacter
 {
+
+	const WAITING_CONFIRMATION = 0;
+	const ACCEPT = 1;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -92,4 +96,22 @@ class RaidCharacter
 
         return $this;
     }
+
+	public function getCharacterServer()
+	{
+		if (!$this->userCharacter) {
+			return null;
+		}
+
+		return $this->userCharacter->getServer();
+	}
+
+	public function getUser()
+	{
+		if (!$this->userCharacter) {
+			return null;
+		}
+
+		return $this->userCharacter->getUser();
+	}
 }

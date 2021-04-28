@@ -19,7 +19,7 @@ class AccountController extends AbstractController
      */
     public function index(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-		$user =  $user = $this->getUser();
+		$user = $this->getUser();
 
         return $this->render('user/account/index.html.twig', [
             'user' => $user,
@@ -31,7 +31,7 @@ class AccountController extends AbstractController
      */
     public function editAccount(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-		$user =  $user = $this->getUser();
+		$user = $this->getUser();
 		$oldPass = $user->getPassword();
 
 		$form = $this->createForm(UserType::class, $user);

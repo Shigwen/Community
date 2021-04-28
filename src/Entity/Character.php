@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacterRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CharacterRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=CharacterRepository::class)
@@ -70,9 +71,15 @@ class Character
 
     public function __construct()
     {
+		$this->createdAt = new DateTime();
         $this->roles = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
     }
+
+	function __toString()
+	{
+		return $this->name;
+	}
 
     public function getId(): ?int
     {
@@ -106,13 +113,6 @@ class Character
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface

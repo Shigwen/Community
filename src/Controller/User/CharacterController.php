@@ -21,9 +21,7 @@ class CharacterController extends AbstractController
     public function add(Request $request): Response
     {
 		$character = new Character();
-		$character
-		->setUser($this->getUser())
-		->setCreatedAt(new DateTime());
+		$character->setUser($this->getUser());
 
 		$form = $this->createForm(CharacterType::class, $character);
 		$form->handleRequest($request);
@@ -47,7 +45,7 @@ class CharacterController extends AbstractController
      */
     public function edit(Request $request, Character $character): Response
     {
-		if($this->getUser() && !$this->getUser()->hasCharacter($character)) {
+		if(!$this->getUser()->hasCharacter($character)) {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
@@ -73,7 +71,7 @@ class CharacterController extends AbstractController
      */
     public function delete(Character $character): Response
     {
-		if($this->getUser() && !$this->getUser()->hasCharacter($character)) {
+		if(!$this->getUser()->hasCharacter($character)) {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 

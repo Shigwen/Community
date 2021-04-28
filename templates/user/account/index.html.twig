@@ -31,19 +31,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				{% for character in user.characters %}
-				<td>{{ character.name }}</td>
-				<td>{{ character.characterClass.name }}</td>
-				<td>{{ character.strRoles }}</td>
-				<td>{{ character.server.name }}</td>
-				<td>{{ character.information }}</td>
-				<td>
-					<a href="{{ path('user_character_edit', {id: character.id})}}">Modifier</a>
-					<a href="{{ path('user_character_delete', {id: character.id})}}">Supprimer</a>
-				</td>
-				{% endfor %}
-			</tr>
+			{% for character in user.characters %}
+				<tr>
+					<td>{{ character.name }}</td>
+					<td>{{ character.characterClass.name }}</td>
+					<td>{{ character.strRoles }}</td>
+					<td>{{ character.server.name }}</td>
+					<td>{{ character.information }}</td>
+					<td>
+						<a href="{{ path('user_character_edit', {id: character.id})}}">Modifier</a>
+						<a href="{{ path('user_character_delete', {id: character.id})}}">Supprimer</a>
+					</td>
+				</tr>
+			{% endfor %}
 		</tbody>
 	</table>
 </div>
@@ -63,19 +63,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				{% for raid in user.raids %}
-				<td>{{ raid.name }}</td>
-				<td>{{ raid.raidType }}</td>
-				<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
-				<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
-				<td>
-					<a href="{{ path('raidleader_raid_show', {id: raid.id})}}">Voir</a>
-					<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
-					<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
-				</td>
-				{% endfor %}
-			</tr>
+			{% for raid in user.raids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.raidType }}</td>
+					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+					<td>
+						<a href="{{ path('raidleader_raid_show', {id: raid.id})}}">Voir</a>
+						<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
+						<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
+					</td>
+				</tr>
+			{% endfor %}
 		</tbody>
 	</table>
 </div>

@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ServerRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ServerRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=ServerRepository::class)
@@ -39,15 +40,22 @@ class Server
      */
     private $characters;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Raid::class, mappedBy="server", orphanRemoval=true)
+     */
+    private $raids;
+
     public function __construct()
     {
+		$this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
+        $this->raids = new ArrayCollection();
     }
 
 	public function __toString()
-	{
-		return $this->name;
-	}
+               	{
+               		return $this->name;
+               	}
 
     public function getId(): ?int
     {
@@ -69,13 +77,6 @@ class Server
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
@@ -114,6 +115,36 @@ class Server
             // set the owning side to null (unless already changed)
             if ($character->getServer() === $this) {
                 $character->setServer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Raid[]
+     */
+    public function getRaids(): Collection
+    {
+        return $this->raids;
+    }
+
+    public function addRaid(Raid $raid): self
+    {
+        if (!$this->raids->contains($raid)) {
+            $this->raids[] = $raid;
+            $raid->setServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRaid(Raid $raid): self
+    {
+        if ($this->raids->removeElement($raid)) {
+            // set the owning side to null (unless already changed)
+            if ($raid->getServer() === $this) {
+                $raid->setServer(null);
             }
         }
 
