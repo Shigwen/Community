@@ -7,6 +7,7 @@ use App\Entity\Raid;
 use App\Entity\RaidCharacter;
 use App\Form\RaidType;
 use App\Service\Raid\Identifier;
+use App\Service\Template\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,36 +23,33 @@ class RaidController extends AbstractController
      */
     public function show(Raid $raid): Response
     {
-		$charactersAccepted = $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
-			'raid' => $raid,
-			'status' => RaidCharacter::ACCEPT,
-		]);
-		$charactersWaiting = $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
-			'raid' => $raid,
-			'status' => RaidCharacter::WAITING_CONFIRMATION,
-		]);
-
         return $this->render('raid_leader/raid/show.html.twig', [
             'raid' => $raid,
-			'charactersAccepted' => $charactersAccepted,
-			'charactersWaiting' => $charactersWaiting,
+			'charactersAccepted' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+				'raid' => $raid,
+				'status' => RaidCharacter::ACCEPT,
+			]),
+			'charactersWaiting' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+				'raid' => $raid,
+				'status' => RaidCharacter::WAITING_CONFIRMATION,
+			]),
         ]);
     }
 
     /**
      * @Route("/add", name="add")
      */
-    public function add(Request $request, Identifier $identifier): Response
+    public function add(Request $request, Identifier $identifier, Template $template): Response
     {
 		$raid = new Raid();
 		$raid
-		->setUser($this->getUser())
-		->setIdentifier($identifier->generate(Raid::IDENTIFIER_SIZE));
+			->setUser($this->getUser())
+			->setIdentifier($identifier->generate(Raid::IDENTIFIER_SIZE));
 
 		$raidCharacter = new RaidCharacter();
 		$raidCharacter
-		->setRaid($raid)
-		->setStatus(RaidCharacter::ACCEPT);
+			->setRaid($raid)
+			->setStatus(RaidCharacter::ACCEPT);
 
 		$raid->addRaidCharacter($raidCharacter);
 
@@ -61,11 +59,16 @@ class RaidController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$raid = $form->getData();
-			$raid->setServer($raidCharacter->getCharacterServer());
-
 			if(!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
 				throw $this->createNotFoundException('Une erreur est survenue');
+			}
+
+			$raid = $form->getData();
+			$raid->setServer($raidCharacter->getCharacterServer());
+			$datas = $request->request->get('raid');
+
+			if($datas['templateName'] && $datas['dayOfWeek'] >= 1 && $datas['dayOfWeek'] <= 7) {
+				$template->generateFromRaid($datas['templateName'], $raid, $datas['dayOfWeek'] );
 			}
 
             $this->getDoctrine()->getManager()->persist($raid);
@@ -76,6 +79,7 @@ class RaidController extends AbstractController
 
         return $this->render('raid_leader/raid/action.html.twig', [
             'form' => $form->createView(),
+			'nbrTemplate' => count($this->getUser()->getRaidTemplates()),
         ]);
     }
 
@@ -90,19 +94,21 @@ class RaidController extends AbstractController
 
 		$form = $this->createForm(RaidType::class, $raid, [
 			'user' => $this->getUser(),
+			'isEdit' => true,
 		]);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-
 			$raid = $form->getData();
-			$raid->setUpdatedAt(new DateTime());
 			$raidLeaderCharacter = $raid->getCharacterFromUser($this->getUser());
-			$raid->setServer($raidLeaderCharacter->getServer());
 
 			if(!$this->getUser()->hasCharacter($raidLeaderCharacter)) {
 				throw $this->createNotFoundException('Une erreur est survenue');
 			}
+
+			$raid
+				->setUpdatedAt(new DateTime())
+				->setServer($raidLeaderCharacter->getServer());
 
             $this->getDoctrine()->getManager()->flush();
 
@@ -111,7 +117,7 @@ class RaidController extends AbstractController
 
         return $this->render('raid_leader/raid/action.html.twig', [
             'form' => $form->createView(),
-        ]);
+			]);
     }
 
 	/**
