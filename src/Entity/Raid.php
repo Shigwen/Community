@@ -192,6 +192,15 @@ class Raid
         return $this;
     }
 
+    public function getRaidDayOfWeek()
+    {
+        if (!$this->getStartAt()) {
+            return null;
+        }
+        // N format return 1 (for monday) to 7 (for sunday)
+        return $this->getStartAt()->format('N');
+    }
+
     public function getInformation(): ?string
     {
         return $this->information;

@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EventController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Event page</h1>
+
+    <div class="example-wrapper">
+        <span>Templates : </span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Tank min</th>
+                    <th>Tank max</th>
+                    <th>Heal min</th>
+                    <th>Heal max</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for template in user.raidTemplates %}
+                    <tr>
+                        <td>{{ template.name }}</td>
+                        <td>{{ template.raidType }}</td>
+                        <td>{{ template.minTank }}</td>
+                        <td>{{ template.maxTank }}</td>
+                        <td>{{ template.minHeal }}</td>
+                        <td>{{ template.maxHeal }}</td>
+                        <td>
+                            <a href="{{ path('raidleader_event_list')}}?id={{template.id}}">Use/edit</a>
+                            {# <a href="{{ path('raidleader_raid_delete', {id: template.id})}}">Supprimer</a> #}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <hr>
+        <span>Create event : </span>
+        <a href="{{ path('raidleader_event_list')}}">Reset Form</a>
+
+        {{ form_start(form) }}
+            <div> {{ form_row(form.name) }}</div>
+            <div> {{ form_row(form.raidType) }}</div>
+            <div> {{ form_row(form.expectedAttendee) }}</div>
+            <div> {{ form_row(form.startAt) }}</div>
+            <div> {{ form_row(form.endAt) }}</div>
+            <div> {{ form_row(form.information) }}</div>
+            <div> {{ form_row(form.minTank) }}</div>
+            <div> {{ form_row(form.maxTank) }}</div>
+            <div> {{ form_row(form.minHeal) }}</div>
+            <div> {{ form_row(form.maxHeal) }}</div>
+            <div> {{ form_row(form.autoAccept) }}</div>
+            {% for raidCharacter in form.raidCharacters %}
+                <div>
+                    {{ form_widget(raidCharacter) }}
+                </div>
+            {% endfor %}
+            
+            <div> {{ form_row(form.save) }}</div>
+
+            {% if nbrTemplate is defined and nbrTemplate < 5 %}
+                <p>
+                    Choose a name if you want to save this raid as <br>
+                    a template and ease future raid creation
+                </p>
+                <div> {{ form_row(form.templateName) }}</div>
+                {% if editTemplate %}
+                    <div> {{ form_row(form.editTemplate) }}</div>
+                {% else %}
+                    <div> {{ form_row(form.saveTemplate) }}</div>
+                {% endif %}
+            {% endif %}
+        {{ form_end(form) }}
+
+        <hr>
+        <span>Raids </span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for raid in user.raids %}
+                    <tr>
+                        <td>{{ raid.name }}</td>
+                        <td>{{ raid.raidType }}</td>
+                        <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+                        <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+                        <td>
+                            <a href="{{ path('raidleader_raid_show', {id: raid.id})}}">Voir</a>
+                            <a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
+                            <a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -47,37 +47,4 @@
 		</tbody>
 	</table>
 </div>
-
-{% if is_granted('ROLE_RAID_LEADER') %}
-<hr>
-<div class="example-wrapper">
-    <span>Liste des raids créés : </span>
-	<a href="{{ path('raidleader_raid_add')}}">Ajouter</a>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Début</th>
-				<th>Fin</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for raid in user.raids %}
-				<tr>
-					<td>{{ raid.name }}</td>
-					<td>{{ raid.raidType }}</td>
-					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
-					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
-					<td>
-						<a href="{{ path('raidleader_raid_show', {id: raid.id})}}">Voir</a>
-						<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
-						<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
-{% endif %}
 {% endblock %}

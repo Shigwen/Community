@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\RaidTemplate;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
@@ -435,6 +436,15 @@ class User implements UserInterface
 	public function hasRaid(Raid $raid) : bool
 	{
 		if ($this->raids->contains($raid)) {
+			return true;
+		}
+
+		return false;
+	}
+
+    public function hasRaidTemplate(RaidTemplate $raidTemplate) : bool
+	{
+		if ($this->raidTemplates->contains($raidTemplate)) {
 			return true;
 		}
 

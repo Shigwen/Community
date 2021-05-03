@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
@@ -23,6 +24,8 @@ class RaidType extends AbstractType
 					'25' => 25,
 					'40' => 40,
 				],
+				'expanded' => true,
+				'multiple' => false,
 			])
             ->add('expectedAttendee')
             ->add('startAt', DateTimeType::class, [
@@ -42,24 +45,29 @@ class RaidType extends AbstractType
 					'user' => $options['user']
 				],
 			])
-            ->add('autoAccept');
+            ->add('autoAccept')
+			->add('save', SubmitType::class, [
+				'label' => 'Create raid'
+			]);
 
-			if (!$options['isEdit']) {
+			if (!$options['isEdit'] && !$options['raidTemplate']) {
 				$builder
 					->add('templateName', TextType::class, [
-					'mapped' => false,
-					])
-					->add('dayOfWeek', ChoiceType::class, [
 						'mapped' => false,
-						'choices'  => [
-							'--' => 0,
-							'Monday' => 1,
-							'Tuesday' => 2,
-							'Wednesday' => 3,
-							'Thursday' => 4,
-							'Friday' => 5,
-							'Saturday' => 6,
-						],
+					])
+					->add('saveTemplate', SubmitType::class, [
+						'label' => 'Save template'
+					]);
+			}
+
+			if ($options['raidTemplate']) {
+				$builder
+					->add('templateName', TextType::class, [
+						'mapped' => false,
+						'data' => $options['raidTemplate']->getName(),
+					])
+					->add('editTemplate', SubmitType::class, [
+						'label' => 'Edit template'
 					]);
 			}
     }
@@ -70,6 +78,7 @@ class RaidType extends AbstractType
             'data_class' => Raid::class,
 			'user' => null,
 			'isEdit' => false,
+			'raidTemplate' => null,
 			]);
     }
 }

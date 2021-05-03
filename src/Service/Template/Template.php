@@ -18,14 +18,14 @@ class Template {
 		$this->em = $em;
     }
 
-	public function generateFromRaid($templateName, Raid $raid, $dayOfWeek)
+	public function generateFromRaid($templateName, Raid $raid)
 	{
 		$template = new RaidTemplate();
 		$template
 			->setName($templateName)
 			->setRaidType($raid->getRaidType())
 			->setExpectedAttendee($raid->getExpectedAttendee())
-			->setDayOfWeek($dayOfWeek)
+			->setDayOfWeek($raid->getRaidDayOfWeek())
 			->setInformation($raid->getInformation())
 			->setMinTank($raid->getMinTank())
 			->setMaxTank($raid->getMaxTank())
@@ -39,5 +39,42 @@ class Template {
 			$this->em->flush();
 
 			return $template;
+	}
+
+	public function hydrateFromRaid($templateName, RaidTemplate $template, Raid $raid)
+	{
+		$template
+			->setName($templateName)
+			->setRaidType($raid->getRaidType())
+			->setExpectedAttendee($raid->getExpectedAttendee())
+			->setDayOfWeek($raid->getRaidDayOfWeek())
+			->setInformation($raid->getInformation())
+			->setMinTank($raid->getMinTank())
+			->setMaxTank($raid->getMaxTank())
+			->setMinHeal($raid->getMinHeal())
+			->setMaxHeal($raid->getMaxHeal())
+			->setUser($raid->getUser())
+			->setStartAt($raid->getStartAt())
+			->setEndAt($raid->getEndAt());
+
+			$this->em->flush();
+
+			return $template;
+	}
+
+	public function hydrateRaidFromTemplate(Raid $raid, RaidTemplate $raidTemplate)
+	{
+		$raid
+			->setRaidType($raidTemplate->getRaidType())
+			->setExpectedAttendee($raidTemplate->getExpectedAttendee())
+			->setInformation($raidTemplate->getInformation())
+			->setMinTank($raidTemplate->getMinTank())
+			->setMaxTank($raidTemplate->getMaxTank())
+			->setMinHeal($raidTemplate->getMinHeal())
+			->setMaxHeal($raidTemplate->getMaxHeal())
+			->setStartAt($raidTemplate->getStartAt())
+			->setEndAt($raidTemplate->getEndAt());
+
+			return $raid;
 	}
 }
