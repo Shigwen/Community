@@ -21,7 +21,7 @@ class EventController extends AbstractController
     /**
      * @Route("/list", name="list")
      */
-    public function index(Request $request, Identifier $identifier, Template $template): Response
+    public function list(Request $request, Identifier $identifier, Template $template): Response
     {
         $raid = new Raid();
 		$raid
@@ -52,12 +52,12 @@ class EventController extends AbstractController
 
 		if (!$raidTemplate && $form->get('saveTemplate')->isClicked() && $form->isValid()){
 			$datas = $request->request->get('raid');
-			$template->generateFromRaid($datas['templateName'], $raid);
+			$template->createOrHydrateTemplateFromRaid($datas['templateName'], $raid);
 		}
 
 		if ($raidTemplate && $form->get('editTemplate')->isClicked() && $form->isValid()){
 			$datas = $request->request->get('raid');
-			$template->hydrateFromRaid($datas['templateName'], $raidTemplate, $raid);
+			$template->createOrHydrateTemplateFromRaid($datas['templateName'], $raid, $raidTemplate);
 		}
 
 		if ($form->get('save')->isClicked() && $form->isValid()) {

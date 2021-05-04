@@ -18,31 +18,13 @@ class Template {
 		$this->em = $em;
     }
 
-	public function generateFromRaid($templateName, Raid $raid)
+	public function createOrHydrateTemplateFromRaid($templateName, Raid $raid, RaidTemplate $template = null)
 	{
-		$template = new RaidTemplate();
-		$template
-			->setName($templateName)
-			->setRaidType($raid->getRaidType())
-			->setExpectedAttendee($raid->getExpectedAttendee())
-			->setDayOfWeek($raid->getRaidDayOfWeek())
-			->setInformation($raid->getInformation())
-			->setMinTank($raid->getMinTank())
-			->setMaxTank($raid->getMaxTank())
-			->setMinHeal($raid->getMinHeal())
-			->setMaxHeal($raid->getMaxHeal())
-			->setUser($raid->getUser())
-			->setStartAt($raid->getStartAt())
-			->setEndAt($raid->getEndAt());
-
+		if (!$template) {
+			$template = new RaidTemplate();
 			$this->em->persist($template);
-			$this->em->flush();
+		}
 
-			return $template;
-	}
-
-	public function hydrateFromRaid($templateName, RaidTemplate $template, Raid $raid)
-	{
 		$template
 			->setName($templateName)
 			->setRaidType($raid->getRaidType())

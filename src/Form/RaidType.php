@@ -47,7 +47,7 @@ class RaidType extends AbstractType
 			])
             ->add('autoAccept')
 			->add('save', SubmitType::class, [
-				'label' => 'Create raid'
+				'label' => $options['isEdit'] ? 'Modify raid' : 'Create raid',
 			]);
 
 			if (!$options['isEdit'] && !$options['raidTemplate']) {

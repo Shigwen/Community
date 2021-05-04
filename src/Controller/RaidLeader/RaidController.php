@@ -66,9 +66,18 @@ class RaidController extends AbstractController
 			return $this->redirectToRoute('raidleader_event_list');
 		}
 
-        return $this->render('raid_leader/raid/action.html.twig', [
+        return $this->render('raid_leader/raid/edit.html.twig', [
             'form' => $form->createView(),
-			]);
+			'raid' => $raid,
+			'charactersAccepted' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+				'raid' => $raid,
+				'status' => RaidCharacter::ACCEPT,
+			]),
+			'charactersWaiting' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+				'raid' => $raid,
+				'status' => RaidCharacter::WAITING_CONFIRMATION,
+			]),
+		]);
     }
 
 	/**
