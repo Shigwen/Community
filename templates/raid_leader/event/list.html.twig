@@ -35,8 +35,8 @@
                         <td>{{ template.minHeal }}</td>
                         <td>{{ template.maxHeal }}</td>
                         <td>
-                            <a href="{{ path('raidleader_event_list')}}?id={{template.id}}">Use/edit</a>
-							<a href="{{ path('raidleader_event_template_delete', {id: template.id})}}">Supprimer</a>
+                            <a href="{{ path('raidleader_events')}}?id={{template.id}}">Use/edit</a>
+							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Supprimer</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -45,7 +45,7 @@
 
         <hr>
         <span>Create event : </span>
-        <a href="{{ path('raidleader_event_list')}}">Reset Form</a>
+        <a href="{{ path('raidleader_events')}}">Reset Form</a>
 
         {{ form_start(form) }}
             <div> {{ form_row(form.name) }}</div>

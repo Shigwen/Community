@@ -19,7 +19,7 @@
 		<a href="{{ path('user_account') }}">Mon compte</a>
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             {% if is_granted('ROLE_RAID_LEADER') %}
-                <a href="{{ path('raidleader_event_list') }}">Events</a>
+                <a href="{{ path('raidleader_events') }}">Events</a>
             {% endif %}
 			<a href="{{ path('logout') }}">Logout</a>
 		{% endif %}

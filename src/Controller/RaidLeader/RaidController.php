@@ -45,7 +45,7 @@ class RaidController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-			return $this->redirectToRoute('raidleader_event_list');
+			return $this->redirectToRoute('raidleader_events');
 		}
 
         return $this->render('raid_leader/raid/edit.html.twig', [
@@ -74,6 +74,6 @@ class RaidController extends AbstractController
 		$this->getDoctrine()->getManager()->remove($raid);
 		$this->getDoctrine()->getManager()->flush();
 
-		return $this->redirectToRoute('raidleader_event_list');
+		return $this->redirectToRoute('raidleader_events');
     }
 }

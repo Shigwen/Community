@@ -14,12 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @Route("/raid-leader/event", name="raidleader_event_")
+ * @Route("/raid-leader", name="raidleader_")
  */
 class EventController extends AbstractController
 {
     /**
-     * @Route("/list", name="list")
+     * @Route("/events", name="events")
      */
     public function list(Request $request, Identifier $identifier, Template $template): Response
     {
@@ -92,6 +92,6 @@ class EventController extends AbstractController
 		$this->getDoctrine()->getManager()->remove($raidTemplate);
 		$this->getDoctrine()->getManager()->flush();
 
-		return $this->redirectToRoute('raidleader_event_list');
+		return $this->redirectToRoute('raidleader_events');
 	}
 }
