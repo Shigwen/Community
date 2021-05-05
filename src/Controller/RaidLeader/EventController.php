@@ -71,7 +71,7 @@ class EventController extends AbstractController
             $this->getDoctrine()->getManager()->persist($raid);
         	$this->getDoctrine()->getManager()->flush();
 		}
-        
+
         return $this->render('raid_leader/event/list.html.twig', [
             'user' => $this->getUser(),
 			'nbrTemplate' => count($this->getUser()->getRaidTemplates()),
@@ -79,4 +79,19 @@ class EventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+	/**
+     * @Route("/template/{id}/delete", name="template_delete")
+     */
+    public function templateDelete(RaidTemplate $raidTemplate): Response
+    {
+		if($this->getUser() && !$this->getUser()->hasRaidTemplate($raidTemplate)) {
+			throw $this->createNotFoundException('Une erreur est survenue');
+		}
+
+		$this->getDoctrine()->getManager()->remove($raidTemplate);
+		$this->getDoctrine()->getManager()->flush();
+
+		return $this->redirectToRoute('raidleader_event_list');
+	}
 }

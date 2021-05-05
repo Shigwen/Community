@@ -17,24 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class RaidController extends AbstractController
 {
 	/**
-     * @Route("/{id}", name="show", requirements={"id"="\d+"})
-     */
-    public function show(Raid $raid): Response
-    {
-        return $this->render('raid_leader/raid/show.html.twig', [
-            'raid' => $raid,
-			'charactersAccepted' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
-				'raid' => $raid,
-				'status' => RaidCharacter::ACCEPT,
-			]),
-			'charactersWaiting' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
-				'raid' => $raid,
-				'status' => RaidCharacter::WAITING_CONFIRMATION,
-			]),
-        ]);
-    }
-
-	/**
      * @Route("/{id}/edit", name="edit")
      */
     public function edit(Request $request, Raid $raid): Response

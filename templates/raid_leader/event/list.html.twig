@@ -36,13 +36,13 @@
                         <td>{{ template.maxHeal }}</td>
                         <td>
                             <a href="{{ path('raidleader_event_list')}}?id={{template.id}}">Use/edit</a>
-                            {# <a href="{{ path('raidleader_raid_delete', {id: template.id})}}">Supprimer</a> #}
+							<a href="{{ path('raidleader_event_template_delete', {id: template.id})}}">Supprimer</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
+
         <hr>
         <span>Create event : </span>
         <a href="{{ path('raidleader_event_list')}}">Reset Form</a>
@@ -64,7 +64,7 @@
                     {{ form_widget(raidCharacter) }}
                 </div>
             {% endfor %}
-            
+
             <div> {{ form_row(form.save) }}</div>
 
             {% if nbrTemplate is defined and nbrTemplate < 5 %}
@@ -100,7 +100,6 @@
                         <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
                         <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
                         <td>
-                            <a href="{{ path('raidleader_raid_show', {id: raid.id})}}">Voir</a>
                             <a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
                             <a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
                         </td>
