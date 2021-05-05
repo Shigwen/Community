@@ -9,12 +9,30 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'D:/Projets/Community/src/Controller/EventController.php'|file_link(0) }}">src/Controller/EventController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'D:/Projets/Community/templates/event/index.html.twig'|file_link(0) }}">templates/event/index.html.twig</a></code></li>
-    </ul>
+	<h1>Raid list</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Début</th>
+				<th>Fin</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for raid in raids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.raidType }}</td>
+					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+					<td>
+						<a href="{{ path('event_register', {id: raid.id})}}">Show</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
 {% endblock %}

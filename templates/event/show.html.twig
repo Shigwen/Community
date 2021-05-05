@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EventController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+	<h4> Raid informations </h4>
+	<p>Nom : {{ raid.name }}</p>
+	<p>Nombre de joueurs attendu : {{ raid.expectedAttendee }}</p>
+	<p>Min tank : {{ raid.minTank }}</p>
+	<p>Max tank : {{ raid.maxTank }}</p>
+	<p>Min heal : {{ raid.minHeal }}</p>
+	<p>Max heal : {{ raid.maxHeal }}</p>
+	<p>Début du raid : {{ raid.startAt|date("d/m/Y h:i") }}</p>
+	<p>Fin du raid : {{ raid.endAt|date("d/m/Y h:i") }}</p>
+	<p>Informations : {{ raid.information }}</p>
+
+	{% if form is not empty %}
+		<hr>
+		<h4> Register : </h4>
+		{{ form_start(form) }}
+			{{ form_widget(form) }}
+			<button type="submit">register</button>
+		{{ form_end(form) }}
+	{% endif %}
+
+	<hr>
+	<h4> Validate players : </h4>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Class</th>
+				<th>Role</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for raidCharacter in charactersAccepted %}
+				<tr>
+					<td>{{ raidCharacter.userCharacter.name }}</td>
+					<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+					<td>{{ raidCharacter.role.name }}</td>
+					{# Todo : Créer une fonction twig pour check si la personne peu supprimer le perso #}
+					{% if user.hasCharacter(raidCharacter.userCharacter) %}
+						<td>
+							<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+						</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

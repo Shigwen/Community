@@ -46,6 +46,7 @@ class RaidType extends AbstractType
 				],
 			])
             ->add('autoAccept')
+			->add('isPrivate')
 			->add('save', SubmitType::class, [
 				'label' => $options['isEdit'] ? 'Modify raid' : 'Create raid',
 			]);

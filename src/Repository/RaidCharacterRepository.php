@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Raid;
+use App\Entity\User;
 use App\Entity\RaidCharacter;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method RaidCharacter|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,23 @@ class RaidCharacterRepository extends ServiceEntityRepository
         parent::__construct($registry, RaidCharacter::class);
     }
 
-    // /**
-    //  * @return RaidCharacter[] Returns an array of RaidCharacter objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return RaidCharacter[] Returns an array of RaidCharacter objects
+     */
+    public function userAlreadyRegisterInRaid(User $user, Raid $raid)
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('rc')
+			->join('rc.userCharacter', 'uc')
+			->join('rc.raid', 'r')
+            ->andWhere('rc.raid = :raid')
+            ->andWhere('uc.user = :user')
+            ->setParameters([
+				'raid' => $raid,
+				'user' => $user,
+			])
+			->setMaxResults(1)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?RaidCharacter
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -109,6 +109,11 @@ class Raid
      */
     private $server;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPrivate;
+
     public function __construct()
     {
 		$this->createdAt = new DateTime();
@@ -121,9 +126,9 @@ class Raid
     }
 
 	public function getIdentifier(): ?string
-         	{
-         		return $this->identifier;
-         	}
+	{
+		return $this->identifier;
+	}
 
     public function setIdentifier(string $identifier): self
     {
@@ -262,9 +267,9 @@ class Raid
     }
 
 	public function getAutoAccept(): ?bool
-             {
-                 return $this->autoAccept;
-             }
+	{
+		return $this->autoAccept;
+	}
 
     public function setAutoAccept(bool $autoAccept): self
     {
@@ -311,16 +316,17 @@ class Raid
     }
 
 	public function getCharacterFromUser(User $user): Character
-    {
+	{
 		foreach ($this->raidCharacters as $raidCharacter) {
 			if ($raidCharacter->getUser() === $user) {
 				return $raidCharacter->getUserCharacter();
 			}
 		}
-        return null;
-    }
+		return null;
+	}
 
-	public function hasCharacter(Character $character) {
+	public function hasCharacter(Character $character)
+	{
 		foreach ($this->raidCharacters as $raidCharacter) {
 			if ($raidCharacter->getUserCharacter = $character) {
 				return true;
@@ -352,13 +358,25 @@ class Raid
     }
 
 	public function getServer(): ?Server
-    {
-        return $this->server;
-    }
+             {
+                 return $this->server;
+             }
 
     public function setServer(?Server $server): self
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getIsPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setIsPrivate(bool $isPrivate): self
+    {
+        $this->isPrivate = $isPrivate;
 
         return $this;
     }

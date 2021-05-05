@@ -59,6 +59,7 @@
             <div> {{ form_row(form.minHeal) }}</div>
             <div> {{ form_row(form.maxHeal) }}</div>
             <div> {{ form_row(form.autoAccept) }}</div>
+            <div> {{ form_row(form.isPrivate) }}</div>
             {% for raidCharacter in form.raidCharacters %}
                 <div>
                     {{ form_widget(raidCharacter) }}
@@ -90,6 +91,7 @@
                     <th>Type</th>
                     <th>Début</th>
                     <th>Fin</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
