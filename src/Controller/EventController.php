@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventController extends AbstractController
 {
     /**
-     * @Route("/events", name="event")
+     * @Route("/events", name="events")
      */
     public function index(): Response
     {

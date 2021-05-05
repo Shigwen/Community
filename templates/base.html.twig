@@ -15,13 +15,23 @@
     </head>
     <body>
 	<menu>
-		<a href="{{ path('home') }}">Accueil</a>
-		<a href="{{ path('user_account') }}">Mon compte</a>
+		<a href="{{ path('home') }}">Home</a>
+		-
+
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-            {% if is_granted('ROLE_RAID_LEADER') %}
-                <a href="{{ path('raidleader_events') }}">Events</a>
+			<a href="{{ path('events') }}">Events list</a>
+			-
+			<a href="{{ path('user_account') }}">My account</a>
+			-
+			{% if is_granted('ROLE_RAID_LEADER') %}
+                <a href="{{ path('raidleader_events') }}">Manage events</a>
+				-
             {% endif %}
+
 			<a href="{{ path('logout') }}">Logout</a>
+
+		{% else %}
+			<a href="{{ path('login') }}">Log in</a>
 		{% endif %}
 	</menu>
         {% block body %}{% endblock %}

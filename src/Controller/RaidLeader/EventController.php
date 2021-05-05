@@ -21,7 +21,7 @@ class EventController extends AbstractController
     /**
      * @Route("/events", name="events")
      */
-    public function list(Request $request, Identifier $identifier, Template $template): Response
+    public function index(Request $request, Identifier $identifier, Template $template): Response
     {
         $raid = new Raid();
 		$raid
@@ -72,7 +72,7 @@ class EventController extends AbstractController
         	$this->getDoctrine()->getManager()->flush();
 		}
 
-        return $this->render('raid_leader/event/list.html.twig', [
+        return $this->render('raid_leader/event/index.html.twig', [
             'user' => $this->getUser(),
 			'nbrTemplate' => count($this->getUser()->getRaidTemplates()),
             'editTemplate' => $raidTemplate ? true: false,
