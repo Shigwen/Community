@@ -46,8 +46,7 @@
 					<td>{{ raidCharacter.userCharacter.name }}</td>
 					<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
 					<td>{{ raidCharacter.role.name }}</td>
-					{# Todo : Créer une fonction twig pour check si la personne peu supprimer le perso #}
-					{% if user.hasCharacter(raidCharacter.userCharacter) %}
+					{% if user.hasCharacter(raidCharacter.userCharacter) and is_raid_leader_character(user, raidCharacter.userCharacter, raid) == false %}
 						<td>
 							<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
 						</td>

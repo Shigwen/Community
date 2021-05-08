@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class RaidCharacter
 {
-
 	const WAITING_CONFIRMATION = 0;
 	const ACCEPT = 1;
+	const REFUSED = 2;
 
     /**
      * @ORM\Id
@@ -49,9 +49,19 @@ class RaidCharacter
         return $this->id;
     }
 
-    public function getStatus(): ?int
+    public function isAccept(): ?int
     {
-        return $this->status;
+        return $this->status === $this::ACCEPT;
+    }
+
+    public function isWaitingConfirmation(): ?int
+    {
+        return $this->status === $this::WAITING_CONFIRMATION;
+    }
+
+    public function isRefused(): ?int
+    {
+        return $this->status === $this::REFUSED;
     }
 
     public function setStatus(int $status): self

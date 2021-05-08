@@ -307,9 +307,6 @@ class Raid
         return $this;
     }
 
-    /**
-     * @return Collection|RaidCharacter[]
-     */
     public function getRaidCharacters(): Collection
     {
         return $this->raidCharacters;
@@ -358,9 +355,9 @@ class Raid
     }
 
 	public function getServer(): ?Server
-             {
-                 return $this->server;
-             }
+    {
+        return $this->server;
+    }
 
     public function setServer(?Server $server): self
     {

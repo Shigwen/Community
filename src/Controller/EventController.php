@@ -47,7 +47,7 @@ class EventController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$this->getDoctrine()->getManager()->flush();
-			return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+			return $this->redirectToRoute('event_register', ['id' => $raid->getId()]);
 		}
 
         return $this->render('event/show.html.twig', [
@@ -66,8 +66,6 @@ class EventController extends AbstractController
      */
     public function unregister(Request $request, Raid $raid): Response
     {
-		// Todo : on ne doit pas pouvoir supprimer le personnage
-		// si c'est le personnage du créateur du raid !
 		$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
 			$this->getUser(),
 			$raid
