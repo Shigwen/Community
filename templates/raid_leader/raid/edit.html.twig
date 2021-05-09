@@ -54,7 +54,7 @@
 						<td>{{ raidCharacter.userCharacter.information }}</td>
 						{% if is_raid_leader_character(user, raidCharacter.userCharacter, raidCharacter.raid) == false %}
 							<td>
-								<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}">Refuse</a>
+								<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
 							</td>
 						{% endif %}
 					</tr>
@@ -84,7 +84,8 @@
 						<td>{{ raidCharacter.role.name }}</td>
 						<td>{{ raidCharacter.userCharacter.information }}</td>
 						<td>
-							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}">Accept</a>
+							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
+							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
 						</td>
 					</tr>
 				{% endif %}
@@ -113,7 +114,7 @@
 						<td>{{ raidCharacter.role.name }}</td>
 						<td>{{ raidCharacter.userCharacter.information }}</td>
 						<td>
-							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}">Accept</a>
+							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
 						</td>
 					</tr>
 				{% endif %}

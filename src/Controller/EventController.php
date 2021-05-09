@@ -52,10 +52,6 @@ class EventController extends AbstractController
 
         return $this->render('event/show.html.twig', [
             'raid' => $raid,
-			'charactersAccepted' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
-				'raid' => $raid,
-				'status' => RaidCharacter::ACCEPT,
-			]),
 			'user' => $this->getUser(),
 			'form' => $form->createView(),
         ]);

@@ -46,5 +46,67 @@
 			{% endfor %}
 		</tbody>
 	</table>
+
+	<hr>
+	<span>Raids </span>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Début</th>
+				<th>Fin</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for character in user.characters %}
+			{% for raidCharacter in character.raidCharacters %}
+				{% if raidCharacter.isAccept %}
+					<tr>
+						<td>{{ raidCharacter.raid.name }}</td>
+						<td>{{ raidCharacter.raid.raidType }}</td>
+						<td>{{ raidCharacter.raid.startAt|date("d/m/Y h:i") }}</td>
+						<td>{{ raidCharacter.raid.endAt|date("d/m/Y h:i") }}</td>
+						<td>
+							<a href="{{ path('event_unregister', {id: raidCharacter.raid.id})}}">Unregister</a>
+						</td>
+					</tr>
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+		</tbody>
+	</table>
+
+	<hr>
+	<span>Raids in waiting of raid leader validation </span>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Début</th>
+				<th>Fin</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for character in user.characters %}
+			{% for raidCharacter in character.raidCharacters %}
+				{% if raidCharacter.isWaitingConfirmation %}
+					<tr>
+						<td>{{ raidCharacter.raid.name }}</td>
+						<td>{{ raidCharacter.raid.raidType }}</td>
+						<td>{{ raidCharacter.raid.startAt|date("d/m/Y h:i") }}</td>
+						<td>{{ raidCharacter.raid.endAt|date("d/m/Y h:i") }}</td>
+						<td>
+							<a href="{{ path('event_unregister', {id: raidCharacter.raid.id})}}">Unregister</a>
+						</td>
+					</tr>
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+		</tbody>
+	</table>
 </div>
 {% endblock %}

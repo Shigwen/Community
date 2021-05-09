@@ -73,11 +73,12 @@ class RaidController extends AbstractController
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
-		if($raidCharacter->isWaitingConfirmation()) {
-			$raidCharacter->setStatus(RaidCharacter::ACCEPT);
-		} else {
-			$raidCharacter->setStatus(RaidCharacter::REFUSED);
+		$status = $request->query->get('status');
+		if (!in_array($status, [RaidCharacter::ACCEPT, RaidCharacter::REFUSED])) {
+			throw $this->createNotFoundException('Une erreur est survenue');
 		}
+
+		$raidCharacter->setStatus($status);
 		$this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
@@ -88,7 +89,7 @@ class RaidController extends AbstractController
      */
     public function delete(Raid $raid): Response
     {
-		if($this->getUser() && !$this->getUser()->hasRaid($raid)) {
+		if ($this->getUser() && !$this->getUser()->hasRaid($raid)) {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
