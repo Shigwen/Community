@@ -312,6 +312,16 @@ class Raid
         return $this->raidCharacters;
     }
 
+    public function getRaidCharacterFromUser(User $user): RaidCharacter
+	{
+		foreach ($this->raidCharacters as $raidCharacter) {
+			if ($raidCharacter->getUser() === $user) {
+				return $raidCharacter;
+			}
+		}
+		return null;
+	}
+
 	public function getCharacterFromUser(User $user): Character
 	{
 		foreach ($this->raidCharacters as $raidCharacter) {

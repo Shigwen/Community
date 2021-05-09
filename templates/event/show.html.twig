@@ -20,14 +20,16 @@
 	<p>Fin du raid : {{ raid.endAt|date("d/m/Y h:i") }}</p>
 	<p>Informations : {{ raid.information }}</p>
 
-	{% if form is not empty %}
-		<hr>
-		<h4> Register : </h4>
-		{{ form_start(form) }}
-			{{ form_widget(form) }}
+	<hr>
+	<h4> Register : </h4>
+	{{ form_start(form) }}
+		{{ form_widget(form) }}
+		{% if isEdit %}
+			<button type="submit">modify</button>
+		{% else %}
 			<button type="submit">register</button>
-		{{ form_end(form) }}
-	{% endif %}
+		{% endif %}
+	{{ form_end(form) }}
 
 	<hr>
 	<h4> Validate players : </h4>

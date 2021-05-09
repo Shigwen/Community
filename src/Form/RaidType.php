@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Raid;
+use App\Entity\RaidCharacter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,11 +41,10 @@ class RaidType extends AbstractType
             ->add('maxTank')
             ->add('minHeal')
             ->add('maxHeal')
-			->add('raidCharacters', CollectionType::class, [
-				'entry_type' => RaidCharacterType::class,
-				'entry_options' => [
-					'user' => $options['user']
-				],
+			->add('raidCharacter', RaidCharacterType::class, [
+				'user' => $options['user'],
+				'label' => false,
+				'mapped' => false,
 			])
             ->add('autoAccept')
 			->add('isPrivate')

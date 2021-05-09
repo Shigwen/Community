@@ -60,11 +60,7 @@
             <div> {{ form_row(form.maxHeal) }}</div>
             <div> {{ form_row(form.autoAccept) }}</div>
             <div> {{ form_row(form.isPrivate) }}</div>
-            {% for raidCharacter in form.raidCharacters %}
-                <div>
-                    {{ form_widget(raidCharacter) }}
-                </div>
-            {% endfor %}
+            <div> {{ form_row(form.raidCharacter) }}</div>
 
             <div> {{ form_row(form.save) }}</div>
 

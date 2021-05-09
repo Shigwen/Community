@@ -27,10 +27,20 @@ class RaidController extends AbstractController
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
+		if (!$raidCharacter = $raid->getRaidCharacterFromUser($this->getUser())) {
+			$raidCharacter = new RaidCharacter();
+			$raidCharacter
+				->setStatus(RaidCharacter::ACCEPT)
+				->setRaid($raid);
+			$this->getDoctrine()->getManager()->persist($raidCharacter);
+			$raid->addRaidCharacter($raidCharacter);
+		}
+
 		$form = $this->createForm(RaidType::class, $raid, [
 			'user' => $this->getUser(),
 			'isEdit' => true,
 		]);
+		$form->get('raidCharacter')->setData($raidCharacter);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
@@ -47,7 +57,7 @@ class RaidController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-			return $this->redirectToRoute('raidleader_events');
+			return $this->redirectToRoute('raidleader_raid_edit', ['id'=> $raid->getId()]);
 		}
 
         return $this->render('raid_leader/raid/edit.html.twig', [

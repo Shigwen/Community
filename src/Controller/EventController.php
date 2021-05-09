@@ -29,10 +29,12 @@ class EventController extends AbstractController
      */
     public function register(Request $request, Raid $raid): Response
     {
+		$isEdit = true;
 		if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
 			$this->getUser(),
 			$raid)
-			) {
+		) {
+			$isEdit = false;
 			$raidCharacter = new RaidCharacter();
 			$raidCharacter
 				->setRaid($raid)
@@ -54,6 +56,7 @@ class EventController extends AbstractController
             'raid' => $raid,
 			'user' => $this->getUser(),
 			'form' => $form->createView(),
+			'isEdit' => $isEdit,
         ]);
     }
 
