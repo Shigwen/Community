@@ -50,7 +50,8 @@
 						<td>{{ raidCharacter.userCharacter.information }}</td>
 						{% if is_raid_leader_character(user, raidCharacter.userCharacter, raidCharacter.raid) == false %}
 							<td>
-								<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
+								<a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
+								<a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
 							</td>
 						{% endif %}
 					</tr>
@@ -80,8 +81,10 @@
 						<td>{{ raidCharacter.role.name }}</td>
 						<td>{{ raidCharacter.userCharacter.information }}</td>
 						<td>
-							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
-							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
+							<a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
+							<a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
+							<a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+
 						</td>
 					</tr>
 				{% endif %}
@@ -103,14 +106,15 @@
 		</thead>
 		<tbody>
 			{% for raidCharacter in raid.raidCharacters %}
-				{% if raidCharacter.isRefused %}
+				{% if raidCharacter.isRefused and user.hasBlocked(raidCharacter.userCharacter.user) == false %}
 					<tr>
 						<td>{{ raidCharacter.userCharacter.name }}</td>
 						<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
 						<td>{{ raidCharacter.role.name }}</td>
 						<td>{{ raidCharacter.userCharacter.information }}</td>
 						<td>
-							<a href="{{ path('raidleader_raid_manage_participant', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
+							<a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
+							<a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
 						</td>
 					</tr>
 				{% endif %}

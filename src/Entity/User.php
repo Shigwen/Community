@@ -26,6 +26,11 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=100, unique=true)
+     */
+    private $name;
+
+    /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -84,11 +89,13 @@ class User implements UserInterface
     private $ips;
 
     /**
+     * List of users blocked by the raid leader
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="blockers")
      */
     private $blockeds;
 
     /**
+     * List of raid leader who blocked the user
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="blockeds")
      */
     private $blockers;
@@ -117,6 +124,18 @@ class User implements UserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -343,12 +362,20 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|self[]
-     */
     public function getBlockeds(): Collection
     {
         return $this->blockeds;
+    }
+
+    public function hasBlocked(self $blockedToSearch)
+    {
+        foreach ($this->blockeds as $blocked) {
+            if ($blocked === $blockedToSearch) {
+                return $blocked;
+            }
+        }
+
+        return null;
     }
 
     public function addBlocked(self $blocked): self
@@ -367,36 +394,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|self[]
-     */
-    public function getBlockers(): Collection
-    {
-        return $this->blockers;
-    }
-
-    public function addBlocker(self $blocker): self
-    {
-        if (!$this->blockers->contains($blocker)) {
-            $this->blockers[] = $blocker;
-            $blocker->addBlocked($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBlocker(self $blocker): self
-    {
-        if ($this->blockers->removeElement($blocker)) {
-            $blocker->removeBlocked($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Character[]
-     */
     public function getCharacters(): Collection
     {
         return $this->characters;

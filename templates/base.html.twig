@@ -26,6 +26,8 @@
 			{% if is_granted('ROLE_RAID_LEADER') %}
                 <a href="{{ path('raidleader_events') }}">Manage events</a>
 				-
+                <a href="{{ path('raidleader_manage_participant_ban_players') }}">List of ban players</a>
+				-
             {% endif %}
 
 			<a href="{{ path('logout') }}">Logout</a>
