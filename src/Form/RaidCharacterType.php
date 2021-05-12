@@ -23,6 +23,9 @@ class RaidCharacterType extends AbstractType
 						->orderBy('uc.name', 'ASC')
 						->setParameter('user', $options['user']);
 				},
+				'attr' => [
+					'class' => 'class-test',
+				]
 			])
             ->add('role');
     }

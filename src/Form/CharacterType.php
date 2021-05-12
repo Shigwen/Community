@@ -13,19 +13,26 @@ class CharacterType extends AbstractType
     {
         $builder
             ->add('name', null, [
-				'label' => 'Nom'
+				'label' => 'Nom',
+				'label_attr' => [
+					'id' => 're',
+					'class' => 'CUSTOM_LABEL_CLASS',
+				],
+				'attr' => [
+					'class' => 'coucou comment ça va',
+				]
 			])
             ->add('information', null, [
-				'label' => 'Informations'
+				'label' => 'Informations',
 			])
             ->add('characterClass', null, [
-				'label' => 'Classe'
+				'label' => 'Classe',
 			])
             ->add('server', null, [
-				'label' => 'Serveur'
+				'label' => 'Serveur',
 			])
             ->add('roles', null, [
-				'label' => 'Roles'
+				'label' => 'Roles',
 			]);
     }
 
