@@ -1,0 +1,94 @@
+@media (max-width: 992px) {
+  .nav-item {
+    border: none !important;
+    font-size: 1.5rem;
+  }
+}
+
+page-title {
+  position: absolute;
+  z-index: 2;
+  background-color: black;
+  -webkit-box-shadow: 0 0 50px 50px black;
+          box-shadow: 0 0 50px 50px black;
+}
+
+page-title span {
+  font-size: 2rem;
+}
+
+page-title h1 {
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  page-title {
+    -webkit-box-shadow: 0 0 20px 20px black;
+            box-shadow: 0 0 20px 20px black;
+  }
+  page-title span {
+    font-size: 1.7rem;
+  }
+  page-title h1 {
+    font-size: 2.3rem;
+  }
+}
+
+@media (max-width: 575px) {
+  page-title span {
+    font-size: 1.5rem;
+  }
+  page-title h1 {
+    font-size: 2rem;
+  }
+}
+
+ragnaros-animation img.container, ragnaros-animation video.container {
+  position: relative;
+  z-index: 1;
+  padding: 0;
+}
+
+ragnaros-animation img.container {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  ragnaros-animation video.container {
+    display: none;
+  }
+  ragnaros-animation img.container {
+    display: block;
+  }
+}
+
+.container {
+  padding: 15px 25px;
+}
+
+.col-padding {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+p {
+  font-size: 1.2rem;
+}
+
+.h4 {
+  margin-top: 20px;
+}
+
+.h2, .h3, .h4 {
+  margin-bottom: 25px;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input, select, div.form-check {
+  margin-bottom: 25px;
+}
+/*# sourceMappingURL=style.css.map */
