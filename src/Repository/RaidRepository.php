@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\Raid;
+use App\Entity\RaidCharacter;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -21,6 +22,10 @@ class RaidRepository extends ServiceEntityRepository
         parent::__construct($registry, Raid::class);
     }
 
+	/************************
+	 *      Raid Leader     *
+	 ************************/
+
     /**
      * @return Raid[]
      */
@@ -36,8 +41,7 @@ class RaidRepository extends ServiceEntityRepository
 			])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
 	/**
@@ -56,8 +60,7 @@ class RaidRepository extends ServiceEntityRepository
 			])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
 	/**
@@ -75,7 +78,77 @@ class RaidRepository extends ServiceEntityRepository
 			])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+	/************************
+	 *        Player        *
+	 ************************/
+
+	/**
+     * @return Raid[]
+     */
+    public function getPendingRaidsOfPlayer(User $player, $status)
+    {
+		$now = new DateTime();
+		return $this->createQueryBuilder('r')
+			->innerJoin('r.raidCharacters', 'rc')
+			->join('rc.userCharacter', 'uc')
+			->where('uc.user = :player')
+            ->andWhere('r.startAt > :now')
+			->andWhere('rc.status = :status')
+            ->setParameters([
+				'now'=> $now,
+				'player' => $player->getId(),
+				'status' => $status,
+			])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+	/**
+     * @return Raid[]
+     */
+    public function getInProgressRaidsOfPlayer(User $player, $status)
+    {
+		$now = new DateTime();
+		return $this->createQueryBuilder('r')
+			->innerJoin('r.raidCharacters', 'rc')
+			->join('rc.userCharacter', 'uc')
+			->where('uc.user = :player')
+			->andWhere('r.startAt > :now')
+			->andWhere('r.endAt < :now')
+			->andWhere('rc.status = :status')
+			->setParameters([
+				'now'=> $now,
+				'player' => $player->getId(),
+				'status' => $status,
+			])
+			->orderBy('r.startAt', 'ASC')
+			->getQuery()
+			->getResult();
+    }
+
+	/**
+     * @return Raid[]
+     */
+    public function getPastRaidsOfPlayer(User $player, $status)
+    {
+		$now = new DateTime();
+		return $this->createQueryBuilder('r')
+			->innerJoin('r.raidCharacters', 'rc')
+			->join('rc.userCharacter', 'uc')
+			->where('uc.user = :player')
+			->andWhere('r.endAt < :now')
+			->andWhere('rc.status = :status')
+			->setParameters([
+				'now'=> $now,
+				'player' => $player->getId(),
+				'status' => $status,
+			])
+			->orderBy('r.startAt', 'ASC')
+			->getQuery()
+			->getResult();
     }
 }
