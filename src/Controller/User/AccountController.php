@@ -21,7 +21,7 @@ class AccountController extends AbstractController
     {
 		$user = $this->getUser();
 
-        return $this->render('user/account/index.html.twig', [
+        return $this->render('user/profil_page.html.twig', [
             'user' => $user,
         ]);
     }
@@ -54,7 +54,7 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
-        return $this->render('user/account/edit.html.twig', [
+        return $this->render('user/edit_account.html.twig', [
             'user' => $user,
 			'form' => $form->createView(),
         ]);

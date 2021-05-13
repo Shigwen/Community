@@ -35,7 +35,7 @@ class CharacterController extends AbstractController
 			return $this->redirectToRoute('user_account');
 		}
 
-        return $this->render('user/character/action.html.twig', [
+        return $this->render('user/add_or_edit_character.html.twig', [
 			'form' => $form->createView(),
         ]);
     }
@@ -60,7 +60,7 @@ class CharacterController extends AbstractController
 			return $this->redirectToRoute('user_account');
 		}
 
-        return $this->render('user/character/action.html.twig', [
+        return $this->render('user/add_or_edit_character.html.twig', [
             'controller_name' => 'CharacterController edit',
 			'form' => $form->createView(),
         ]);

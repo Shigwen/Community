@@ -72,7 +72,7 @@ class EventController extends AbstractController
         	$this->getDoctrine()->getManager()->flush();
 		}
 
-        return $this->render('raid_leader/event/index.html.twig', [
+        return $this->render('raid_leader/event_list.html.twig', [
             'user' => $this->getUser(),
 			'nbrTemplate' => count($this->getUser()->getRaidTemplates()),
             'editTemplate' => $raidTemplate ? true: false,

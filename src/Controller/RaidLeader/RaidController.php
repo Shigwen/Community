@@ -58,7 +58,7 @@ class RaidController extends AbstractController
 			return $this->redirectToRoute('raidleader_raid_edit', ['id'=> $raid->getId()]);
 		}
 
-        return $this->render('raid_leader/raid/edit.html.twig', [
+        return $this->render('raid_leader/edit_raid.html.twig', [
             'form' => $form->createView(),
 			'raid' => $raid,
 			'user' => $this->getUser(),

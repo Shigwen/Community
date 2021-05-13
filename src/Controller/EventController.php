@@ -52,7 +52,7 @@ class EventController extends AbstractController
 			return $this->redirectToRoute('event_register', ['id' => $raid->getId()]);
 		}
 
-        return $this->render('event/show.html.twig', [
+        return $this->render('event/show_event.html.twig', [
             'raid' => $raid,
 			'user' => $this->getUser(),
 			'form' => $form->createView(),
