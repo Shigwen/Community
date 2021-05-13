@@ -49,7 +49,7 @@ class ManageParticipantController extends AbstractController
      */
     public function banPlayers(): Response
     {
-		return $this->render('raid_leader/manage_participant/ban_players.html.twig', [
+		return $this->render('raid_leader/ban_players.html.twig', [
             'user' => $this->getUser(),
         ]);
 	}
