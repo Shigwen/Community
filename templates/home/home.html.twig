@@ -1,25 +1,45 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{# <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1 class="text-success">Hello {{ controller_name }}!</h1>
-</div> #}
+{{ include('ragnaros.html.twig') }}
 
 <main class="container bg-dark">
 	<p>If you landed here, you probably already heard what this Community Project for World of Warcraft is about.
-		In case you didn't, visit <a href="./about-us.html">this page</a> , all the explanations are there. Otherwise, you can just sign up, sign in, and get started right now!
+		In case you didn't, visit <a href="#">this page</a> , all the explanations are there. Otherwise, you can just sign up, sign in, and get started right now!
 	</p>
 
 	<div class="row d-flex justify-content-around">
+		{% if error is defined and error %}
+			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+		{% endif %}
 
-		<div class="col-lg-5 col-md-10 col-margins p-0">
-			{{ include('security/login.html.twig') }}
-		</div>
+		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') == false %}
+			<div class="col-lg-5 col-md-10 col-margins p-0">
+				<form class="p-4 border border-primary rounded" method="post" action="{{ path('login') }}">
+					<fieldset>
+						<legend class="text-center">Sign in</legend>
+
+						<label for="inputEmail">Email address</label>
+						<input type="email" class="form-control" aria-describedby="emailHelp" value="{% if last_username is defined %}{{ last_username }}{% endif %}" name="email" id="inputEmail" required autofocus>
+
+						<label for="inputPassword">Password</label>
+						<input type="password" name="password" id="inputPassword" class="form-control" required>
+					</fieldset>
+
+					<div class="checkbox mb-3">
+						<label>
+							<input type="checkbox" value="remember-me"> Remember me
+						</label>
+					</div>
+
+					<input type="hidden" name="_csrf_token"value="{{ csrf_token('authenticate') }}">
+
+					<div class="d-flex justify-content-center mt-4">
+						<button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
+					</div>
+				</form>
+			</div>
+		{% endif %}
 
 		<form class="col-lg-5 col-md-10 p-4 border border-primary rounded col-margins">
 			<fieldset>
@@ -50,7 +70,5 @@
 		</form>
 	</div>
 </main>
-
-
 
 {% endblock %}

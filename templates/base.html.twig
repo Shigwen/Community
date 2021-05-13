@@ -22,33 +22,8 @@
 <body>
 	<header>
 		{{ include('navbar.html.twig') }}
-		{{ include('ragnaros.html.twig') }}
 	</header>
-	{# <menu>
-		<a href="{{ path('home') }}">Home</a>
-		-
-		<a href="{{ path('events') }}">Events list</a>
-
-		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-			-
-			<a href="{{ path('user_account') }}">My account</a>
-			-
-			{% if is_granted('ROLE_RAID_LEADER') %}
-				<a href="{{ path('raidleader_events') }}">Manage events</a>
-				-
-				<a href="{{ path('raidleader_manage_participant_ban_players') }}">List of ban players</a>
-				-
-			{% endif %}
-
-			<a href="{{ path('logout') }}">Logout</a>
-
-		{% else %}
-			<a href="{{ path('login') }}">Log in</a>
-		{% endif %}
-	</menu> #}
 
 	{% block body %}{% endblock %}
-
-
 </body>
 </html>
