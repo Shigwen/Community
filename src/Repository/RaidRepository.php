@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\Raid;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Raid|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,61 @@ class RaidRepository extends ServiceEntityRepository
         parent::__construct($registry, Raid::class);
     }
 
-    // /**
-    //  * @return Raid[] Returns an array of Raid objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Raid[]
+     */
+    public function getPendingRaidsOfRaidLeader(User $raidLeader)
     {
+		$now = new DateTime();
         return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+            ->where('r.startAt > :now')
+			->andWhere('r.user = :raidLeader')
+            ->setParameters([
+				'now'=> $now,
+				'user' => $raidLeader,
+			])
+            ->orderBy('r.startAt', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Raid
+	/**
+     * @return Raid[]
+     */
+    public function getInProgressRaidsOfRaidLeader(User $raidLeader)
     {
+		$now = new DateTime();
         return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
+            ->where('r.startAt > :now')
+            ->andWhere('r.endAt < :now')
+			->andWhere('r.user = :raidLeader')
+            ->setParameters([
+				'now'=> $now,
+				'user' => $raidLeader,
+			])
+            ->orderBy('r.startAt', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
+
+	/**
+     * @return Raid[]
+     */
+    public function getPastRaidsOfRaidLeader(User $raidLeader)
+    {
+		$now = new DateTime();
+        return $this->createQueryBuilder('r')
+            ->where('r.endAt < :now')
+			->andWhere('r.user = :raidLeader')
+            ->setParameters([
+				'now'=> $now,
+				'user' => $raidLeader,
+			])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

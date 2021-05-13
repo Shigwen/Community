@@ -82,7 +82,7 @@
         {{ form_end(form) }}
 
         <hr>
-        <span>Raids </span>
+        <span>Raids à venirs</span>
         <table>
             <thead>
                 <tr>
@@ -94,20 +94,36 @@
                 </tr>
             </thead>
             <tbody>
-                {% for raid in user.raids %}
+                {% for raid in pendingRaids %}
                     <tr>
                         <td>{{ raid.name }}</td>
                         <td>{{ raid.raidType }}</td>
                         <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
                         <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
                         <td>
+							<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
                             <a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
                             <a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
                         </td>
                     </tr>
                 {% endfor %}
+
+				{% for raid in inProgressRaids %}
+                    <tr>
+                        <td>{{ raid.name }}</td>
+                        <td>{{ raid.raidType }}</td>
+                        <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+                        <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+                        <td>
+							<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
+						</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
+
+		<a href="{{ path('raidleader_raid_archived')}}">Show finished raids</a>
+
     </div>
 </div>
 {% endblock %}

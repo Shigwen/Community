@@ -9,13 +9,10 @@
 	</p>
 
 	<div class="row d-flex justify-content-around">
-		{% if error is defined and error %}
-			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-		{% endif %}
 
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') == false %}
 			<div class="col-lg-5 col-md-10 col-margins p-0">
-				<form class="p-4 border border-primary rounded" method="post" action="{{ path('login') }}">
+				<form class="p-4 border border-primary rounded" method="post" action="{{ path('home') }}">
 					<fieldset>
 						<legend class="text-center">Sign in</legend>
 
@@ -25,6 +22,9 @@
 						<label for="inputPassword">Password</label>
 						<input type="password" name="password" id="inputPassword" class="form-control" required>
 					</fieldset>
+					{% if error is defined and error %}
+						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					{% endif %}
 
 					<div class="checkbox mb-3">
 						<label>

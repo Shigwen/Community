@@ -2,10 +2,12 @@
 
 namespace App\Controller\RaidLeader;
 
+use App\Entity\Character;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
 use App\Entity\RaidTemplate;
+use App\Entity\Role;
 use App\Service\Raid\Identifier;
 use App\Service\Template\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +37,7 @@ class EventController extends AbstractController
 
 		$raid->addRaidCharacter($raidCharacter);
 
-        if($raidTemplate = $this->getDoctrine()->getManager()->getRepository(RaidTemplate::class)->findOneBy([
+        if ($raidTemplate = $this->getDoctrine()->getRepository(RaidTemplate::class)->findOneBy([
             'id'=> $request->query->get('id'),
         ])) {
             if(!$this->getUser()->hasRaidTemplate($raidTemplate)) {
@@ -61,12 +63,24 @@ class EventController extends AbstractController
 		}
 
 		if ($form->get('save')->isClicked() && $form->isValid()) {
-			if(!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
+			$datas = $request->request->get('raid');
+			$character = $this->getDoctrine()->getRepository(Character::class)->findOneBy([
+				'id' => $datas['raidCharacter']['userCharacter'],
+				'user' => $this->getUser(),
+			]);
+			$role = $this->getDoctrine()->getRepository(Role::class)->findOneBy([
+				'id' => $datas['raidCharacter']['role'],
+			]);
+
+			if(!$character || !$role) {
 				throw $this->createNotFoundException('Une erreur est survenue');
 			}
 
 			$raid = $form->getData();
-			$raid->setServer($raidCharacter->getCharacterServer());
+			$raid->setServer($character->getServer());
+			$raidCharacter
+				->setUserCharacter($character)
+				->setRole($role);
 
             $this->getDoctrine()->getManager()->persist($raid);
         	$this->getDoctrine()->getManager()->flush();
@@ -74,6 +88,8 @@ class EventController extends AbstractController
 
         return $this->render('raid_leader/event_list.html.twig', [
             'user' => $this->getUser(),
+			'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfRaidLeader($this->getUser()),
+			'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfRaidLeader($this->getUser()),
 			'nbrTemplate' => count($this->getUser()->getRaidTemplates()),
             'editTemplate' => $raidTemplate ? true: false,
             'form' => $form->createView(),
@@ -85,7 +101,7 @@ class EventController extends AbstractController
      */
     public function templateDelete(RaidTemplate $raidTemplate): Response
     {
-		if($this->getUser() && !$this->getUser()->hasRaidTemplate($raidTemplate)) {
+		if ($this->getUser() && !$this->getUser()->hasRaidTemplate($raidTemplate)) {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 

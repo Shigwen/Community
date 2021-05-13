@@ -25,7 +25,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'login';
+    public const LOGIN_ROUTE = 'home';
 
     private $entityManager;
     private $urlGenerator;
