@@ -39,35 +39,35 @@
 					</div>
 				</form>
 			</div>
+
+			<form class="col-lg-5 col-md-10 p-4 border border-primary rounded col-margins">
+				<fieldset>
+					<legend class="text-center">Sign up</legend>
+
+					<label for="sign-up_nickname">Nickname</label>
+					<input type="text" class="form-control mb-1" id="sign-up_nickname" placeholder="ex: Diana384" required>
+
+					<small id="nicknameHelp" class="form-text text-muted mb-4">Preferably, your main character's name and numbers.</small>
+
+					<label for="sign-up_email">Email address</label>
+					<input type="email" class="form-control mb-1" id="sign-up_email" aria-describedby="emailHelp" required>
+
+					<small id="emailHelp" class="form-text text-muted mb-4">We'll never share your email with anyone else.</small>
+
+					<label for="sign-up_inputPassword">Password</label>
+					<input type="password" class="form-control mb-1" id="sign-up_inputPassword" required>
+
+					<small id="passwordHelp" class="form-text text-muted mb-4">Make it stronk.</small>
+
+					<label for="sign-up_inputPasswordConfirmation">Confirm Password</label>
+					<input type="password" class="form-control" id="sign-up_inputPasswordConfirmation" required>
+
+					<div class="d-flex justify-content-center mt-4">
+						<button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
+					</div>
+				</fieldset>
+			</form>
 		{% endif %}
-
-		<form class="col-lg-5 col-md-10 p-4 border border-primary rounded col-margins">
-			<fieldset>
-				<legend class="text-center">Sign up</legend>
-
-				<label for="sign-up_nickname">Nickname</label>
-				<input type="text" class="form-control mb-1" id="sign-up_nickname" placeholder="ex: Diana384" required>
-
-				<small id="nicknameHelp" class="form-text text-muted mb-4">Preferably, your main character's name and numbers.</small>
-
-				<label for="sign-up_email">Email address</label>
-				<input type="email" class="form-control mb-1" id="sign-up_email" aria-describedby="emailHelp" required>
-
-				<small id="emailHelp" class="form-text text-muted mb-4">We'll never share your email with anyone else.</small>
-
-				<label for="sign-up_inputPassword">Password</label>
-				<input type="password" class="form-control mb-1" id="sign-up_inputPassword" required>
-
-				<small id="passwordHelp" class="form-text text-muted mb-4">Make it stronk.</small>
-
-				<label for="sign-up_inputPasswordConfirmation">Confirm Password</label>
-				<input type="password" class="form-control" id="sign-up_inputPasswordConfirmation" required>
-
-				<div class="d-flex justify-content-center mt-4">
-					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
-				</div>
-			</fieldset>
-		</form>
 	</div>
 </main>
 
