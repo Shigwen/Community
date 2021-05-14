@@ -28,7 +28,7 @@
 
 			{% if is_granted('ROLE_RAID_LEADER') %}
 
-				<li class="nav-item border border-primary {% if app.request.attributes.get('raidleader_events') == '_list' %}active{% endif %}">
+				<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'raidleader_events' %}active{% endif %}">
 					<a class="nav-link" href="{{ path('raidleader_events') }}">RL HQ</a>
 				</li>
 

@@ -5,6 +5,35 @@
   }
 }
 
+.container {
+  padding: 15px 25px;
+}
+
+.col-margins {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+p {
+  font-size: 1.2rem;
+}
+
+.h4 {
+  margin-top: 20px;
+}
+
+.h2, .h3, .h4 {
+  margin-bottom: 25px;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input, select, div.form-check {
+  margin-bottom: 25px;
+}
+
 page-title {
   position: absolute;
   z-index: 2;
@@ -61,34 +90,5 @@ ragnaros-animation img.container {
   ragnaros-animation img.container {
     display: block;
   }
-}
-
-.container {
-  padding: 15px 25px;
-}
-
-.col-padding {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-
-p {
-  font-size: 1.2rem;
-}
-
-.h4 {
-  margin-top: 20px;
-}
-
-.h2, .h3, .h4 {
-  margin-bottom: 25px;
-}
-
-label {
-  margin-bottom: 5px;
-}
-
-input, select, div.form-check {
-  margin-bottom: 25px;
 }
 /*# sourceMappingURL=style.css.map */

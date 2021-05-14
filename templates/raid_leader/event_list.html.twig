@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello EventController!{% endblock %}
-
 {% block body %}
+<!--
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
@@ -48,18 +47,18 @@
         <a href="{{ path('raidleader_events')}}">Reset Form</a>
 
         {{ form_start(form) }}
-            <div> {{ form_row(form.name) }}</div>
-            <div> {{ form_row(form.raidType) }}</div>
-            <div> {{ form_row(form.expectedAttendee) }}</div>
-            <div> {{ form_row(form.startAt) }}</div>
-            <div> {{ form_row(form.endAt) }}</div>
-            <div> {{ form_row(form.information) }}</div>
-            <div> {{ form_row(form.minTank) }}</div>
-            <div> {{ form_row(form.maxTank) }}</div>
-            <div> {{ form_row(form.minHeal) }}</div>
-            <div> {{ form_row(form.maxHeal) }}</div>
-            <div> {{ form_row(form.autoAccept) }}</div>
-            <div> {{ form_row(form.isPrivate) }}</div>
+            {{ form_row(form.name) }}
+            {{ form_row(form.raidType) }}
+            {{ form_row(form.expectedAttendee) }}
+            {{ form_row(form.startAt) }}
+            {{ form_row(form.endAt) }}
+            {{ form_row(form.information) }}
+            {{ form_row(form.minTank) }}
+            {{ form_row(form.maxTank) }}
+            {{ form_row(form.minHeal) }}
+            {{ form_row(form.maxHeal) }}
+            {{ form_row(form.autoAccept) }}
+            {{ form_row(form.isPrivate) }}
 			{% for row in form.raidCharacter %}
 				{{ form_label(row) }}
 				{{ form_widget(row) }}
@@ -109,5 +108,424 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> -->
+
+<!-- ...;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; -->
+
+
+<main class="container bg-dark">
+
+	{{ include('tbc_banner.html.twig') }}
+	<div class="row d-flex justify-content-around">
+
+		<div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+			<details>
+				<summary class="h5 text-success">
+						Welcome to your own personal HQ, dear Raid Leader !
+						Click here to learn more about your Raid Leader privileges.
+				</summary>
+				<p>
+					<br>
+					You can plan the invasion of The Outland from here.
+					For now, this page will mainly be used to create raid templates (so you don't have to input all the data every time),
+					create and manage raid events, but we'll try to add more cool stuff over time.
+					<br><br>
+					Also, in case you meet players in game that you did not enjoy playing with,
+					you can add them to the list of people you want to prevent from attending your raids.
+					They will be forwarded a small and polite message, when trying to join one of your raids,
+					saying that they do not correspond to the type of players you are looking for.
+					<br><br>
+					I'd also like to add that you do not have to justify yourself. You might just decide to add someone to this
+					list simply because you don't like him. This project is all about being able to play with people we enjoy playing with, to begin with.
+					<br><br>
+					I am insisting though on the fact that you have to remain polite and show a minimum of respect to everyone, even people you dislike,
+					or you might end up losing your Raid Leader privileges on this web app.
+					Arguing once with someone who got on your nerves when you were tired is something.
+					Being homophobic is another thing though (among other things that won't be tolerated).
+					Simply arguing will be tolerated, we're human beings, we can get it. Second one might get you banned from this web app entirely.
+				</p>
+			</details>
+		</div>
+	</div>
+
+	<div class="row d-flex justify-content-around">
+
+		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+			<h2 class="text-center h3">Raid Template List (max. 5)</h2>
+			<p class="text-center">Actions : Load (also allows you to modify it), and Delete.</p>
+			<table class="table table-striped table-bordered table-hover table-dark">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Date</th>
+						<th scope="col">RL as</th>
+						<th scope="col" class="d-none d-md-table-cell">Role</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+
+				<tbody class="text-center ">
+					<tr>
+						<td>Saturday Night Fever</td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td><span class="text-success">Travolta</span></td>
+						<td class="d-none d-md-table-cell">DPS</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+					<tr>
+						<td>Karazhan Evening Madness </td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td><span class="text-success">MyLittlePony</span></td>
+						<td class="d-none d-md-table-cell">Tank, DPS</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+					<tr>
+						<td>I hate fridays</td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td><span class="text-success">ILoveWeekends</span></td>
+						<td class="d-none d-md-table-cell">Tank, Heal, DPS</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+					<tr>
+						<td>We have shamans too now !</td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td><span class="text-success">AllianceLover</span></td>
+						<td class="d-none d-md-table-cell">Heal</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+				</tbody>
+			</table>
+		</div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+	</div class="row d-flex justify-content-around">
+
+	<div class="row d-flex justify-content-around">
+
+		<div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+			<details>
+				<summary class="h5 text-success">
+						Click here if you want to learn more about the Raid Template system !
+				</summary>
+				<p>
+					<br>
+					The Raid Template List above, as its name implies, will contain all of your saved raid templates.
+					By default, it only contains a standard Wednesday Karazhan raid template that is pre-filled with the following data :
+					<br><br>
+					No character saved as raid-leader. Raid type is : "10".
+					<br>
+					Minimum and maximum of two tanks. Minimum of 2 healers and maximum of 3 healers.
+					<br>
+					Default day of the week is set to wednesday, beginning at 20h, server time.
+					<br><br>
+					It will also contain a basic example of Raid Leader Notes that you can use for a basic Karazhan pug raid.
+					<br><br>
+					You can load it by clicking the Edit/Load button next to it in the table above.
+					<br><br>
+					I encourage all raid leaders to create their own custom templates for all the raids they want to regularly manage,
+					 for obvious reasons.
+				</p>
+			</details>
+		</div>
+	</div>
+
+	<div class="row d-flex justify-content-around">
+		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+			<form>
+				<fieldset class="form-group">
+					<legend class="text-center h3 mb-5">Create An Event (max. 5):</legend>
+
+					<div class="row d-flex justify-content-around">
+						<div class="col-lg-5 col-md-11 text-center">
+							<label for="exampleInputEmail1"><span class="h5">Name</span></label>
+							<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+						</div>
+
+						<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
+
+							<span class="h5">Raid type :</span>
+
+							<div class="btn-group btn-group-toggle" data-toggle="buttons">
+								<label class="btn btn-primary">
+									10
+									<input type="radio" name="raid-type" id="raid-type_10" autocomplete="off">
+								</label>
+								<label class="btn btn-primary active">
+									25
+									<input type="radio" name="raid-type" id="raid-type_25" autocomplete="off" checked="">
+								</label>
+								<label class="btn btn-primary">
+									40
+									<input type="radio" name="raid-type" id="raid-type_40" autocomplete="off">
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="row d-flex justify-content-around d-flex align-items-center">
+						<div class="col-lg-5 col-md-11 text-center">
+							<label for="exampleInputEmail1"><span class="h5">RL as</span></label>
+							<select class="custom-select">
+								<option selected>Choose a character</option>
+								<option value="1">Travolta</option>
+								<option value="2">MyLittlePony</option>
+								<option value="3">ILoveWeekends</option>
+								<option value="4">AllianceLover</option>
+							</select>
+						</div>
+
+						<div class="form-check col-lg-5 col-md-11 text-center">
+							<label class="h5" for="">
+									Roles (still important even as RL, for the app)
+							</label>
+
+							<div class="form-row justify-content-around mt-1">
+								<div>
+									<input class="form-check-input" type="checkbox" name="exampleCheckbox" id="exampleCheckboxs1" value="option1" checked>
+									<label class="form-check-label" for="exampleCheckboxs1">
+										Tank
+									</label>
+								</div>
+
+								<div>
+									<input class="form-check-input" type="checkbox" name="exampleCheckboxs" id="exampleCheckboxs2" value="option2">
+									<label class="form-check-label" for="exampleCheckboxs2">
+										Heal
+									</label>
+								</div>
+
+								<div>
+									<input class="form-check-input" type="checkbox" name="exampleCheckboxs" id="exampleCheckboxs3" value="option3">
+									<label class="form-check-label" for="exampleCheckboxs3">
+										DPS
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row d-flex justify-content-around">
+						<h3 class="text-center mt-md-4 h4">Choose date around here</h3>
+					</div>
+
+					<div class="row d-flex justify-content-around p-2 p-md-4 pl-md-5 pr-md-5 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
+						<details class="mb-4">
+							<summary class="h5 text-success">
+									Click here if you want to know how to use these inputs properly.
+							</summary>
+
+							<p class="mb-5">
+								<br>
+								While everything is quite self-explanatory in its gist, you might want to know exactly what it does, and it's perfectly understandable.
+								<br><br>
+								The amount of raiders you're looking for tells the app (and the users) how many people you're looking for.
+								Do not think that this number will always be "24" for a 25-men raid (you + 24 raiders) because it's not the case.
+								<br><br>
+								Let's say you have 20 guildies max level, and you need 5 extra raiders for your 25-men raid.
+								Then you can tell everyone you're looking for 5 extra raiders only (and maybe this number includes 2 extra healers ?).
+								<br><br>
+								The minimum amount of tanks and healers you're looking for is included in the total number of raiders you're loooking for.
+								It helps the app display raids to the right people. For exemple, as a user, if the character you're looking a raid for can heal,
+								raids looking for a healer will be listed at the top of the list in the calendar.
+								This is to ensure one raid doesn't end up with more healers than it should while another lacks a healer to be good to go.
+								<br><br>
+								The maximum number of healers or tanks is here to make sure you don't end up with 4 tanks in your Karazhan group if you only want 2 (for example).
+								<br><br>
+								The "auto-accept" checkbox, if checked, tells the app and the users that you'll accept anyone that want to attend your raids, and you don't want to
+								spend time confirming them manually. If you need a healer, and a healer subscribes to your raid, his subscription is automatically confirmed.
+								If you want to spend time talking to your subscribers to get to know them,
+								maybe verify their gear or their skills by running a dungeon with them before manually confirming them (or not) to your raids,
+								it will obviously be better to leave it unchecked.
+								<br><br>
+								Setting your raid to "private" simply means it will not be listed in the calendar, and you will have to send a code to your raiders.
+								It can be a good idea to use this for cross-guild raids, where you still don't want any pick-up.
+								In thise scenario, you might want to also check "auto-accept".
+								<br><br>
+								That's it for now, but we'll add more features over time if need be, depending on what people ask of us.
+							</p>
+						</details>
+
+						<div class="form-row justify-content-between">
+							<label for="" class="col-9 col-form-label">
+								<span class="h5">Amount of raiders you're looking for</span>
+							</label>
+							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+						</div>
+
+						<div class="form-row justify-content-between">
+							<label for="" class="col-9 col-form-label">
+								<span class="h5">Min. number of Tanks (default : 1)</span>
+							</label>
+							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+						</div>
+
+						<div class="form-row justify-content-between">
+							<label for="" class="col-9 col-form-label">
+								<span class="h5">Max. number of Tanks</span>
+							</label>
+							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+						</div>
+
+						<div class="form-row justify-content-between">
+							<label for="" class="col-9 col-form-label">
+								<span class="h5">Min. number of Healers (default : 1)</span>
+							</label>
+							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+						</div>
+
+						<div class="form-row justify-content-between">
+							<label for="" class="col-9 col-form-label">
+								<span class="h5">Max. number of Healers</span>
+							</label>
+							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+						</div>
+
+						<div class="form-row justify-content-around mb-4">
+							<div>
+								<input class="form-check-input" type="checkbox" name="exampleCheckbox" id="exampleCheckboxs1" value="option1" checked>
+								<label class="form-check-label h5" for="exampleCheckboxs1">
+									Auto-accept
+								</label>
+							</div>
+
+							<div>
+								<input class="form-check-input" type="checkbox" name="exampleCheckboxs" id="exampleCheckboxs2" value="option2">
+								<label class="form-check-label h5" for="exampleCheckboxs2">
+									Private raid
+								</label>
+							</div>
+						</div>
+
+						<div class="form-row justify-content-around">
+
+
+
+						</div>
+
+						<p class="text-success mb-1">These informations are important for the matchmaking, please do not neglect them.</p>
+					</div>
+					<div class="row d-flex justify-content-around mb-3">
+						<div class="col-12 col-md-11">
+							<div class="form-group">
+								<label for="exampleFormControlTextarea1">
+									<div class="mb-2 text-center h5">
+										Raid Leader notes
+									</div>
+									<div class="mb-2">
+										It must contain anything relevant you'd like to show to your raiders.
+										May it be mandatory add-ons, loot rules, raid leading style, objectives,
+										and so on. It is pre-filled in order to show you what's mainly supposed to be in it,
+										but feel free to add or remove some parts.
+									</div>
+								</label>
+
+								<textarea class="form-control" id="exampleFormControlTextarea1" rows="12">
+Raid leading style and goals:
+
+My goal is for everyone to enjoy discovering the raid at its own pace. I will take a few minutes before every boss to explain the strategy and make sure everyone understands what has to be done.
+OR
+I'll try to gather as many good players as I can so we can speed run this with full mats ! High-parsing players will most likely have more priority in this raid than other lower geared characters.
+
+Loot rules :
+
+Reserved > Main-spec > Main-spec but already got an item > Off-spec.
+OR
+We will be using EPGP / Loot council / DKP / etc.
+
+Mandatory add-ons :
+
+DBM, Angry Assignments, and so on...
+
+Anything else you might think is important to mention :
+
+Strategies will never be debated during the raid, no matter how much one might think he knows better.
+								</textarea>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+
+				<div class="col-12 mt-4 d-flex justify-content-around">
+					<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">Save as template</button>
+
+					<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" >Save your template</h5>
+
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<label for="exampleInputEmail1">Give it a name</label>
+									<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="ex: Taverns of Time - Wednesday Pug - Karazhan">
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-lg btn-primary">Save template</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row d-flex justify-content-around">
+
+		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+			<h2 class="text-center">Raids you scheduled</h2>
+			<table class="table table-striped table-bordered table-hover table-dark">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">Event</th>
+						<th scope="col">Date</th>
+						<th scope="col">As</th>
+						<th scope="col" class="d-none d-md-table-cell">Role</th>
+						<th scope="col" class="d-none d-md-table-cell">Notes</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+
+				<tbody class="text-center ">
+					<tr>
+						<td>Saturday Night Fever <br>by <span class="text-success">Travolta</span></td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td>Artemis</td>
+						<td class="d-none d-md-table-cell">DPS</td>
+						<td class="d-none d-md-table-cell">!</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+					<tr>
+						<td>Karazhan Evening Madness <br>by <span class="text-success">MyLittlePony</span></td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td>Diana</td>
+						<td class="d-none d-md-table-cell">Tank, DPS</td>
+						<td class="d-none d-md-table-cell">!</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+					<tr>
+						<td>I hate fridays <br>by <span class="text-success">ILoveWeekends</span></td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td>Xanjori</td>
+						<td class="d-none d-md-table-cell">Tank, Heal, DPS</td>
+						<td class="d-none d-md-table-cell">!</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+					<tr>
+						<td>We have shamans too now ! <br>by <span class="text-success">AllianceLover</span></td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td>Alexandross</td>
+						<td class="d-none d-md-table-cell">Heal</td>
+						<td class="d-none d-md-table-cell">!</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</main>
+
 {% endblock %}

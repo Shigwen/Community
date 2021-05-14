@@ -3,23 +3,29 @@
 namespace App\Form;
 
 use App\Entity\Raid;
-use App\Entity\RaidCharacter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class RaidType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
+            ->add('name', null, [
+				'label' => 'Nom',
+				'label_attr' => [
+					'id' => '',
+					'class' => '',
+				],
+				'attr' => [
+					'class' => '',
+				]
+			])
             ->add('raidType', ChoiceType::class, [
 				'choices'  => [
 					'10' => 10,
@@ -29,7 +35,7 @@ class RaidType extends AbstractType
 				'expanded' => true,
 				'multiple' => false,
 			])
-            ->add('expectedAttendee')
+
             ->add('startAt', DateTimeType::class, [
 				'widget' => 'single_text'
 			])
@@ -37,6 +43,7 @@ class RaidType extends AbstractType
 				'widget' => 'single_text'
 			])
             ->add('information')
+			->add('expectedAttendee')
             ->add('minTank')
             ->add('maxTank')
             ->add('minHeal')
