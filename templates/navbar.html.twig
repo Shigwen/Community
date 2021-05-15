@@ -38,6 +38,15 @@
 
 			{% endif %}
 
+			{% if is_granted('ROLE_ADMIN') %}
+
+				<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'admin_users' %}active{% endif %}">
+					<a class="nav-link" href="{{ path('admin_users') }}">Manage users</a>
+				</li>
+
+			{% endif %}
+
+
 			<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'about_us' %}active{% endif %}">
 				<a class="nav-link" href="{{ path('about_us') }}">About us</a>
 			</li>
