@@ -16,9 +16,17 @@ class ManageUserController extends AbstractController
      */
     public function users(): Response
     {
-        return $this->render('admin/user_list.html.twig', [
+		$banned = ($this->getUser()->getStrRole() === User::ROLE_OWNER) ?
+			$this->getDoctrine()->getRepository(User::class)->findBy(['status' => User::STATUS_BAN]) : [];
+
+		$admins = ($this->getUser()->getStrRole() === User::ROLE_OWNER) ?
+			$this->getDoctrine()->getRepository(User::class)->findByRole(User::ROLE_ADMIN) : [];
+
+        return $this->render('admin_owner/user_list.html.twig', [
             'users' => $this->getDoctrine()->getRepository(User::class)->findByRole(User::ROLE_USER),
             'raidLeaders' => $this->getDoctrine()->getRepository(User::class)->findByRole(User::ROLE_RAID_LEADER),
+			'admins' => $admins,
+			'banned' => $banned,
         ]);
     }
 
