@@ -32,12 +32,9 @@ class CharacterController extends AbstractController
             $this->getDoctrine()->getManager()->persist($character);
             $this->getDoctrine()->getManager()->flush();
 
-			return $this->redirectToRoute('user_account');
 		}
 
-        return $this->render('user/add_or_edit_character.html.twig', [
-			'form' => $form->createView(),
-        ]);
+		return $this->redirectToRoute('user_account');
     }
 
 	/**
@@ -56,14 +53,9 @@ class CharacterController extends AbstractController
 
 			$character->setUpdatedAt(new DateTime());
             $this->getDoctrine()->getManager()->flush();
-
-			return $this->redirectToRoute('user_account');
 		}
 
-        return $this->render('user/add_or_edit_character.html.twig', [
-            'controller_name' => 'CharacterController edit',
-			'form' => $form->createView(),
-        ]);
+		return $this->redirectToRoute('user_account');
     }
 
 	/**

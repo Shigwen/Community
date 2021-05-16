@@ -18,6 +18,15 @@ class User implements UserInterface
 	const DELAY_AFTER_MAX_ATTEMPT = 5;
 	const NUMBER_MAX_OF_ATTEMPT = 5;
 
+	const STATUS_WAITING_EMAIL_CONFIRMATION = 0;
+	const STATUS_EMAIL_CONFIRMED = 1;
+	const STATUS_BAN = 2;
+
+	const ROLE_USER = 'ROLE_USER';
+	const ROLE_RAID_LEADER = 'ROLE_RAID_LEADER';
+	const ROLE_ADMIN = 'ROLE_ADMIN';
+	const ROLE_OWNER = 'ROLE_OWNER';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -170,6 +179,38 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+	/**
+     * @see UserInterface
+     */
+    public function getStrRole(): string
+    {
+        return $this->roles[0];
+    }
+
+	/**
+	 * Get the verbose name of user's first role
+     * @return string
+     */
+    public function getVerboseStrRole(): string
+    {
+		switch($this->roles[0]) {
+			case 'ROLE_USER':
+				$role = 'User';
+				break;
+			case 'ROLE_RAID_LEADER':
+				$role = 'Raid Leader';
+				break;
+			case 'ROLE_ADMIN':
+				$role = 'Administrator';
+				break;
+			case 'ROLE_OWNER':
+				$role = 'Owner';
+				break;
+		}
+
+        return  $role;
+    }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -185,7 +226,7 @@ class User implements UserInterface
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword($password): self
     {
         $this->password = $password;
 

@@ -17,6 +17,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class RaidController extends AbstractController
 {
 	/**
+     * @Route("/archived", name="archived")
+     */
+    public function archived(): Response
+    {
+		return $this->render('raid_leader/archived_raid_list.html.twig', [
+			'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
+		]);
+	}
+
+	/**
+     * @Route("/{id}", name="show")
+     */
+    public function show(Raid $raid): Response
+    {
+		return $this->render('raid_leader/show_raid.html.twig', [
+			'raid' => $raid,
+		]);
+	}
+
+	/**
      * @Route("/{id}/edit", name="edit")
      */
     public function edit(Request $request, Raid $raid): Response

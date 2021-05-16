@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Calendar{% endblock %}
+{% block title %}Archived raids{% endblock %}
 
 {% block body %}
 <style>
@@ -9,7 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-	<h1>Raid list</h1>
+    <h1>Archived raids</h1>
 	<table>
 		<thead>
 			<tr>
@@ -28,11 +28,12 @@
 					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
 					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
 					<td>
-						<a href="{{ path('event_register', {id: raid.id})}}">Show</a>
+						<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
 					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+    </div>
 </div>
 {% endblock %}

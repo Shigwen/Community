@@ -2,11 +2,15 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Raid;
 use App\Form\UserType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Character;
+use App\Form\CharacterType;
+use App\Entity\RaidCharacter;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -17,12 +21,36 @@ class AccountController extends AbstractController
     /**
      * @Route("/my-account", name="account")
      */
-    public function index(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function index(Request $request): Response
     {
 		$user = $this->getUser();
 
+		$formUser = $this->createForm(UserType::class, $user, [
+			'action' => $this->generateUrl('user_account_edit'),
+		]);
+
+		$idCharacter = $request->query->get('id');
+		if (!$character = $this->getDoctrine()->getRepository(Character::class)->findOneBy(['id' => $idCharacter])) {
+			$character = new Character();
+			$character->setUser($this->getUser());
+		}
+
+		if($idCharacter && !$this->getUser()->hasCharacter($character)) {
+			throw $this->createNotFoundException('Une erreur est survenue');
+		}
+
+		$formCharacter = $this->createForm(CharacterType::class, $character, [
+			'isEdit' => $idCharacter ? true : false,
+			'action' => $idCharacter ? $this->generateUrl('user_character_edit', ['id' => $character->getId()]) : $this->generateUrl('user_character_add'),
+		]);
+
         return $this->render('user/profil_page.html.twig', [
+			'formUser' => $formUser->createView(),
+			'formCharacter' => $formCharacter->createView(),
             'user' => $user,
+			'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+			'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+			'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
         ]);
     }
 
@@ -51,12 +79,8 @@ class AccountController extends AbstractController
             $user->setUpdatedAt(new \DateTime());
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_account');
         }
 
-        return $this->render('user/edit_account.html.twig', [
-            'user' => $user,
-			'form' => $form->createView(),
-        ]);
+		return $this->redirectToRoute('user_account');
     }
 }
