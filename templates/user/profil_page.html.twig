@@ -10,15 +10,11 @@
 
 <div class="example-wrapper">
     <span>Infos perso : </span>
-	<a href="{{ path('user_account_edit')}}">Modifier</a>
-    <p>email : {{ user.email }}</p>
-</div>
+	<p> Name : {{ user.name}} </p>
+	{{ include('user/_form_account.html.twig') }}
 
-<hr>
-<div class="example-wrapper">
+	<hr>
     <span>Liste des personnages : </span>
-	<a href="{{ path('user_character_add')}}">Ajouter</a>
-
 	<table>
 		<thead>
 			<tr>
@@ -39,13 +35,16 @@
 					<td>{{ character.server.name }}</td>
 					<td>{{ character.information }}</td>
 					<td>
-						<a href="{{ path('user_character_edit', {id: character.id})}}">Modifier</a>
+						<a href="{{ path('user_account')}}?id={{ character.id }}">Modifier</a>
 						<a href="{{ path('user_character_delete', {id: character.id})}}">Supprimer</a>
 					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+
+	<hr>
+	{{ include('user/_form_character.html.twig') }}
 
 	<hr>
 	<span>Raids </span>

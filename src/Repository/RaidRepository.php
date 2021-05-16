@@ -37,7 +37,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.user = :raidLeader')
             ->setParameters([
 				'now'=> $now,
-				'user' => $raidLeader,
+				'raidLeader' => $raidLeader,
 			])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
@@ -56,7 +56,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.user = :raidLeader')
             ->setParameters([
 				'now'=> $now,
-				'user' => $raidLeader,
+				'raidLeader' => $raidLeader,
 			])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
@@ -74,7 +74,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.user = :raidLeader')
             ->setParameters([
 				'now'=> $now,
-				'user' => $raidLeader,
+				'raidLeader' => $raidLeader,
 			])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()

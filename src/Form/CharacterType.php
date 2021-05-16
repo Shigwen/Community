@@ -6,6 +6,7 @@ use App\Entity\Character;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CharacterType extends AbstractType
 {
@@ -33,12 +34,16 @@ class CharacterType extends AbstractType
 			])
             ->add('roles', null, [
 				'label' => 'Roles',
+			])
+			->add('button', SubmitType::class, [
+				'label' => $options['isEdit'] ? 'Modify' : 'Create',
 			]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+			'isEdit' => false,
             'data_class' => Character::class,
         ]);
     }
