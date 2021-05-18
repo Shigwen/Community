@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Ip;
 use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,12 +69,21 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([
+			'email' => $credentials['email']
+		]);
 
         if (!$user) {
-            // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException("Your login credentials don't match an account in our system");
         }
+
+		if ($user->getStatus() === User::STATUS_BAN) {
+            throw new CustomUserMessageAuthenticationException('Your account haved be banned');
+		}
+
+		if ($user->getStatus() === User::STATUS_WAITING_EMAIL_CONFIRMATION) {
+            throw new CustomUserMessageAuthenticationException('You must confirm your email address before you can log in');
+		}
 
         return $user;
     }
@@ -93,7 +103,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 		}
 
 		if($user->getNbrOfAttempt() >= User::NUMBER_MAX_OF_ATTEMPT) {
-			throw new CustomUserMessageAuthenticationException('Tentatives de connexion trop élevées. Retentez dans 10 minutes');
+			throw new CustomUserMessageAuthenticationException(
+				'You have tried logging in too many times. Please wait '. User::DELAY_AFTER_MAX_ATTEMPT .' minutes before retrying.'
+			);
 		}
 
 		$user->setLastAttempt(new DateTime());
