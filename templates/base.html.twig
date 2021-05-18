@@ -8,7 +8,7 @@
 
 	{% block stylesheets %}
 		<!-- Style -->
-		<link rel="stylesheet" href="{{asset('bootstrap-css/bootstrap.min.css')}}">
+		<link rel="stylesheet" href="{{asset('bootstrap-css/bootstrap.css')}}">
 		<link rel="stylesheet" href="{{asset('css/style.css')}}">
 	{% endblock %}
 
@@ -21,7 +21,7 @@
 
 <body>
 	<header>
-		{{ include('navbar.html.twig') }}
+		{{ include('_navbar.html.twig') }}
 	</header>
 
 	{% block body %}{% endblock %}

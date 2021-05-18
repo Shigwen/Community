@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<!--
+
+{# 
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
@@ -108,14 +109,14 @@
             </tbody>
         </table>
     </div>
-</div> -->
+</div> #}
 
 <!-- ...;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; -->
 
 
 <main class="container bg-dark">
 
-	{{ include('tbc_banner.html.twig') }}
+	{{ include('_tbc_banner.html.twig') }}
 	<div class="row d-flex justify-content-around">
 
 		<div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
@@ -227,48 +228,92 @@
 		</div>
 	</div>
 
+
+{# ------------------------------- FORM STARTS HERE -------------------------------------- #}
+
+	{# <hr>
+	<span>Create event : </span>
+	<a href="{{ path('raidleader_events')}}">Reset Form</a>
+
+	{{ form_start(form) }}
+		{{ form_row(form.name) }}
+		{{ form_row(form.raidType) }}
+		{{ form_row(form.expectedAttendee) }}
+		{{ form_row(form.startAt) }}
+		{{ form_row(form.endAt) }}
+		{{ form_row(form.information) }}
+		{{ form_row(form.minTank) }}
+		{{ form_row(form.maxTank) }}
+		{{ form_row(form.minHeal) }}
+		{{ form_row(form.maxHeal) }}
+		{{ form_row(form.autoAccept) }}
+		{{ form_row(form.isPrivate) }}
+		{% for row in form.raidCharacter %}
+			{{ form_label(row) }}
+			{{ form_widget(row) }}
+		{% endfor %}
+
+		<div> {{ form_row(form.save) }}</div>
+
+		{% if nbrTemplate is defined and nbrTemplate < 5 %}
+			<p>
+				Choose a name if you want to save this raid as <br>
+				a template and ease future raid creation
+			</p>
+			<div> {{ form_row(form.templateName) }}</div>
+			{% if editTemplate %}
+				<div> {{ form_row(form.editTemplate) }}</div>
+			{% else %}
+				<div> {{ form_row(form.saveTemplate) }}</div>
+			{% endif %}
+		{% endif %}
+	{{ form_end(form) }} #}
+
 	<div class="row d-flex justify-content-around">
 		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
-			<form>
+			{{ form_start(form) }}
 				<fieldset class="form-group">
 					<legend class="text-center h3 mb-5">Create An Event (max. 5):</legend>
 
 					<div class="row d-flex justify-content-around">
 						<div class="col-lg-5 col-md-11 text-center">
-							<label for="exampleInputEmail1"><span class="h5">Name</span></label>
-							<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+							{{ form_label(form.name) }}
+							{{ form_widget(form.name) }}
 						</div>
 
 						<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
-
-							<span class="h5">Raid type :</span>
-
-							<div class="btn-group btn-group-toggle" data-toggle="buttons">
-								<label class="btn btn-primary">
-									10
-									<input type="radio" name="raid-type" id="raid-type_10" autocomplete="off">
-								</label>
-								<label class="btn btn-primary active">
-									25
-									<input type="radio" name="raid-type" id="raid-type_25" autocomplete="off" checked="">
-								</label>
-								<label class="btn btn-primary">
-									40
-									<input type="radio" name="raid-type" id="raid-type_40" autocomplete="off">
-								</label>
+							<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+								{{ form_label(form.raidType) }}
+								{% for row in form.raidType %}
+									{{ form_widget(row) }}
+									{{ 
+										form_label(row, null, 
+											{label_attr: {
+												class: 'btn btn-outline-primary',
+												autocomplete: 'off',
+												checked: '',
+											}}
+										) 
+									}}
+								{% endfor %}
 							</div>
 						</div>
 					</div>
+
 					<div class="row d-flex justify-content-around d-flex align-items-center">
 						<div class="col-lg-5 col-md-11 text-center">
-							<label for="exampleInputEmail1"><span class="h5">RL as</span></label>
+								{% for row in form.raidCharacter %}
+									{{ form_label(row) }}
+									{{ form_widget(row) }}
+								{% endfor %}
+							{# <label for="exampleInputEmail1"><span class="h5">RL as</span></label>
 							<select class="custom-select">
 								<option selected>Choose a character</option>
 								<option value="1">Travolta</option>
 								<option value="2">MyLittlePony</option>
 								<option value="3">ILoveWeekends</option>
 								<option value="4">AllianceLover</option>
-							</select>
+							</select> #}
 						</div>
 
 						<div class="form-check col-lg-5 col-md-11 text-center">
@@ -469,7 +514,7 @@ Strategies will never be debated during the raid, no matter how much one might t
 
 					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event</button>
 				</div>
-			</form>
+			{{ form_end(form) }}
 		</div>
 	</div>
 

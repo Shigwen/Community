@@ -17,14 +17,13 @@ class RaidType extends AbstractType
     {
         $builder
             ->add('name', null, [
-				'label' => 'Nom',
+				'label' => 'Name',
 				'label_attr' => [
-					'id' => '',
-					'class' => '',
+					'class' => 'h5',
 				],
 				'attr' => [
-					'class' => '',
-				]
+					'class' => 'form-control',
+				],
 			])
             ->add('raidType', ChoiceType::class, [
 				'choices'  => [
@@ -32,6 +31,17 @@ class RaidType extends AbstractType
 					'25' => 25,
 					'40' => 40,
 				],
+
+				'choice_attr' => function($raidType){
+					// return ['class' => 'fixed-bottom invisible disabled'];
+					return ['class' => 'btn-check'];
+				},
+
+				'label' => 'Raid type',
+				'label_attr' => [
+					'class' => 'h5',
+				],
+
 				'expanded' => true,
 				'multiple' => false,
 			])
