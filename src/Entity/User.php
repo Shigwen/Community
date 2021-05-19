@@ -249,9 +249,9 @@ class User implements UserInterface
     }
 
 	public function getNbrOfAttempt(): ?int
-    {
-        return $this->nbrOfAttempt;
-    }
+	{
+		return $this->nbrOfAttempt;
+	}
 
     public function setNbrOfAttempt(int $nbrOfAttempt): self
     {
