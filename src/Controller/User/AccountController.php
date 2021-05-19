@@ -26,6 +26,7 @@ class AccountController extends AbstractController
 		$user = $this->getUser();
 
 		$formUser = $this->createForm(UserType::class, $user, [
+			'isEdit' => true,
 			'action' => $this->generateUrl('user_account_edit'),
 		]);
 
@@ -62,7 +63,9 @@ class AccountController extends AbstractController
 		$user = $this->getUser();
 		$oldPass = $user->getPassword();
 
-		$form = $this->createForm(UserType::class, $user);
+		$form = $this->createForm(UserType::class, $user, [
+			'isEdit' => true,
+		]);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {

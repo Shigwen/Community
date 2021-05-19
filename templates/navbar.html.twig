@@ -44,8 +44,11 @@
 					<a class="nav-link" href="{{ path('admin_users') }}">Manage users</a>
 				</li>
 
-			{% endif %}
+				<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'admin_messages' %}active{% endif %}">
+					<a class="nav-link" href="{{ path('admin_messages') }}">Messages</a>
+				</li>
 
+			{% endif %}
 
 			<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'about_us' %}active{% endif %}">
 				<a class="nav-link" href="{{ path('about_us') }}">About us</a>
@@ -53,6 +56,10 @@
 
 			<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'terms_of_use' %}active{% endif %}">
 				<a class="nav-link" href="{{ path('terms_of_use') }}">Terms of use</a>
+			</li>
+
+			<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'contact' %}active{% endif %}">
+				<a class="nav-link" href="{{ path('contact') }}">Contact</a>
 			</li>
 
 			{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
