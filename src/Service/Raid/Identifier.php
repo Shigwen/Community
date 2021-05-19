@@ -4,14 +4,18 @@ namespace App\Service\Raid;
 
 class Identifier {
 
-	public function __construct()
-    {
-
-    }
-
-	public function generate($nbrCharacter)
+	public function generate($nbrCharacter, $number = true, $specialCharacters = true)
 	{
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&$%?/!@=+#[]*|';
+		$characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+		if ($number) {
+			$characters .= '0123456789';
+		}
+
+		if ($specialCharacters) {
+			$characters.= '&$%?/!@=+#[]*|';
+		}
+
 		$lenght = strlen($characters);
 		$randomString = '';
 

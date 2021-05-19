@@ -33,13 +33,15 @@
 						<input type="email" class="form-control" aria-describedby="emailHelp" value="{% if last_username is defined %}{{ last_username }}{% endif %}" name="email" id="inputEmail" required autofocus>
 
 						<label for="inputPassword">Password</label>
-						<input type="password" name="password" id="inputPassword" class="form-control" required>
+						<input type="password" name="password" id="inputPassword" class="form-control mb-1" required>
+						<a href="{{ path('password_forgotten') }}">Forgot your password ?</a>
+
 					</fieldset>
 					{% if error is defined and error %}
 						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 					{% endif %}
 
-					<div class="checkbox mb-3">
+					<div class="checkbox mt-4">
 						<label>
 							<input type="checkbox" value="remember-me"> Remember me
 						</label>

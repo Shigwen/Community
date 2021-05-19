@@ -16,8 +16,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class HomeController extends AbstractController
 {
 	/**
-	 * Sign in
-	 *
      * @Route("/", name="home")
      */
     public function signIn(AuthenticationUtils $authenticationUtils): Response
@@ -40,8 +38,6 @@ class HomeController extends AbstractController
     }
 
 	/**
-	 * Sign up
-	 *
      * @Route("/sign-up", name="sign_up")
      */
     public function signUp(Request $request, UserPasswordEncoderInterface $passwordEncoder, Identifier $identifier, \Swift_Mailer $mailer): Response
@@ -52,14 +48,13 @@ class HomeController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$pwdEncoded = $passwordEncoder->encodePassword($user,$user->getPassword());
-			$token = $identifier->generate(10);
+			$token = $identifier->generate(15);
 			$url = $this->generateUrl('confirm_account', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
 			$user = $form->getData();
 			$user
 				->setPassword($pwdEncoded)
 				->setToken($token);
-
 
 			$message = (new \Swift_Message('Validez votre inscription à Community'))
                 ->setFrom('akmennra@gmail.com')
@@ -94,24 +89,95 @@ class HomeController extends AbstractController
      */
     public function confirmAccount(string $token)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $user = $entityManager->getRepository(User::class)->findOneBy([
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
 			'token' => $token,
 			'status' => User::STATUS_WAITING_EMAIL_CONFIRMATION,
-			]);
+		]);
 
-        if (!$user){
+        if (!$user) {
             $this->addFlash('danger', 'Invalid token');
-			return $this->redirectToRoute('login');
+			return $this->redirectToRoute('home');
 		}
 
 		$user->setToken(null);
 		$user->setStatus(User::STATUS_EMAIL_CONFIRMED);
-		$entityManager->flush();
+		$this->getDoctrine()->getManager()->flush();
 
 		$this->addFlash('success', 'Your account has been activated');
 
         return $this->redirectToRoute('home');
+    }
+
+	/**
+     * @Route("/password-forgotten", name="password_forgotten")
+     */
+    public function passwordForgotten(Request $request, Identifier $identifier, \Swift_Mailer $mailer): Response
+    {
+		if ($email = $request->request->get('email')) {
+
+			if (!$user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email])) {
+				$this->addFlash('danger', 'No user registered with this email address');
+				return $this->render('home/password_forgotten.html.twig');
+			}
+
+			$token = $identifier->generate(15, true, false);
+			$user->setToken($token);
+			$this->getDoctrine()->getManager()->flush();
+
+			$url = $this->generateUrl('password_recovery', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+			$message = (new \Swift_Message('Mot de passe oublié - Community'))
+                ->setFrom('akmennra@gmail.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+					$this->renderView(
+						'email/password_forgotten.html.twig',[
+							'user'=> $user->getName(),
+							'url'=> $url
+						]
+					),
+                'text/html'
+            );
+
+            $mailer->send($message);
+
+			$this->addFlash(
+                'success',
+                'Un email vient de vous être envoyé. Veuillez cliquer sur le lien qu\'il contient pour changer votre mot de passe.'
+            );
+
+
+			return $this->redirectToRoute('home');
+		}
+
+		return $this->render('home/password_forgotten.html.twig');
+    }
+
+	/**
+     * @Route("/password-recovery/{token}", name="password_recovery")
+     */
+    public function recoverPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+		$pass = $request->get('password');
+        $passConfirm = $request->get('password_confirm');
+
+		if (!$user = $this->getDoctrine()->getRepository(User::class)->findOneByToken($token)) {
+			$this->addFlash('danger', 'Le lien servant à modifier ce mot de passe a déjà été utilisé');
+
+			return $this->redirectToRoute('home');
+		}
+
+        if (!empty($pass) && !empty($passConfirm) && $pass === $passConfirm) {
+			$user
+				->setToken(null)
+				->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
+
+			$this->getDoctrine()->getManager()->flush();
+			$this->addFlash('success', 'Le mot de passe a bien été modifié');
+
+			return $this->redirectToRoute('home');
+		}
+
+		return $this->render('home/password_recovery.html.twig');
     }
 
 	/**
