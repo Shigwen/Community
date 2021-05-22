@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\RaidTemplate;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method RaidTemplate|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +20,19 @@ class RaidTemplateRepository extends ServiceEntityRepository
         parent::__construct($registry, RaidTemplate::class);
     }
 
-    // /**
-    //  * @return RaidTemplate[] Returns an array of RaidTemplate objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return RaidTemplate
+     */
+    public function findByIdAnduser($id, User $user)
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('rt')
+            ->where('rt.id = :id')
+			->andWhere('rt.user = :user')
+            ->setParameters([
+				'id' => $id,
+				'user' => $user
+			])
             ->getQuery()
-            ->getResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?RaidTemplate
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

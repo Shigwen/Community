@@ -1,8 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{{ include('_ragnaros.html.twig') }}
-{{ include('_tbc_banner.html.twig') }}
+
+{% for message in app.flashes('success') %}
+	<div class="alert alert-success text-center mb-2">
+		{{ message }}
+	</div>
+{% endfor %}
+
+{% for message in app.flashes('danger') %}
+	<div class="alert alert-danger text-center mb-2">
+		{{ message }}
+	</div>
+{% endfor %}
+
+{{ include('ragnaros.html.twig') }}
 
 <main class="container bg-dark">
 	<p>If you landed here, you probably already heard what this Community Project for World of Warcraft is about.
@@ -10,13 +22,10 @@
 	</p>
 
 	<div class="row d-flex justify-content-around">
-		{% if error is defined and error %}
-			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-		{% endif %}
 
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') == false %}
 			<div class="col-lg-5 col-md-10 col-margins p-0">
-				<form class="p-4 border border-primary rounded" method="post" action="{{ path('login') }}">
+				<form class="p-4 border border-primary rounded" method="post" action="{{ path('home') }}">
 					<fieldset>
 						<legend class="text-center">Sign in</legend>
 
@@ -24,10 +33,15 @@
 						<input type="email" class="form-control" aria-describedby="emailHelp" value="{% if last_username is defined %}{{ last_username }}{% endif %}" name="email" id="inputEmail" required autofocus>
 
 						<label for="inputPassword">Password</label>
-						<input type="password" name="password" id="inputPassword" class="form-control" required>
-					</fieldset>
+						<input type="password" name="password" id="inputPassword" class="form-control mb-1" required>
+						<a href="{{ path('password_forgotten') }}">Forgot your password ?</a>
 
-					<div class="checkbox mb-3">
+					</fieldset>
+					{% if error is defined and error %}
+						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					{% endif %}
+
+					<div class="checkbox mt-4">
 						<label>
 							<input type="checkbox" value="remember-me"> Remember me
 						</label>
@@ -41,33 +55,31 @@
 				</form>
 			</div>
 
-			<form class="col-lg-5 col-md-10 p-4 border border-primary rounded col-margins">
+			{{ form_start(form, {'attr': {'class': 'col-lg-5 col-md-10 p-4 border border-primary rounded col-margins'}}) }}
 				<fieldset>
 					<legend class="text-center">Sign up</legend>
 
-					<label for="sign-up_nickname">Nickname</label>
-					<input type="text" class="form-control mb-1" id="sign-up_nickname" placeholder="ex: Diana384" required>
-
+					{{ form_label(form.name) }}
+					{{ form_widget(form.name) }}
 					<small id="nicknameHelp" class="form-text text-muted mb-4">Preferably, your main character's name and numbers.</small>
 
-					<label for="sign-up_email">Email address</label>
-					<input type="email" class="form-control mb-1" id="sign-up_email" aria-describedby="emailHelp" required>
-
+					{{ form_label(form.email) }}
+					{{ form_widget(form.email) }}
 					<small id="emailHelp" class="form-text text-muted mb-4">We'll never share your email with anyone else.</small>
 
-					<label for="sign-up_inputPassword">Password</label>
-					<input type="password" class="form-control mb-1" id="sign-up_inputPassword" required>
-
+					{{ form_label(form.password.first) }}
+					{{ form_widget(form.password.first) }}
 					<small id="passwordHelp" class="form-text text-muted mb-4">Make it stronk.</small>
 
-					<label for="sign-up_inputPasswordConfirmation">Confirm Password</label>
-					<input type="password" class="form-control" id="sign-up_inputPasswordConfirmation" required>
+					{{ form_label(form.password.second) }}
+					{{ form_widget(form.password.second) }}
 
 					<div class="d-flex justify-content-center mt-4">
 						<button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
 					</div>
 				</fieldset>
-			</form>
+			{{ form_end(form) }}
+
 		{% endif %}
 	</div>
 </main>

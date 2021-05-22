@@ -18,6 +18,15 @@ class User implements UserInterface
 	const DELAY_AFTER_MAX_ATTEMPT = 5;
 	const NUMBER_MAX_OF_ATTEMPT = 5;
 
+	const STATUS_WAITING_EMAIL_CONFIRMATION = 0;
+	const STATUS_EMAIL_CONFIRMED = 1;
+	const STATUS_BAN = 2;
+
+	const ROLE_USER = 'ROLE_USER';
+	const ROLE_RAID_LEADER = 'ROLE_RAID_LEADER';
+	const ROLE_ADMIN = 'ROLE_ADMIN';
+	const ROLE_OWNER = 'ROLE_OWNER';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -62,6 +71,12 @@ class User implements UserInterface
     private $lastAttempt;
 
 	/**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $token;
+
+	/**
      * @var Date
      * @ORM\Column(type="datetime")
      */
@@ -84,11 +99,6 @@ class User implements UserInterface
     private $raids;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ip::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $ips;
-
-    /**
      * List of users blocked by the raid leader
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="blockers")
      */
@@ -107,6 +117,11 @@ class User implements UserInterface
 
     public function __construct()
     {
+		$this->roles = [self::ROLE_USER];
+		$this->status = self::STATUS_WAITING_EMAIL_CONFIRMATION;
+		$this->nbrOfAttempt = 0;
+		$this->lastAttempt = new DateTime();
+
 		$this->createdAt = new DateTime();
         $this->raidTemplates = new ArrayCollection();
         $this->raids = new ArrayCollection();
@@ -170,6 +185,35 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+    public function getStrRole(): string
+    {
+        return $this->roles[0];
+    }
+
+	/**
+	 * Get the verbose name of user's first role
+     * @return string
+     */
+    public function getVerboseStrRole(): string
+    {
+		switch($this->roles[0]) {
+			case 'ROLE_USER':
+				$role = 'User';
+				break;
+			case 'ROLE_RAID_LEADER':
+				$role = 'Raid Leader';
+				break;
+			case 'ROLE_ADMIN':
+				$role = 'Administrator';
+				break;
+			case 'ROLE_OWNER':
+				$role = 'Owner';
+				break;
+		}
+
+        return  $role;
+    }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -185,7 +229,7 @@ class User implements UserInterface
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword($password): self
     {
         $this->password = $password;
 
@@ -205,9 +249,9 @@ class User implements UserInterface
     }
 
 	public function getNbrOfAttempt(): ?int
-    {
-        return $this->nbrOfAttempt;
-    }
+	{
+		return $this->nbrOfAttempt;
+	}
 
     public function setNbrOfAttempt(int $nbrOfAttempt): self
     {
@@ -224,6 +268,18 @@ class User implements UserInterface
     public function setLastAttempt(\DateTimeInterface $lastAttempt): self
     {
         $this->lastAttempt = $lastAttempt;
+
+        return $this;
+    }
+
+    public function getToken(): string
+    {
+        return (string) $this->token;
+    }
+
+    public function setToken($token): self
+    {
+        $this->token = $token;
 
         return $this;
     }
@@ -326,36 +382,6 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($raid->getUser() === $this) {
                 $raid->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Ip[]
-     */
-    public function getIps(): Collection
-    {
-        return $this->ips;
-    }
-
-    public function addIp(Ip $ip): self
-    {
-        if (!$this->ips->contains($ip)) {
-            $this->ips[] = $ip;
-            $ip->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIp(Ip $ip): self
-    {
-        if ($this->ips->removeElement($ip)) {
-            // set the owning side to null (unless already changed)
-            if ($ip->getUser() === $this) {
-                $ip->setUser(null);
             }
         }
 

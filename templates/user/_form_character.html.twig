@@ -1,0 +1,10 @@
+
+{{ form_start(formCharacter, {'attr': {'class': 'calendar', 'id': 'test-id'}}) }}
+	{{ form_row(formCharacter.name) }}
+	{{ form_row(formCharacter.characterClass) }}
+	{{ form_row(formCharacter.server) }}
+	{{ form_row(formCharacter.information) }}
+	{{ form_row(formCharacter.roles) }}
+	{{ form_row(formCharacter.button) }}
+	<a href="{{ path('user_account')}}">Reset form</a>
+{{ form_end(formCharacter) }}

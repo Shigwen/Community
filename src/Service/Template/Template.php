@@ -18,7 +18,7 @@ class Template {
 		$this->em = $em;
     }
 
-	public function createOrHydrateTemplateFromRaid($templateName, Raid $raid, RaidTemplate $template = null)
+	public function createOrEditTemplateFromRaid($templateName, Raid $raid, RaidTemplate $template = null)
 	{
 		if (!$template) {
 			$template = new RaidTemplate();

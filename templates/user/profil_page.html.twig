@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AccountController!{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block body %}
 <style>
@@ -10,15 +10,11 @@
 
 <div class="example-wrapper">
     <span>Infos perso : </span>
-	<a href="{{ path('user_account_edit')}}">Modifier</a>
-    <p>email : {{ user.email }}</p>
-</div>
+	<p> Name : {{ user.name}} </p>
+	{{ include('user/_form_account.html.twig') }}
 
-<hr>
-<div class="example-wrapper">
+	<hr>
     <span>Liste des personnages : </span>
-	<a href="{{ path('user_character_add')}}">Ajouter</a>
-
 	<table>
 		<thead>
 			<tr>
@@ -39,13 +35,16 @@
 					<td>{{ character.server.name }}</td>
 					<td>{{ character.information }}</td>
 					<td>
-						<a href="{{ path('user_character_edit', {id: character.id})}}">Modifier</a>
+						<a href="{{ path('user_account')}}?id={{ character.id }}">Modifier</a>
 						<a href="{{ path('user_character_delete', {id: character.id})}}">Supprimer</a>
 					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+
+	<hr>
+	{{ include('user/_form_character.html.twig') }}
 
 	<hr>
 	<span>Raids </span>
@@ -60,21 +59,26 @@
 			</tr>
 		</thead>
 		<tbody>
-		{% for character in user.characters %}
-			{% for raidCharacter in character.raidCharacters %}
-				{% if raidCharacter.isAccept %}
-					<tr>
-						<td>{{ raidCharacter.raid.name }}</td>
-						<td>{{ raidCharacter.raid.raidType }}</td>
-						<td>{{ raidCharacter.raid.startAt|date("d/m/Y h:i") }}</td>
-						<td>{{ raidCharacter.raid.endAt|date("d/m/Y h:i") }}</td>
-						<td>
-							<a href="{{ path('event_unregister', {id: raidCharacter.raid.id})}}">Unregister</a>
-						</td>
-					</tr>
-				{% endif %}
+			{% for raid in pendingRaids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.raidType }}</td>
+					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+					<td>
+						<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+					</td>
+				</tr>
 			{% endfor %}
-		{% endfor %}
+			{% for raid in inProgressRaids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.raidType }}</td>
+					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+					<td></td>
+				</tr>
+			{% endfor %}
 		</tbody>
 	</table>
 
@@ -91,23 +95,22 @@
 			</tr>
 		</thead>
 		<tbody>
-		{% for character in user.characters %}
-			{% for raidCharacter in character.raidCharacters %}
-				{% if raidCharacter.isWaitingConfirmation %}
-					<tr>
-						<td>{{ raidCharacter.raid.name }}</td>
-						<td>{{ raidCharacter.raid.raidType }}</td>
-						<td>{{ raidCharacter.raid.startAt|date("d/m/Y h:i") }}</td>
-						<td>{{ raidCharacter.raid.endAt|date("d/m/Y h:i") }}</td>
-						<td>
-							<a href="{{ path('event_unregister', {id: raidCharacter.raid.id})}}">Unregister</a>
-						</td>
-					</tr>
-				{% endif %}
+			{% for raid in waitOfConfirmationRaids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.raidType }}</td>
+					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+					<td>
+						<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+					</td>
+				</tr>
 			{% endfor %}
-		{% endfor %}
 		</tbody>
 	</table>
+
+	<a href="{{ path('user_raid_archived')}}">Show finished raids</a>
+
 </div>
 
 {{ include('_tbc_banner.html.twig') }}

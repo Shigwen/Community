@@ -197,6 +197,6 @@ class RaidType extends AbstractType
 			'user' => null,
 			'isEdit' => false,
 			'raidTemplate' => null,
-			]);
+		]);
     }
 }

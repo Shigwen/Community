@@ -24,7 +24,7 @@ class ManageParticipantController extends AbstractController
      */
     public function acceptOrRefuse(Request $request, Raid $raid, Character $character): Response
     {
-		$raidCharacter = $this->getDoctrine()->getManager()->getRepository(RaidCharacter::class)->findOneBy([
+		$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->findOneBy([
 			'raid' => $raid,
 			'userCharacter' => $character,
 		]);
