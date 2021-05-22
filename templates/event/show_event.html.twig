@@ -51,7 +51,7 @@
 						<td>{{ raidCharacter.role.name }}</td>
 						{% if user.hasCharacter(raidCharacter.userCharacter) and is_raid_leader_character(user, raidCharacter.userCharacter, raid) == false %}
 							<td>
-								<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+								<a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
 							</td>
 						{% endif %}
 					</tr>
@@ -80,7 +80,7 @@
 						<td>{{ raidCharacter.role.name }}</td>
 						{% if user.hasCharacter(raidCharacter.userCharacter) and is_raid_leader_character(user, raidCharacter.userCharacter, raid) == false %}
 							<td>
-								<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+								<a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
 							</td>
 						{% endif %}
 					</tr>
