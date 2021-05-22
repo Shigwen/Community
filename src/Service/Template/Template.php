@@ -3,7 +3,9 @@
 namespace App\Service\Template;
 
 use App\Entity\Raid;
+use App\Entity\User;
 use App\Entity\RaidTemplate;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Template {
@@ -17,6 +19,33 @@ class Template {
     {
 		$this->em = $em;
     }
+
+	public function createDefaultTemplate(User $user)
+	{
+		$date = new DateTime();
+		$start = $date->setTime(16,0);
+		$end = $date->setTime(20,0);
+
+		$template = new RaidTemplate();
+		$template
+			->setName('Template default')
+			->setRaidType(25)
+			->setExpectedAttendee(24)
+			->setDayOfWeek(1)
+			->setInformation('This is a default template, custom it and enjoy !')
+			->setMinTank(1)
+			->setMaxTank(5)
+			->setMinHeal(1)
+			->setMaxHeal(5)
+			->setUser($user)
+			->setStartAt($start)
+			->setEndAt($end);
+
+		$this->em->persist($template);
+		$this->em->flush();
+
+		return $template;
+	}
 
 	public function createOrEditTemplateFromRaid($templateName, Raid $raid, RaidTemplate $template = null)
 	{

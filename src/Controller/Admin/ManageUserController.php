@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\RaidTemplate;
 use App\Entity\User;
+use App\Service\Template\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,10 +35,13 @@ class ManageUserController extends AbstractController
 	/**
      * @Route("/promote-or-demote/user/{id}", name="promote_or_demote")
      */
-    public function promoteOrDemote(User $user): Response
+    public function promoteOrDemote(User $user, Template $template): Response
     {
 		if ($user->getStrRole() === User::ROLE_USER) {
 			$user->setRoles([User::ROLE_RAID_LEADER]);
+            if (!$this->getDoctrine()->getRepository(RaidTemplate::class)->findBy(['user' => $user])) {
+                $template->createDefaultTemplate($user);
+            }
 		} else if ($user->getStrRole() === User::ROLE_RAID_LEADER) {
 			$user->setRoles([User::ROLE_USER]);
 		}
