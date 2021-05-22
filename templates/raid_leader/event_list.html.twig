@@ -2,7 +2,7 @@
 
 {% block body %}
 
-{# 
+{#
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
@@ -238,16 +238,10 @@
 	{{ form_start(form) }}
 		{{ form_row(form.name) }}
 		{{ form_row(form.raidType) }}
-		{{ form_row(form.expectedAttendee) }}
+
 		{{ form_row(form.startAt) }}
 		{{ form_row(form.endAt) }}
-		{{ form_row(form.information) }}
-		{{ form_row(form.minTank) }}
-		{{ form_row(form.maxTank) }}
-		{{ form_row(form.minHeal) }}
-		{{ form_row(form.maxHeal) }}
-		{{ form_row(form.autoAccept) }}
-		{{ form_row(form.isPrivate) }}
+
 		{% for row in form.raidCharacter %}
 			{{ form_label(row) }}
 			{{ form_widget(row) }}
@@ -269,6 +263,15 @@
 		{% endif %}
 	{{ form_end(form) }} #}
 
+{# {{
+	form_label(row, null,
+		{label_attr:
+			{
+				class: 'h5',
+			}
+		}
+	)
+}} #}
 	<div class="row d-flex justify-content-around">
 		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 			{{ form_start(form) }}
@@ -282,72 +285,46 @@
 						</div>
 
 						<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
+
+							{{ form_label(form.raidType) }}
 							<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-								{{ form_label(form.raidType) }}
 								{% for row in form.raidType %}
 									{{ form_widget(row) }}
-									{{ 
-										form_label(row, null, 
-											{label_attr: {
-												class: 'btn btn-outline-primary',
-												autocomplete: 'off',
-												checked: '',
-											}}
-										) 
+									{{
+										form_label(row, null,
+											{label_attr:
+												{
+													class: 'btn btn-outline-primary',
+													autocomplete: 'off',
+													checked: '',
+												}
+											}
+										)
 									}}
 								{% endfor %}
 							</div>
 						</div>
 					</div>
 
-					<div class="row d-flex justify-content-around d-flex align-items-center">
-						<div class="col-lg-5 col-md-11 text-center">
-								{% for row in form.raidCharacter %}
-									{{ form_label(row) }}
-									{{ form_widget(row) }}
-								{% endfor %}
-							{# <label for="exampleInputEmail1"><span class="h5">RL as</span></label>
-							<select class="custom-select">
-								<option selected>Choose a character</option>
-								<option value="1">Travolta</option>
-								<option value="2">MyLittlePony</option>
-								<option value="3">ILoveWeekends</option>
-								<option value="4">AllianceLover</option>
-							</select> #}
-						</div>
-
-						<div class="form-check col-lg-5 col-md-11 text-center">
-							<label class="h5" for="">
-									Roles (still important even as RL, for the app)
-							</label>
-
-							<div class="form-row justify-content-around mt-1">
-								<div>
-									<input class="form-check-input" type="checkbox" name="exampleCheckbox" id="exampleCheckboxs1" value="option1" checked>
-									<label class="form-check-label" for="exampleCheckboxs1">
-										Tank
-									</label>
-								</div>
-
-								<div>
-									<input class="form-check-input" type="checkbox" name="exampleCheckboxs" id="exampleCheckboxs2" value="option2">
-									<label class="form-check-label" for="exampleCheckboxs2">
-										Heal
-									</label>
-								</div>
-
-								<div>
-									<input class="form-check-input" type="checkbox" name="exampleCheckboxs" id="exampleCheckboxs3" value="option3">
-									<label class="form-check-label" for="exampleCheckboxs3">
-										DPS
-									</label>
-								</div>
+					<div class="row d-flex justify-content-around">
+						{% for row in form.raidCharacter %}
+							<div class="col-lg-5 col-md-11 text-center">
+								{{ form_label(row) }}
+								{{ form_widget(row) }}
 							</div>
-						</div>
+						{% endfor %}
 					</div>
 
 					<div class="row d-flex justify-content-around">
-						<h3 class="text-center mt-md-4 h4">Choose date around here</h3>
+						<div class="col-lg-5 col-md-11 text-center">
+							{{ form_label(form.startAt) }}
+							{{ form_widget(form.startAt) }}
+						</div>
+
+						<div class="col-lg-5 col-md-11 text-center">
+							{{ form_label(form.endAt) }}
+							{{ form_widget(form.endAt) }}
+						</div>
 					</div>
 
 					<div class="row d-flex justify-content-around p-2 p-md-4 pl-md-5 pr-md-5 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
@@ -388,78 +365,70 @@
 						</details>
 
 						<div class="form-row justify-content-between">
-							<label for="" class="col-9 col-form-label">
-								<span class="h5">Amount of raiders you're looking for</span>
-							</label>
-							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+							<div class="col-9 col-form-label">
+								{{ form_label(form.expectedAttendee) }}
+							</div>
+							{{ form_widget(form.expectedAttendee) }}
 						</div>
 
 						<div class="form-row justify-content-between">
-							<label for="" class="col-9 col-form-label">
-								<span class="h5">Min. number of Tanks (default : 1)</span>
-							</label>
-							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+							<div class="col-9 col-form-label">
+								{{ form_label(form.minTank) }}
+							</div>
+							{{ form_widget(form.minTank) }}
 						</div>
 
 						<div class="form-row justify-content-between">
-							<label for="" class="col-9 col-form-label">
-								<span class="h5">Max. number of Tanks</span>
-							</label>
-							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+							<div class="col-9 col-form-label">
+								{{ form_label(form.maxTank) }}
+							</div>
+							{{ form_widget(form.maxTank) }}
 						</div>
 
 						<div class="form-row justify-content-between">
-							<label for="" class="col-9 col-form-label">
-								<span class="h5">Min. number of Healers (default : 1)</span>
-							</label>
-							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+							<div class="col-9 col-form-label">
+								{{ form_label(form.minHeal) }}
+							</div>
+							{{ form_widget(form.minHeal) }}
 						</div>
 
 						<div class="form-row justify-content-between">
-							<label for="" class="col-9 col-form-label">
-								<span class="h5">Max. number of Healers</span>
-							</label>
-							<input type="number" class="col-2 form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+							<div class="col-9 col-form-label">
+								{{ form_label(form.maxHeal) }}
+							</div>
+							{{ form_widget(form.maxHeal) }}
 						</div>
 
 						<div class="form-row justify-content-around mb-4">
 							<div>
-								<input class="form-check-input" type="checkbox" name="exampleCheckbox" id="exampleCheckboxs1" value="option1" checked>
-								<label class="form-check-label h5" for="exampleCheckboxs1">
-									Auto-accept
-								</label>
+								{{ form_widget(form.autoAccept) }}
+								{{ form_label(form.autoAccept) }}
 							</div>
 
 							<div>
-								<input class="form-check-input" type="checkbox" name="exampleCheckboxs" id="exampleCheckboxs2" value="option2">
-								<label class="form-check-label h5" for="exampleCheckboxs2">
-									Private raid
-								</label>
+								{{ form_widget(form.isPrivate) }}
+								{{ form_label(form.isPrivate) }}
 							</div>
-						</div>
-
-						<div class="form-row justify-content-around">
-
-
-
 						</div>
 
 						<p class="text-success mb-1">These informations are important for the matchmaking, please do not neglect them.</p>
 					</div>
+
 					<div class="row d-flex justify-content-around mb-3">
 						<div class="col-12 col-md-11">
 							<div class="form-group">
-								<label for="exampleFormControlTextarea1">
-									<div class="mb-2 text-center h5">
-										Raid Leader notes
-									</div>
-									<div class="mb-2">
-										It must contain anything relevant you'd like to show to your raiders.
-										May it be mandatory add-ons, loot rules, raid leading style, objectives,
-										and so on. It is pre-filled in order to show you what's mainly supposed to be in it,
-										but feel free to add or remove some parts.
-									</div>
-								</label>
+								<div class="text-center">
+									{{ form_label(form.information) }}
+								</div>
+								<div class="mb-3 text-left">
+									It must contain anything relevant you'd like to show to your raiders.
+									May it be mandatory add-ons, loot rules, raid leading style, objectives,
+									and so on. It is pre-filled in order to show you what's mainly supposed to be in it,
+									but feel free to add or remove some parts.
+								</div>
+
+								{{ form_widget(form.information) }}
+									{#
 
 								<textarea class="form-control" id="exampleFormControlTextarea1" rows="12">
 Raid leading style and goals:
@@ -482,6 +451,8 @@ Anything else you might think is important to mention :
 
 Strategies will never be debated during the raid, no matter how much one might think he knows better.
 								</textarea>
+
+								#}
 							</div>
 						</div>
 					</div>
@@ -501,12 +472,67 @@ Strategies will never be debated during the raid, no matter how much one might t
 									</button>
 								</div>
 								<div class="modal-body">
-									<label for="exampleInputEmail1">Give it a name</label>
-									<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="ex: Taverns of Time - Wednesday Pug - Karazhan">
+
+									{% if nbrTemplate is defined and nbrTemplate < 6 %}
+
+										{% if editTemplate %}
+											<span class="h5 form-label">
+												Modify your template's name (or not)
+											</span>
+											{{ form_widget(form.templateName) }}
+
+										{% else %}
+											{% if nbrTemplate is defined and nbrTemplate < 5 %}
+												{{ form_label(form.templateName) }}
+												{{ form_widget(form.templateName) }}
+											{% else %}
+												<div class="d-flex align-items-center justify-content-center">
+													<p class="h5 text-danger">
+														Oops, it seems that you've alreadu reached the maximum of templates allowed
+														for this version of the app. Sorry ! Edit an old one you're not using,
+														or delete one to free a slot in order to create a new one.
+													</p>
+												</div>
+											{% endif %}
+										{% endif %}
+
+									{% endif %}
 								</div>
+
+
 								<div class="modal-footer">
+
+									{% if nbrTemplate is defined and nbrTemplate < 6 %}
+
+										{% if editTemplate %}
+											{{ form_row(form.editTemplate) }}
+
+										{% else %}
+											{% if nbrTemplate is defined and nbrTemplate < 5 %}
+												{{ form_row(form.saveTemplate) }}
+											{% else %}
+												<div class="d-flex align-items-center justify-content-center">
+													<button type="button" class="btn btn-lg btn-primary text-danger">
+														No fun allowed !
+													</button>
+												</div>
+											{% endif %}
+										{% endif %}
+
+									{% endif %}
+									{#-- {% if nbrTemplate is defined and nbrTemplate < 5 %}
+
+										{% if editTemplate %}
+											<div> {{ form_row(form.editTemplate) }}</div>
+
+										{% else %}
+											<div> {{ form_row(form.saveTemplate) }}</div>
+
+										{% endif %}
+									{% endif %} #}
+
 									<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
-									<button type="submit" class="btn btn-lg btn-primary">Save template</button>
+
 								</div>
 							</div>
 						</div>
@@ -514,6 +540,7 @@ Strategies will never be debated during the raid, no matter how much one might t
 
 					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event</button>
 				</div>
+
 			{{ form_end(form) }}
 		</div>
 	</div>
