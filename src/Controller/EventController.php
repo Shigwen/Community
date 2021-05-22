@@ -20,9 +20,7 @@ class EventController extends AbstractController
 		$month = $calendar::GetDefaultWidgets();
 
         return $this->render('event/event_list.html.twig', [
-            'raids' => $this->getDoctrine()->getRepository(Raid::class)->findBy([
-				'isPrivate' => false,
-			]),
+            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser()),
 			'title' => $month['title'],
 			'empty_days_padding' => $month['empty_days_padding'],
 			'days' => $month['days'],

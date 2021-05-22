@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
@@ -35,7 +36,7 @@ class ManageParticipantController extends AbstractController
 
 		$status = $request->query->get('status');
 		if (!in_array($status, [RaidCharacter::ACCEPT, RaidCharacter::REFUSED])) {
-			throw $this->createNotFoundException('Une erreur est survenue');
+			throw new BadRequestHttpException('Message');
 		}
 
 		$raidCharacter->setStatus($status);

@@ -151,4 +151,25 @@ class RaidRepository extends ServiceEntityRepository
 			->getQuery()
 			->getResult();
     }
+
+	/**
+     * @return Raid[]
+     */
+    public function getAllRaidWhereUserIsAccepted(User $player)
+    {
+		$now = new DateTime();
+		return $this->createQueryBuilder('r')
+			->join('r.user', 'u')
+			->innerJoin('u.blockeds', 'ub')
+			->where('ub.id != :player')
+			->andWhere('r.endAt < :now')
+			->andWhere('r.isPrivate = false')
+			->setParameters([
+				'now'=> $now,
+				'player' => $player->getId(),
+			])
+			->orderBy('r.startAt', 'ASC')
+			->getQuery()
+			->getResult();
+    }
 }

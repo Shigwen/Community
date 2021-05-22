@@ -4,13 +4,14 @@ namespace App\Controller\RaidLeader;
 
 use App\Entity\Raid;
 use App\Form\RaidType;
-use App\Entity\RaidCharacter;
 use App\Entity\RaidTemplate;
+use App\Entity\RaidCharacter;
 use App\Service\Template\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @Route("/raid-leader", name="raidleader_")
@@ -62,7 +63,7 @@ class EventController extends AbstractController
     public function templateDelete(RaidTemplate $raidTemplate): Response
     {
 		if ($this->getUser() && !$this->getUser()->hasRaidTemplate($raidTemplate)) {
-			throw $this->createNotFoundException('Une erreur est survenue');
+			throw new AccessDeniedHttpException();
 		}
 
 		$this->getDoctrine()->getManager()->remove($raidTemplate);

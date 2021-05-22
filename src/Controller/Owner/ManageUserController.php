@@ -18,7 +18,6 @@ class ManageUserController extends AbstractController
      */
     public function banHammer(User $user): Response
     {
-
 		if ($user->getStatus() === User::STATUS_EMAIL_CONFIRMED) {
 			$user->setStatus(User::STATUS_BAN);
 		} else if ($user->getStatus() === User::STATUS_BAN) {
