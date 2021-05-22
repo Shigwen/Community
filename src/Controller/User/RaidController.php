@@ -4,6 +4,8 @@ namespace App\Controller\User;
 
 use App\Entity\Raid;
 use App\Entity\RaidCharacter;
+use App\Form\RaidCharacterType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,4 +34,48 @@ class RaidController extends AbstractController
 			'raid' => $raid,
 		]);
 	}
+
+	/**
+     * @Route("/{id}/register", name="register")
+     */
+    public function register(Request $request, Raid $raid): Response
+    {
+		if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
+			$this->getUser(),
+			$raid)
+		) {
+			$raidCharacter = new RaidCharacter();
+			$raidCharacter
+				->setRaid($raid)
+				->setStatus($raid->getAutoAccept());
+			$this->getDoctrine()->getManager()->persist($raidCharacter);
+		}
+
+		$form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
+			'user' => $this->getUser(),
+		]);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$this->getDoctrine()->getManager()->flush();
+		}
+
+        return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+    }
+
+	/**
+     * @Route("/{id}/unregister", name="unregister")
+     */
+    public function unregister(Request $request, Raid $raid): Response
+    {
+		$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
+			$this->getUser(),
+			$raid
+		);
+
+		$this->getDoctrine()->getManager()->remove($raidCharacter);
+		$this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+    }
 }

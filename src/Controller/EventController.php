@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Raid;
 use App\Entity\RaidCharacter;
 use App\Form\RaidCharacterType;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,9 +14,9 @@ class EventController extends AbstractController
     /**
      * @Route("/events", name="events")
      */
-    public function index(): Response
+    public function eventList(): Response
     {
-        return $this->render('event/index.html.twig', [
+        return $this->render('event/event_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->findBy([
 				'isPrivate' => false,
 			]),
@@ -25,9 +24,9 @@ class EventController extends AbstractController
     }
 
 	/**
-     * @Route("/event/{id}/register", name="event_register")
+     * @Route("/event/{id}", name="event")
      */
-    public function register(Request $request, Raid $raid): Response
+    public function event(Raid $raid): Response
     {
 		$isEdit = true;
 		if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
@@ -36,21 +35,12 @@ class EventController extends AbstractController
 		) {
 			$isEdit = false;
 			$raidCharacter = new RaidCharacter();
-			$raidCharacter
-				->setRaid($raid)
-				->setStatus($raid->getAutoAccept());
-			$this->getDoctrine()->getManager()->persist($raidCharacter);
 		}
 
 		$form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
 			'user' => $this->getUser(),
+			'action' => $this->generateUrl('user_raid_register', ['id' => $raid->getId()]),
 		]);
-		$form->handleRequest($request);
-
-		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
-			return $this->redirectToRoute('event_register', ['id' => $raid->getId()]);
-		}
 
         return $this->render('event/show_event.html.twig', [
             'raid' => $raid,
@@ -58,21 +48,5 @@ class EventController extends AbstractController
 			'form' => $form->createView(),
 			'isEdit' => $isEdit,
         ]);
-    }
-
-	/**
-     * @Route("/event/{id}/unregister", name="event_unregister")
-     */
-    public function unregister(Request $request, Raid $raid): Response
-    {
-		$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
-			$this->getUser(),
-			$raid
-		);
-
-		$this->getDoctrine()->getManager()->remove($raidCharacter);
-		$this->getDoctrine()->getManager()->flush();
-
-        return $this->redirectToRoute('event', ['id' => $raid->getId()]);
     }
 }
