@@ -152,7 +152,7 @@ var _this = this;
                         if (go_forward) {
                             ++last_shown_month_1;
                         }
-                        else if (last_shown_month_1 > 1) {
+                        else if (last_shown_month_1 >= 1) {
                             --last_shown_month_1;
                         }
                         else {
@@ -188,12 +188,12 @@ var _this = this;
                         STORED_MONTHS_1.push(ITEM);
                         _a.label = 3;
                     case 3:
-                        STORED_MONTHS_1[last_shown_month_1 - 2].remove();
                         STORED_MONTHS_1[last_shown_month_1 - 1].insertAdjacentElement("afterend", STORED_MONTHS_1[last_shown_month_1]);
+                        STORED_MONTHS_1[last_shown_month_1 - 1].remove();
                         return [3 /*break*/, 5];
                     case 4:
+                        STORED_MONTHS_1[last_shown_month_1 + 1].insertAdjacentElement("beforebegin", STORED_MONTHS_1[last_shown_month_1]);
                         STORED_MONTHS_1[last_shown_month_1 + 1].remove();
-                        STORED_MONTHS_1[last_shown_month_1].insertAdjacentElement("beforebegin", STORED_MONTHS_1[last_shown_month_1 - 1]);
                         _a.label = 5;
                     case 5: return [3 /*break*/, 8];
                     case 6:
@@ -224,13 +224,7 @@ var _this = this;
         if (CELL) {
             select_date(CELL);
         }
-        var RESET_BUTTON = TARGET.closest("button.clear");
-        if (RESET_BUTTON) {
-            reset_all();
-            localStorage.removeItem("form-booking");
-        }
     });
-    reset_all();
     // Initialize from storage
     {
         var ITEM = localStorage.getItem("form-booking");
@@ -279,7 +273,6 @@ var _this = this;
                             case 9:
                                 // Reset if unavailable
                                 if (!STORED_MONTHS_1[i].querySelector("li.is-selected")) {
-                                    reset_all();
                                     if (i > 0) {
                                         BASE = STORED_MONTHS_1[i].nextElementSibling;
                                         STORED_MONTHS_1[i].remove();

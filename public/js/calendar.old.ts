@@ -173,7 +173,7 @@
 			{
 				++last_shown_month;
 			}
-			else if (last_shown_month >= 1)
+			else if (last_shown_month > 1)
 			{
 				--last_shown_month;
 			}
@@ -218,13 +218,13 @@
 					STORED_MONTHS.push(ITEM);
 				}
 
+				STORED_MONTHS[last_shown_month - 2].remove();
 				STORED_MONTHS[last_shown_month - 1].insertAdjacentElement("afterend", STORED_MONTHS[last_shown_month]);
-				STORED_MONTHS[last_shown_month - 1].remove();
 			}
 			else
 			{
-				STORED_MONTHS[last_shown_month + 1].insertAdjacentElement("beforebegin", STORED_MONTHS[last_shown_month]);
 				STORED_MONTHS[last_shown_month + 1].remove();
+				STORED_MONTHS[last_shown_month].insertAdjacentElement("beforebegin", STORED_MONTHS[last_shown_month - 1]);
 			}
 		}
 		catch (error)
@@ -264,8 +264,18 @@
 			{
 				select_date(CELL);
 			}
+
+			const RESET_BUTTON: HTMLButtonElement|null = TARGET.closest("button.clear") as HTMLButtonElement|null;
+
+			if (RESET_BUTTON)
+			{
+				reset_all();
+				localStorage.removeItem("form-booking");
+			}
 		}
 	);
+
+	reset_all();
 
 	// Initialize from storage
 	{
@@ -313,6 +323,7 @@
 					// Reset if unavailable
 					if (!STORED_MONTHS[i].querySelector("li.is-selected"))
 					{
+						reset_all();
 
 						if (i > 0)
 						{

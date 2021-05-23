@@ -12,44 +12,11 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<widget-calendar>
-    <calendar-head>
-        {{ title }}
-    </calendar-head>
-    
-	<calendar-body>
-        <ul>
-            <li>Lu</li>
-            <li>Ma</li>
-            <li>Me</li>
-            <li>Je</li>
-            <li>Ve</li>
-            <li>Sa</li>
-            <li>Di</li>
-        </ul>
-        <ul>
-            {% if empty_days_padding > 0 %}
-                {% for date in range(1, empty_days_padding) %}
-                    <li class="empty-dates"></li>
-                {% endfor %}
-            {% endif %}
+<calendar-wrapper>
+    {{ include('event/_calendar.html.twig') }}
+</calendar-wrapper>
 
-            {% set style = '' %}
-
-            {% for item in days %}
-                {% if item['past'] %}
-                    {% set style = 'is-notavailable' %}
-                {% else %}
-                    {% set style = '' %}
-                {% endif %}
-                <li data-date="{{ item['date'] }}" class="{{ style }}">{{ item['number'] }}</li>
-            {% endfor %}
-        </ul>
-	</calendar-body>
-
-</widget-calendar>
-
-<div class="example-wrapper">
+<raid-list>
 	<h1>Raid list</h1>
 	<table>
 		<thead>
@@ -75,5 +42,5 @@
 			{% endfor %}
 		</tbody>
 	</table>
-</div>
+</raid-list>
 {% endblock %}
