@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 {
     var CONTAINER = document.querySelector("calendar-wrapper");
+    var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
     if (CONTAINER === null) {
         throw new Error("Missing calendar wrapper");
     }
@@ -45,9 +46,7 @@ var _this = this;
     if (STORED_MONTHS_1.length < 1) {
         throw new Error("Missing elements");
     }
-    var selected_dates_1 = 0;
-    var min_end_date_1 = "";
-    var max_end_date_1 = "";
+    var chosen_date_1 = "";
     var last_shown_month_1 = STORED_MONTHS_1.length - 1;
     var abort_handle_1 = null;
     function clear_process_queue() {
@@ -58,92 +57,61 @@ var _this = this;
     }
     function select_date(target) {
         return __awaiter(this, void 0, Promise, function () {
-            var DATE_IDENTIFIER, found_1, is_between_1;
+            var DATE_IDENTIFIER, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
             return __generator(this, function (_a) {
-                try {
-                    clear_process_queue();
-                    DATE_IDENTIFIER = target.dataset.date;
-                    if (!DATE_IDENTIFIER) {
-                        throw new Error("Missing attribute");
-                    }
-                    if (selected_dates_1 === 0) {
-                        if (target.matches(".is-notavailable, .disabled-begin, .disabled-period")) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, 4, 5]);
+                        clear_process_queue();
+                        DATE_IDENTIFIER = target.dataset.date;
+                        if (!DATE_IDENTIFIER) {
+                            throw new Error("Missing attribute");
+                        }
+                        if (target.matches(".is-notavailable")) {
                             return [2 /*return*/];
                         }
-                        // Arrival date
-                        min_end_date_1 = DATE_IDENTIFIER;
-                        target.classList.add("is-selected", "start-date");
-                        selected_dates_1 = 1;
-                    }
-                    else if (selected_dates_1 === 1) {
-                        found_1 = false;
-                        STORED_MONTHS_1.forEach(function (widget) {
-                            if (found_1) {
-                                return;
-                            }
-                            widget.querySelectorAll("li[data-date].disabled-period, li[data-date].disabled-end").forEach(function (day) {
-                                if (found_1) {
-                                    return;
-                                }
-                                var DATE_IDENTIFIER = day.dataset.date;
-                                if (DATE_IDENTIFIER && DATE_IDENTIFIER > min_end_date_1) {
-                                    found_1 = true;
-                                    max_end_date_1 = DATE_IDENTIFIER;
-                                }
-                            });
-                        });
-                        // Departure date
-                        if (DATE_IDENTIFIER > min_end_date_1
-                            &&
-                                (!max_end_date_1
-                                    ||
-                                        DATE_IDENTIFIER < max_end_date_1)) {
-                            target.classList.add("is-selected", "end-date");
-                            is_between_1 = false;
-                            STORED_MONTHS_1.forEach(function (widget) {
-                                widget.querySelectorAll("li[data-date]:not(.disabled-period)").forEach(function (item) {
-                                    if (item.classList.contains("is-selected")) {
-                                        item.classList.remove("period-select");
-                                        is_between_1 = !is_between_1;
-                                    }
-                                    else {
-                                        item.classList.toggle("period-select", is_between_1);
-                                    }
-                                });
-                            });
-                            selected_dates_1 = 2;
+                        chosen_date_1 = DATE_IDENTIFIER;
+                        BODY = new FormData();
+                        BODY.set("date", chosen_date_1);
+                        abort_handle_1 = new AbortController();
+                        return [4 /*yield*/, fetch("/ajax/get-all-raid-of-the-day", {
+                                method: "POST",
+                                body: BODY,
+                                signal: abort_handle_1.signal
+                            })];
+                    case 1:
+                        RESPONSE = _a.sent();
+                        if (!RESPONSE.ok) {
+                            throw new Error(RESPONSE.statusText);
                         }
-                    }
+                        return [4 /*yield*/, RESPONSE.text()];
+                    case 2:
+                        HTML = _a.sent();
+                        DIV = document.createElement("div");
+                        DIV.innerHTML = HTML;
+                        ITEM = DIV.querySelector("raid-list");
+                        if (!ITEM) {
+                            throw new Error("Invalid response");
+                        }
+                        OLD_RAID_LIST = RAID_CONTAINER_1.querySelector("raid-list");
+                        OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
+                        OLD_RAID_LIST.remove();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [3 /*break*/, 5];
+                    case 4:
+                        clear_process_queue();
+                        return [7 /*endfinally*/];
+                    case 5: return [2 /*return*/];
                 }
-                catch (error) {
-                    console.log(error);
-                }
-                finally {
-                    clear_process_queue();
-                }
-                return [2 /*return*/];
             });
         });
     }
-    function reset_all() {
-        try {
-            clear_process_queue();
-            selected_dates_1 = 0;
-            min_end_date_1 = "";
-            max_end_date_1 = "";
-            STORED_MONTHS_1.forEach(function (widget) {
-                widget.querySelectorAll("li.is-selected, li.period-select").forEach(function (item) {
-                    item.classList.remove("is-selected", "period-select");
-                });
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
     function update_calendar(go_forward) {
         return __awaiter(this, void 0, Promise, function () {
-            var MONTH, BODY, RESPONSE, HTML, DIV, ITEM, error_1;
+            var MONTH, BODY, RESPONSE, HTML, DIV, ITEM, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -164,9 +132,7 @@ var _this = this;
                         BODY = new FormData();
                         BODY.set("date", MONTH.toISOString().substr(0, 10));
                         abort_handle_1 = new AbortController();
-                        return [4 /*yield*/, fetch(
-                            // @TODO : Vérifier la route
-                            "/ajax/get-availability-calendar", {
+                        return [4 /*yield*/, fetch("/ajax/get-availability-calendar", {
                                 method: "POST",
                                 body: BODY,
                                 signal: abort_handle_1.signal
@@ -197,8 +163,8 @@ var _this = this;
                         _a.label = 5;
                     case 5: return [3 /*break*/, 8];
                     case 6:
-                        error_1 = _a.sent();
-                        console.log(error_1);
+                        error_2 = _a.sent();
+                        console.log(error_2);
                         if (go_forward) {
                             --last_shown_month_1;
                         }

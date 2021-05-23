@@ -28,26 +28,26 @@ final class Version20210522172437 extends AbstractMigration
 
         $this->addSql("
             INSERT INTO character_class VALUES 
-                (1, 'Druid', NOW(), null)
-                (2, 'Hunter', NOW(), null)
-                (3, 'Mage', NOW(), null)
+                (1, 'Druid', NOW(), null),
+                (2, 'Hunter', NOW(), null),
+                (3, 'Mage', NOW(), null),
                 (4, 'Paladin', NOW(), null),
-                (5, 'Priest', NOW(), null)
-                (6, 'Rogue', NOW(), null)
-                (7, 'Shaman', NOW(), null)
-                (8, 'Warlock', NOW(), null)
-                (9, 'Warrior', NOW(), null),
+                (5, 'Priest', NOW(), null),
+                (6, 'Rogue', NOW(), null),
+                (7, 'Shaman', NOW(), null),
+                (8, 'Warlock', NOW(), null),
+                (9, 'Warrior', NOW(), null)
         ");
 
         $this->addSql("
             INSERT INTO message_type VALUES 
-                (1, 'Je souhaite pouvoir créer mes propres raids'),
-                (2, 'Je n\'arrive pas à m\'inscrire/me connecter sur le site'),
-                (3, 'Je n\'arrive pas à créer/modifier un personnage'),
-                (4, 'Je n\'arrive pas à créer/modifier un raid'),
-                (5, 'Je n\'arrive pas à m\'inscrire/me désinscrire à un raid'),
-                (6, 'J\'ai été banni du site'),
-                (7, 'Autre'),
+                (1, 'I\'d like to become a Raid Leader and organize my own events'),
+                (2, 'I cannot sign up / sign in'),
+                (3, 'I cannot create/modify characters'),
+                (4, 'I cannot create/modify a raid'),
+                (5, 'I cannot subscribe to / unsubscribe from a raid'),
+                (6, 'I was banned from the website'),
+                (7, 'Others')
         ");
     }
 

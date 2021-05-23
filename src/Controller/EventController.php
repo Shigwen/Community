@@ -28,7 +28,7 @@ class EventController extends AbstractController
         return $this->render('event/event_list.html.twig', [
             'raids' => $raids,
 			'title' => $month['title'],
-			'empty_days_padding' => $month['empty_days_padding'],
+			'emptyDaysPadding' => $month['empty_days_padding'],
 			'days' => $month['days'],
 			'date' => $date,
         ]);

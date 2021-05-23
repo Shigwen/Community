@@ -1,5 +1,6 @@
 {
 	const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
+	const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
 
 	if (CONTAINER === null)
 	{
@@ -14,9 +15,7 @@
 		throw new Error("Missing elements");
 	}
 
-	let selected_dates: number = 0;
-	let min_end_date: string = "";
-	let max_end_date: string = "";
+	let chosen_date: string = "";
 	let last_shown_month: number = STORED_MONTHS.length - 1;
 	let abort_handle: AbortController|null = null;
 
@@ -42,88 +41,42 @@
 				throw new Error("Missing attribute");
 			}
 
-			if (selected_dates === 0)
+			if (target.matches(".is-notavailable"))
 			{
-				if (target.matches(".is-notavailable, .disabled-begin, .disabled-period"))
-				{
-					return;
-				}
-
-				// Arrival date
-				min_end_date = DATE_IDENTIFIER;
-				target.classList.add("is-selected", "start-date");
-				selected_dates = 1;
+				return;
 			}
-			else if (selected_dates === 1)
+
+			chosen_date = DATE_IDENTIFIER;
+			const BODY: FormData = new FormData();
+			BODY.set("date", chosen_date);
+			abort_handle = new AbortController();
+			const RESPONSE: Response = await fetch(
+				"/ajax/get-all-raid-of-the-day",
+				{
+					method: "POST",
+					body: BODY,
+					signal: abort_handle.signal
+				}
+			);
+
+			if (!RESPONSE.ok)
 			{
-				let found: boolean = false;
-
-				STORED_MONTHS.forEach(
-					(widget: HTMLElement): void =>
-					{
-						if (found)
-						{
-							return;
-						}
-
-						(widget.querySelectorAll("li[data-date].disabled-period, li[data-date].disabled-end") as NodeListOf<HTMLLIElement>).forEach(
-							(day: HTMLLIElement): void =>
-							{
-								if (found)
-								{
-									return;
-								}
-
-								const DATE_IDENTIFIER: string|undefined = day.dataset.date;
-
-								if (DATE_IDENTIFIER && DATE_IDENTIFIER > min_end_date)
-								{
-									found = true;
-									max_end_date = DATE_IDENTIFIER;
-								}
-							}
-						);
-					}
-				);
-
-				// Departure date
-				if (
-					DATE_IDENTIFIER > min_end_date
-					&&
-					(
-						!max_end_date
-						||
-						DATE_IDENTIFIER < max_end_date
-					)
-				)
-				{
-					target.classList.add("is-selected", "end-date");
-
-					let is_between: boolean = false;
-
-					STORED_MONTHS.forEach(
-						(widget) =>
-						{
-							widget.querySelectorAll("li[data-date]:not(.disabled-period)").forEach(
-								(item) =>
-								{
-									if (item.classList.contains("is-selected"))
-									{
-										item.classList.remove("period-select");
-										is_between = !is_between;
-									}
-									else
-									{
-										item.classList.toggle("period-select", is_between);
-									}
-								}
-							);
-						}
-					);
-
-					selected_dates = 2;
-				}
+				throw new Error(RESPONSE.statusText);
 			}
+
+			const HTML: string = await RESPONSE.text();
+			const DIV: HTMLDivElement = document.createElement("div");
+			DIV.innerHTML = HTML;
+			const ITEM: HTMLElement|null = DIV.querySelector("raid-list");
+
+			if (!ITEM)
+			{
+				throw new Error("Invalid response");
+			}
+
+			const OLD_RAID_LIST: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list");
+			OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
+			OLD_RAID_LIST.remove();
 		}
 		catch (error)
 		{
@@ -132,34 +85,6 @@
 		finally
 		{
 			clear_process_queue();
-		}
-	}
-
-	function reset_all(): void
-	{
-		try
-		{
-			clear_process_queue();
-
-			selected_dates = 0;
-			min_end_date = "";
-			max_end_date = "";
-
-			STORED_MONTHS.forEach(
-				(widget: HTMLElement): void =>
-				{
-					(widget.querySelectorAll("li.is-selected, li.period-select") as NodeListOf<HTMLLIElement>).forEach(
-						(item: HTMLLIElement): void =>
-						{
-							item.classList.remove("is-selected", "period-select");
-						}
-					);
-				}
-			);
-		}
-		catch (error)
-		{
-			console.log(error);
 		}
 	}
 
@@ -191,7 +116,6 @@
 					BODY.set("date", MONTH.toISOString().substr(0, 10));
 					abort_handle = new AbortController();
 					const RESPONSE: Response = await fetch(
-						// @TODO : Vérifier la route
 						"/ajax/get-availability-calendar",
 						{
 							method: "POST",
