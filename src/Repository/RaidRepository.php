@@ -152,6 +152,10 @@ class RaidRepository extends ServiceEntityRepository
 			->getResult();
     }
 
+	/**************************************
+	 *    Calendar Page - User logged     *
+	 **************************************/
+
 	/**
      * @return Raid[]
      */
@@ -162,7 +166,7 @@ class RaidRepository extends ServiceEntityRepository
 			->join('r.user', 'u')
 			->innerJoin('u.blockeds', 'ub')
 			->where('ub.id != :player')
-			->andWhere('r.endAt < :now')
+			->andWhere('r.startAt > :now')
 			->andWhere('r.isPrivate = false')
 			->setParameters([
 				'now'=> $now,
@@ -171,5 +175,24 @@ class RaidRepository extends ServiceEntityRepository
 			->orderBy('r.startAt', 'ASC')
 			->getQuery()
 			->getResult();
+    }
+
+	/************************************
+	 *      Calendar Page - Anonymous   *
+	 ************************************/
+	
+	 /**
+     * @return Raid[]
+     */
+    public function getAllPendingRaid()
+    {
+		$now = new DateTime();
+		return $this->createQueryBuilder('r')
+            ->where('r.startAt > :now')
+			->andWhere('r.isPrivate = false')
+            ->setParameter('now', $now)
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }
