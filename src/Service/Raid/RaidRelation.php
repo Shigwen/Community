@@ -2,14 +2,13 @@
 
 namespace App\Service\Raid;
 
+use App\Entity\Raid;
 use App\Entity\Role;
 use App\Entity\Character;
 use App\Entity\RaidCharacter;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
 
-class CreateRaidFromForm {
+class RaidRelation {
 
 	/**
 	 * @var EntityManagerInterface $em
@@ -21,11 +20,11 @@ class CreateRaidFromForm {
 		$this->em = $em;
     }
 
-	public function create(FormInterface $form, RaidCharacter $raidCharacter, User $user, array $datas)
-	{
+	public function addCharacterAndServerToRaid(Raid $raid, RaidCharacter $raidCharacter, array $datas)
+	{	
 		$character = $this->em->getRepository(Character::class)->findOneBy([
 			'id' => $datas['raidCharacter']['userCharacter'],
-			'user' => $user,
+			'user' => $raid->getUser(),
 		]);
 
 		$role = $this->em->getRepository(Role::class)->findOneBy([
@@ -36,14 +35,11 @@ class CreateRaidFromForm {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
-		$raid = $form->getData();
 		$raid->setServer($character->getServer());
-
 		$raidCharacter
 			->setUserCharacter($character)
 			->setRole($role);
-
-		$this->em->persist($raid);
-		$this->em->flush();
+		
+		return $raid;
 	}
 }

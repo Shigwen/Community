@@ -16,7 +16,6 @@ class RaidCharacterType extends AbstractType
     {
         $builder
 			->add('userCharacter', EntityType::class, [
-
 				'class' => Character::class,
 				'query_builder' => function (EntityRepository $er) use ($options) {
 					return $er->createQueryBuilder('uc')
@@ -29,9 +28,6 @@ class RaidCharacterType extends AbstractType
 				'label_attr' => [
 					'class' => 'h5',
 				],
-				// 'choice_attr' => function(){
-				// 	return ['class' => 'custom-select'];
-				// },
 				'attr' => [
 					'class' => 'custom-select',
 				],

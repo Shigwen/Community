@@ -33,6 +33,11 @@ class Raid
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $templateName;
+
+    /**
      * @ORM\Column(type="smallint")
      */
     private $raidType;
@@ -145,6 +150,18 @@ class Raid
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getTemplateName()
+    {
+        return $this->templateName;
+    }
+
+    public function setTemplateName($templateName): self
+    {
+        $this->templateName = $templateName;
 
         return $this;
     }

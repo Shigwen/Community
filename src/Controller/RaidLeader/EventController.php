@@ -4,13 +4,13 @@ namespace App\Controller\RaidLeader;
 
 use App\Entity\Raid;
 use App\Form\RaidType;
-use App\Entity\RaidTemplate;
 use App\Entity\RaidCharacter;
-use App\Service\Template\Template;
+use App\Service\Raid\RaidTemplate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -24,18 +24,19 @@ class EventController extends AbstractController
 	 *
      * @Route("/events", name="events")
      */
-    public function events(Request $request, Template $template): Response
+    public function events(Request $request, RaidTemplate $template): Response
     {
-        $raid = new Raid();
-		$raidCharacter = new RaidCharacter();
-		$raid->addRaidCharacter($raidCharacter);
-
-        if ($raidTemplate = $this->getDoctrine()->getRepository(RaidTemplate::class)->findByIdAnduser(
+        if (!$raid = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByIdAndUser(
 			$request->query->get('id'),
 			$this->getUser()
-			)) {
-            $raid = $template->hydrateRaidFromTemplate($raid, $raidTemplate);
-        }
+			)) 
+		{
+			$raid = new Raid();
+			$raidCharacter = new RaidCharacter();
+			$raid->addRaidCharacter($raidCharacter);
+        } else {
+			$template->calculationOfDateAndTimeOfRaid($raid);
+		}
 
 		$url = $request->query->get('id')
 			? $this->generateUrl('raidleader_raid_add').'?id='.$request->query->get('id')
@@ -43,16 +44,20 @@ class EventController extends AbstractController
 
 		$form = $this->createForm(RaidType::class, $raid, [
 			'user' => $this->getUser(),
-            'raidTemplate' => $raidTemplate,
+			'raidInformation' => $raid->getInformation(),
+            'isRaidTemplate' => $request->query->get('id') ? true: false,
 			'action' => $url,
 		]);
+		
+		$raidTemplates = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser());
 
         return $this->render('raid_leader/event_list.html.twig', [
             'user' => $this->getUser(),
 			'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfRaidLeader($this->getUser()),
 			'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfRaidLeader($this->getUser()),
-			'nbrTemplate' => count($this->getUser()->getRaidTemplates()),
-            'editTemplate' => $raidTemplate ? true: false,
+			'nbrTemplate' => count($raidTemplates),
+			'raidTemplates' => $raidTemplates,
+            'editTemplate' => $request->query->get('id') ? true: false,
             'form' => $form->createView(),
         ]);
     }
@@ -60,13 +65,17 @@ class EventController extends AbstractController
 	/**
      * @Route("/template/{id}/delete", name="template_delete")
      */
-    public function templateDelete(RaidTemplate $raidTemplate): Response
+    public function templateDelete(Raid $raid): Response
     {
-		if ($this->getUser() && !$this->getUser()->hasRaidTemplate($raidTemplate)) {
+		if ($this->getUser() && !$this->getUser()->hasRaid($raid)) {
 			throw new AccessDeniedHttpException();
 		}
 
-		$this->getDoctrine()->getManager()->remove($raidTemplate);
+		if (!$raid->getTemplateName()) {
+			throw new BadRequestHttpException("Raid isn't a template");
+		}
+
+		$this->getDoctrine()->getManager()->remove($raid);
 		$this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('raidleader_events');

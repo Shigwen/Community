@@ -4,92 +4,6 @@
 
 {% block body %}
 
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Event page</h1>
-
-    <div class="example-wrapper">
-        <span>Templates : </span>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Tank min</th>
-                    <th>Tank max</th>
-                    <th>Heal min</th>
-                    <th>Heal max</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for template in user.raidTemplates %}
-                    <tr>
-                        <td>{{ template.name }}</td>
-                        <td>{{ template.raidType }}</td>
-                        <td>{{ template.minTank }}</td>
-                        <td>{{ template.maxTank }}</td>
-                        <td>{{ template.minHeal }}</td>
-                        <td>{{ template.maxHeal }}</td>
-                        <td>
-                            <a href="{{ path('raidleader_events')}}?id={{template.id}}">Use/edit</a>
-							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Supprimer</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-{#
-        <hr>
-        <span>Create event : </span>
-        <a href="{{ path('raidleader_events')}}">Reset Form</a>
-
-        {{ form_start(form) }}
-            {{ form_row(form.name) }}
-            {{ form_row(form.raidType) }}
-            {{ form_row(form.expectedAttendee) }}
-            {{ form_row(form.startAt) }}
-            {{ form_row(form.endAt) }}
-            {{ form_row(form.information) }}
-            {{ form_row(form.minTank) }}
-            {{ form_row(form.maxTank) }}
-            {{ form_row(form.minHeal) }}
-            {{ form_row(form.maxHeal) }}
-            {{ form_row(form.autoAccept) }}
-            {{ form_row(form.isPrivate) }}
-			{% for row in form.raidCharacter %}
-				{{ form_label(row) }}
-				{{ form_widget(row) }}
-			{% endfor %}
-
-            <div> {{ form_row(form.save) }}</div>
-
-            {% if nbrTemplate is defined and nbrTemplate < 5 %}
-                <p>
-                    Choose a name if you want to save this raid as <br>
-                    a template and ease future raid creation
-                </p>
-                <div> {{ form_row(form.templateName) }}</div>
-                {% if editTemplate %}
-                    <div> {{ form_row(form.editTemplate) }}</div>
-                {% else %}
-                    <div> {{ form_row(form.saveTemplate) }}</div>
-                {% endif %}
-            {% endif %}
-        {{ form_end(form) }}
-
-        <hr>
-
-    </div>
-</div> 
-
-<!-- ...;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; -->
-#}
-
 <main class="container bg-dark">
 
 	{{ include('_tbc_banner.html.twig') }}
@@ -143,16 +57,16 @@
 				</thead>
 
 				<tbody class="text-center ">
-					{% for template in user.raidTemplates %}
+					{% for template in raidTemplates %}
                     <tr>
-                        <td>{{ template.name }}</td>
+                        <td>{{ template.templateName }}</td>
 						<td>dayOfTheWeek</td>
 						<td class="text-success d-none d-md-table-cell">Alexandross</td>
 						<td class="d-none d-md-table-cell">DPS</td>
 						<td>
 								clickMe
 
-							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -196,7 +110,7 @@
 						</td>
                         <td>
                             <a href="{{ path('raidleader_events')}}?id={{template.id}}">Use/edit</a>
-							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Supprimer</a>
+							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -399,13 +313,13 @@
 				</fieldset>
 
 				<div class="col-12 mt-4 d-flex justify-content-around">
-					<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">Save as template</button>
+					<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">{% if editTemplate %} Edit your {% else %} Save as {% endif %} template</button>
 
 					<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title">Save your template</h5>
+									<h5 class="modal-title">{% if editTemplate %} Edit {% else %} Save {% endif %} your template</h5>
 
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
@@ -436,7 +350,6 @@
 
 								</div>
 
-
 								<div class="modal-footer">
 
 										{% if editTemplate %}
@@ -460,7 +373,7 @@
 							</div>
 						</div>
 					</div>
-					{{ form_row(form.save) }}
+					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event to calendar</button>
 				</div>
 
 			{{ form_end(form) }}
@@ -493,7 +406,7 @@
 						<td>
 							clickMe
 
-							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -545,12 +458,12 @@
 					<tr>
 						<td>{{ raid.name }}</td>
 						<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
-						<td class="d-none d-md-table-cell">{{ character.name }}</td>
-						<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+						<td class="d-none d-md-table-cell"> {# {{ character.name }} #} </td>
+						<td class="d-none d-md-table-cell"> {# {{ character.role.name }} #} </td>
 						<td>
 							clickMe
 
-							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -583,8 +496,8 @@
 											<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
 										</div>
 										<div class="modal-footer d-flex d-md-none">
-											<span class="h5">RL Character : {{ character.name }}</span>
-											<span class="h5">Coming as : {{ character.role.name }}</span>
+											<span class="h5">RL Character : {# {{ character.name }} #} </span>
+											<span class="h5">Coming as : {# {{ character.role.name }} #} </span>
 
 											<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
 										</div>
