@@ -84,47 +84,6 @@
         {{ form_end(form) }}
 
         <hr>
-        <span>Raids à venirs</span>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Début</th>
-                    <th>Fin</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for raid in pendingRaids %}
-                    <tr>
-                        <td>{{ raid.name }}</td>
-                        <td>{{ raid.raidType }}</td>
-                        <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
-                        <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
-                        <td>
-							<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
-                            <a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modifier</a>
-                            <a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Supprimer</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-
-				{% for raid in inProgressRaids %}
-                    <tr>
-                        <td>{{ raid.name }}</td>
-                        <td>{{ raid.raidType }}</td>
-                        <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
-                        <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
-                        <td>
-							<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
-						</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-		<a href="{{ path('raidleader_raid_archived')}}">Show finished raids</a>
 
     </div>
 </div> #}
@@ -177,41 +136,72 @@
 					<tr>
 						<th scope="col">Name</th>
 						<th scope="col">Date</th>
-						<th scope="col">RL as</th>
+						<th scope="col" class="d-none d-md-table-cell">RL as</th>
 						<th scope="col" class="d-none d-md-table-cell">Role</th>
+						<th scope="col">Details</th>
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 
 				<tbody class="text-center ">
-					<tr>
-						<td>Saturday Night Fever</td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td><span class="text-success">Travolta</span></td>
+					{% for template in user.raidTemplates %}
+                    <tr>
+                        <td>{{ template.name }}</td>
+						<td>dayOfTheWeek</td>
+						<td class="text-success d-none d-md-table-cell">Alexandross</td>
 						<td class="d-none d-md-table-cell">DPS</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
-					<tr>
-						<td>Karazhan Evening Madness </td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td><span class="text-success">MyLittlePony</span></td>
-						<td class="d-none d-md-table-cell">Tank, DPS</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
-					<tr>
-						<td>I hate fridays</td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td><span class="text-success">ILoveWeekends</span></td>
-						<td class="d-none d-md-table-cell">Tank, Heal, DPS</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
-					<tr>
-						<td>We have shamans too now !</td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td><span class="text-success">AllianceLover</span></td>
-						<td class="d-none d-md-table-cell">Heal</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
+						<td>
+								clickMe
+
+							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Click me</h5>
+
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+
+											<table class="table table-striped table-bordered table-hover table-dark">
+												<thead class="text-center">
+													<tr>
+														<th scope="col">Raid type</th>
+														<th scope="col">Min. and Max. Tanks</th>
+														<th scope="col">Min. and Max. Healers</th>
+													</tr>
+												</thead>
+
+												<tbody class="text-center ">
+													<tr>
+														<td>{{ template.raidType }}</td>
+														<td>{{ template.minTank }} to {{ template.maxTank }}</td>
+														<td>{{ template.minHeal }} to {{ template.maxHeal }}</td>
+													</tr>
+												</tbody>
+											</table>
+
+											<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
+										</div>
+										<div class="modal-footer d-flex d-md-none">
+											<span class="h5">RL Character : Alexandross</span>
+											<span class="h5">Coming as : DPS</span>
+
+											<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+                        <td>
+                            <a href="{{ path('raidleader_events')}}?id={{template.id}}">Use/edit</a>
+							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+
 				</tbody>
 			</table>
 		</div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
@@ -246,54 +236,11 @@
 		</div>
 	</div>
 
-
-{# ------------------------------- FORM STARTS HERE -------------------------------------- #}
-
-	{# <hr>
-	<span>Create event : </span>
-	<a href="{{ path('raidleader_events')}}">Reset Form</a>
-
-	{{ form_start(form) }}
-		{{ form_row(form.name) }}
-		{{ form_row(form.raidType) }}
-
-		{{ form_row(form.startAt) }}
-		{{ form_row(form.endAt) }}
-
-		{% for row in form.raidCharacter %}
-			{{ form_label(row) }}
-			{{ form_widget(row) }}
-		{% endfor %}
-
-		<div> {{ form_row(form.save) }}</div>
-
-		{% if nbrTemplate is defined and nbrTemplate < 5 %}
-			<p>
-				Choose a name if you want to save this raid as <br>
-				a template and ease future raid creation
-			</p>
-			<div> {{ form_row(form.templateName) }}</div>
-			{% if editTemplate %}
-				<div> {{ form_row(form.editTemplate) }}</div>
-			{% else %}
-				<div> {{ form_row(form.saveTemplate) }}</div>
-			{% endif %}
-		{% endif %}
-	{{ form_end(form) }} #}
-
-{# {{
-	form_label(row, null,
-		{label_attr:
-			{
-				class: 'h5',
-			}
-		}
-	)
-}} #}
 	<div class="row d-flex justify-content-around">
 		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 			{{ form_start(form) }}
 				<fieldset class="form-group">
+					<a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
 					<legend class="text-center h3 mb-5">Create An Event (max. 5):</legend>
 
 					<div class="row d-flex justify-content-around">
@@ -446,31 +393,7 @@
 								</div>
 
 								{{ form_widget(form.information) }}
-									{#
 
-								<textarea class="form-control" id="exampleFormControlTextarea1" rows="12">
-Raid leading style and goals:
-
-My goal is for everyone to enjoy discovering the raid at its own pace. I will take a few minutes before every boss to explain the strategy and make sure everyone understands what has to be done.
-OR
-I'll try to gather as many good players as I can so we can speed run this with full mats ! High-parsing players will most likely have more priority in this raid than other lower geared characters.
-
-Loot rules :
-
-Reserved > Main-spec > Main-spec but already got an item > Off-spec.
-OR
-We will be using EPGP / Loot council / DKP / etc.
-
-Mandatory add-ons :
-
-DBM, Angry Assignments, and so on...
-
-Anything else you might think is important to mention :
-
-Strategies will never be debated during the raid, no matter how much one might think he knows better.
-								</textarea>
-
-								#}
 							</div>
 						</div>
 					</div>
@@ -483,7 +406,7 @@ Strategies will never be debated during the raid, no matter how much one might t
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" >Save your template</h5>
+									<h5 class="modal-title">Save your template</h5>
 
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
@@ -491,42 +414,37 @@ Strategies will never be debated during the raid, no matter how much one might t
 								</div>
 								<div class="modal-body">
 
-									{% if nbrTemplate is defined and nbrTemplate < 6 %}
+									{% if editTemplate %}
+										<span class="h5 form-label">
+											Modify your template's name (or not)
+										</span>
+										{{ form_widget(form.templateName) }}
 
-										{% if editTemplate %}
-											<span class="h5 form-label">
-												Modify your template's name (or not)
-											</span>
+									{% else %}
+										{% if nbrTemplate < 5 %}
+											{{ form_label(form.templateName) }}
 											{{ form_widget(form.templateName) }}
-
 										{% else %}
-											{% if nbrTemplate is defined and nbrTemplate < 5 %}
-												{{ form_label(form.templateName) }}
-												{{ form_widget(form.templateName) }}
-											{% else %}
-												<div class="d-flex align-items-center justify-content-center">
-													<p class="h5 text-danger">
-														Oops, it seems that you've alreadu reached the maximum of templates allowed
-														for this version of the app. Sorry ! Edit an old one you're not using,
-														or delete one to free a slot in order to create a new one.
-													</p>
-												</div>
-											{% endif %}
+											<div class="d-flex align-items-center justify-content-center">
+												<p class="h5 text-danger">
+													Oops, it seems that you've alreadu reached the maximum of templates allowed
+													for this version of the app. Sorry ! Edit an old one you're not using,
+													or delete one to free a slot in order to create a new one.
+												</p>
+											</div>
 										{% endif %}
-
 									{% endif %}
+
 								</div>
 
 
 								<div class="modal-footer">
 
-									{% if nbrTemplate is defined and nbrTemplate < 6 %}
-
 										{% if editTemplate %}
 											{{ form_row(form.editTemplate) }}
 
 										{% else %}
-											{% if nbrTemplate is defined and nbrTemplate < 5 %}
+											{% if nbrTemplate < 5 %}
 												{{ form_row(form.saveTemplate) }}
 											{% else %}
 												<div class="d-flex align-items-center justify-content-center">
@@ -537,26 +455,13 @@ Strategies will never be debated during the raid, no matter how much one might t
 											{% endif %}
 										{% endif %}
 
-									{% endif %}
-									{#-- {% if nbrTemplate is defined and nbrTemplate < 5 %}
-
-										{% if editTemplate %}
-											<div> {{ form_row(form.editTemplate) }}</div>
-
-										{% else %}
-											<div> {{ form_row(form.saveTemplate) }}</div>
-
-										{% endif %}
-									{% endif %} #}
-
 									<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
 
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event</button>
+					{{ form_row(form.save) }}
 				</div>
 
 			{{ form_end(form) }}
@@ -570,40 +475,132 @@ Strategies will never be debated during the raid, no matter how much one might t
 			<table class="table table-striped table-bordered table-hover table-dark">
 				<thead class="text-center">
 					<tr>
-						<th scope="col">Event</th>
+						<th scope="col">Name</th>
 						<th scope="col">Date</th>
-						<th scope="col">As</th>
+						<th scope="col" class="d-none d-md-table-cell">RL as</th>
 						<th scope="col" class="d-none d-md-table-cell">Role</th>
-						<th scope="col" class="d-none d-md-table-cell">Notes</th>
-						<th scope="col"></th>
+						<th scope="col">Details</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 
 				<tbody class="text-center ">
+					{% for raid in inProgressRaids %}
 					<tr>
-						<td>Saturday Night Fever <br>by <span class="text-success">Travolta</span></td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td>Artemis</td>
-						<td class="d-none d-md-table-cell">DPS</td>
-						<td class="d-none d-md-table-cell">!</td>
-						<td>! ! ! ! ! !</td>
+						<td>{{ raid.name }}</td>
+						<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
+						<td class="d-none d-md-table-cell">{{ character.name }}</td>
+						<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+						<td>
+							clickMe
+
+							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Click me</h5>
+
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+
+											<table class="table table-striped table-bordered table-hover table-dark">
+												<thead class="text-center">
+													<tr>
+														<th scope="col">Raid type</th>
+														<th scope="col">Min. and Max. Tanks</th>
+														<th scope="col">Min. and Max. Healers</th>
+													</tr>
+												</thead>
+
+												<tbody class="text-center">
+													<tr>
+														<td>{{ raid.raidType }}</td>
+														<td>{{ raid.minTank }} to {{ raid.maxTank }}</td>
+														<td>{{ raid.minHeal }} to {{ raid.maxHeal }}</td>
+													</tr>
+												</tbody>
+											</table>
+
+											<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
+										</div>
+										<div class="modal-footer d-flex d-md-none">
+											<span class="h5">RL Character : {{ character.name }}</span>
+											<span class="h5">Coming as : {{ character.role.name }}</span>
+
+											<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
+						</td>
 					</tr>
+					{% endfor %}
+
+					{% for raid in pendingRaids %}
 					<tr>
-						<td>Karazhan Evening Madness <br>by <span class="text-success">MyLittlePony</span></td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td>Diana</td>
-						<td class="d-none d-md-table-cell">Tank, DPS</td>
-						<td class="d-none d-md-table-cell">!</td>
-						<td>! ! ! ! ! !</td>
+						<td>{{ raid.name }}</td>
+						<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
+						<td class="d-none d-md-table-cell">{{ character.name }}</td>
+						<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+						<td>
+							clickMe
+
+							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Click me</h5>
+
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+
+											<table class="table table-striped table-bordered table-hover table-dark">
+												<thead class="text-center">
+													<tr>
+														<th scope="col">Raid type</th>
+														<th scope="col">Min. and Max. Tanks</th>
+														<th scope="col">Min. and Max. Healers</th>
+													</tr>
+												</thead>
+
+												<tbody class="text-center">
+													<tr>
+														<td>{{ raid.raidType }}</td>
+														<td>{{ raid.minTank }} to {{ raid.maxTank }}</td>
+														<td>{{ raid.minHeal }} to {{ raid.maxHeal }}</td>
+													</tr>
+												</tbody>
+											</table>
+
+											<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
+										</div>
+										<div class="modal-footer d-flex d-md-none">
+											<span class="h5">RL Character : {{ character.name }}</span>
+											<span class="h5">Coming as : {{ character.role.name }}</span>
+
+											<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
+							<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modify</a>
+							<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Delete</a>
+						</td>
 					</tr>
-					<tr>
-						<td>I hate fridays <br>by <span class="text-success">ILoveWeekends</span></td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td>Xanjori</td>
-						<td class="d-none d-md-table-cell">Tank, Heal, DPS</td>
-						<td class="d-none d-md-table-cell">!</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
+					{% endfor %}
+
 					<tr>
 						<td>We have shamans too now ! <br>by <span class="text-success">AllianceLover</span></td>
 						<td>19/04/21<br>19h30 - 23h</td>
@@ -614,6 +611,10 @@ Strategies will never be debated during the raid, no matter how much one might t
 					</tr>
 				</tbody>
 			</table>
+
+			<div class="d-flex justify-content-center">
+				<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_archived')}}">Show finished raids</a>
+			</div>
 		</div>
 	</div>
 </main>
