@@ -7,73 +7,11 @@
 {% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<calendar-wrapper>
+		{{ include('event/_calendar.html.twig') }}
+	</calendar-wrapper>
 
-<widget-calendar>
-    <calendar-head>
-        {{ title }}
-    </calendar-head>
-    
-	<calendar-body>
-        <ul>
-            <li>Lu</li>
-            <li>Ma</li>
-            <li>Me</li>
-            <li>Je</li>
-            <li>Ve</li>
-            <li>Sa</li>
-            <li>Di</li>
-        </ul>
-        <ul>
-            {% if empty_days_padding > 0 %}
-                {% for date in range(1, empty_days_padding) %}
-                    <li class="empty-dates"></li>
-                {% endfor %}
-            {% endif %}
-
-            {% set style = '' %}
-
-            {% for item in days %}
-                {% if item['past'] %}
-                    {% set style = 'is-notavailable' %}
-                {% else %}
-                    {% set style = '' %}
-                {% endif %}
-                <li data-date="{{ item['date'] }}" class="{{ style }}">{{ item['number'] }}</li>
-            {% endfor %}
-        </ul>
-	</calendar-body>
-
-</widget-calendar>
-
-<div class="example-wrapper">
-	<h1>Raid list</h1>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Début</th>
-				<th>Fin</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for raid in raids %}
-				<tr>
-					<td>{{ raid.name }}</td>
-					<td>{{ raid.raidType }}</td>
-					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
-					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
-					<td>
-						<a href="{{ path('user_raid_register', {id: raid.id})}}">Show</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
+	<raid-wrapper>
+		{{ include('event/_raids.html.twig')}}
+	</raid-wrapper>
 {% endblock %}

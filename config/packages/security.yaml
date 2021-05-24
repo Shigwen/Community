@@ -24,6 +24,12 @@ security:
             logout:
                 path: logout
                 target: home
+            # Overide the lifetime of session if user checked "remember me"
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path: /
+                secure:   true
 
     role_hierarchy:
       ROLE_RAID_LEADER: ROLE_USER

@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Raid;
+use App\Service\Calendar;
 use App\Entity\RaidCharacter;
 use App\Form\RaidCharacterType;
-use App\Service\Calendar;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,15 +18,19 @@ class EventController extends AbstractController
      */
     public function eventList(Calendar $calendar): Response
     {
-		$month = $calendar::GetDefaultWidgets();
+		$date = new DateTime();
+		$month = $calendar::Process($date->format('Y-m-d'));
+
+		$raids = $this->getUser()
+		? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser())
+		: $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid();
 
         return $this->render('event/event_list.html.twig', [
-            'raids' => $this->getDoctrine()->getRepository(Raid::class)->findBy([
-				'isPrivate' => false,
-			]),
+            'raids' => $raids,
 			'title' => $month['title'],
-			'empty_days_padding' => $month['empty_days_padding'],
+			'emptyDaysPadding' => $month['empty_days_padding'],
 			'days' => $month['days'],
+			'date' => $date,
         ]);
     }
 

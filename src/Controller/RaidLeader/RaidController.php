@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @Route("/raid-leader/raid", name="raidleader_raid_")
@@ -88,6 +89,10 @@ class RaidController extends AbstractController
      */
     public function show(Raid $raid): Response
     {
+		if (!$this->getUser()->hasRaid($raid)) {
+			throw new AccessDeniedHttpException();
+		}
+
 		return $this->render('raid_leader/show_raid.html.twig', [
 			'raid' => $raid,
 		]);
@@ -98,8 +103,8 @@ class RaidController extends AbstractController
      */
     public function edit(Request $request, Raid $raid): Response
     {
-		if($this->getUser() && !$this->getUser()->hasRaid($raid)) {
-			throw $this->createNotFoundException('Une erreur est survenue');
+		if (!$this->getUser()->hasRaid($raid)) {
+			throw new AccessDeniedHttpException();
 		}
 
 		if (!$raidCharacter = $raid->getRaidCharacterFromUser($this->getUser())) {
@@ -147,8 +152,8 @@ class RaidController extends AbstractController
      */
     public function delete(Raid $raid): Response
     {
-		if ($this->getUser() && !$this->getUser()->hasRaid($raid)) {
-			throw $this->createNotFoundException('Une erreur est survenue');
+		if (!$this->getUser()->hasRaid($raid)) {			
+			throw new AccessDeniedHttpException();
 		}
 
 		$this->getDoctrine()->getManager()->remove($raid);

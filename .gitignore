@@ -4,3 +4,4 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+.vscode/*

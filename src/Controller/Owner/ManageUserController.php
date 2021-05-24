@@ -3,6 +3,8 @@
 namespace App\Controller\Owner;
 
 use App\Entity\User;
+use App\Entity\RaidTemplate;
+use App\Service\Template\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +20,6 @@ class ManageUserController extends AbstractController
      */
     public function banHammer(User $user): Response
     {
-
 		if ($user->getStatus() === User::STATUS_EMAIL_CONFIRMED) {
 			$user->setStatus(User::STATUS_BAN);
 		} else if ($user->getStatus() === User::STATUS_BAN) {
@@ -33,12 +34,17 @@ class ManageUserController extends AbstractController
 	/**
      * @Route("/change-role/{id}", name="change_role")
      */
-    public function changeRole(Request $request, User $user): Response
+    public function changeRole(Request $request, User $user, Template $template): Response
     {
 		$role = $request->request->get('role');
 		if (!in_array($role, [User::ROLE_USER, User::ROLE_RAID_LEADER, User::ROLE_ADMIN])) {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
+
+        if ($role ===  User::ROLE_RAID_LEADER && 
+            !$this->getDoctrine()->getRepository(RaidTemplate::class)->findBy(['user' => $user])) {
+                $template->createDefaultTemplate($user);
+        }
 
 		$user->setRoles([$role]);
 		$this->getDoctrine()->getManager()->flush();

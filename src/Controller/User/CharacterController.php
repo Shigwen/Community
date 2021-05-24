@@ -2,13 +2,14 @@
 
 namespace App\Controller\User;
 
+use DateTime;
 use App\Entity\Character;
 use App\Form\CharacterType;
-use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @Route("/user/character", name="user_character_")
@@ -27,7 +28,6 @@ class CharacterController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-
 			$character = $form->getData();
             $this->getDoctrine()->getManager()->persist($character);
             $this->getDoctrine()->getManager()->flush();
@@ -43,7 +43,7 @@ class CharacterController extends AbstractController
     public function edit(Request $request, Character $character): Response
     {
 		if(!$this->getUser()->hasCharacter($character)) {
-			throw $this->createNotFoundException('Une erreur est survenue');
+			throw new AccessDeniedHttpException();
 		}
 
 		$form = $this->createForm(CharacterType::class, $character);
@@ -64,7 +64,7 @@ class CharacterController extends AbstractController
     public function delete(Character $character): Response
     {
 		if(!$this->getUser()->hasCharacter($character)) {
-			throw $this->createNotFoundException('Une erreur est survenue');
+			throw new AccessDeniedHttpException();
 		}
 
 		$this->getDoctrine()->getManager()->remove($character);

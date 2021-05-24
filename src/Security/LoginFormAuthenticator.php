@@ -2,7 +2,6 @@
 
 namespace App\Security;
 
-use App\Entity\Ip;
 use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;

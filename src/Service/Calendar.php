@@ -15,10 +15,10 @@ class Calendar
 		$date->modify('first day of this month');
 		$widgets[] = self::Process($date->format('Y-m-d'));
 
-		//$date->modify('next month');
-		//$widgets[] = self::Process($date->format('Y-m-d'));
+		$date->modify('next month');
+		$widgets[] = self::Process($date->format('Y-m-d'));
 
-		return self::Process($date->format('Y-m-d'));
+		return $widgets;
 	}
 
 	static public function Process($date)

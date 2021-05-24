@@ -1,0 +1,44 @@
+
+<widget-calendar>   
+
+    {% if date|date('m/Y') != "now"|date('m/Y') %}
+        <button class="prev"> Previous month </button>
+    {% endif %}
+
+    <button class="next"> Next month </button>
+
+    <calendar-head>
+        {{ title }}
+    </calendar-head>
+    
+    <calendar-body>
+        <ul>
+            <li>Monday</li>
+            <li>Tuesday</li>
+            <li>Wednesday</li>
+            <li>Thursday</li>
+            <li>Friday</li>
+            <li>Saturday</li>
+            <li>Sunday</li>
+        </ul>
+        <ul>
+            {% if emptyDaysPadding > 0 %}
+                {% for date in range(1, emptyDaysPadding) %}
+                    <li class="empty-dates"></li>
+                {% endfor %}
+            {% endif %}
+
+            {% set style = '' %}
+
+            {% for item in days %}
+                {% if item['past'] %}
+                    {% set style = 'is-notavailable' %}
+                {% else %}
+                    {% set style = '' %}
+                {% endif %}
+                <li data-date="{{ item['date'] }}" class="{{ style }}">{{ item['number'] }}</li>
+            {% endfor %}
+        </ul>
+    </calendar-body>
+    
+</widget-calendar>
