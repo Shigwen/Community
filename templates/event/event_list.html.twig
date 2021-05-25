@@ -2,11 +2,21 @@
 
 {% block title %}Calendar{% endblock %}
 
+
+{% block style %}
+	<script defer src="{{asset('js/calendar.js')}}"></script>
+{% endblock %}
+
 {% block javascripts %}
 	<script defer src="{{asset('js/calendar.js')}}"></script>
 {% endblock %}
 
 {% block body %}
+
+<main class="container bg-dark">
+
+	{{ include('_tbc_banner.html.twig') }}
+
 	<calendar-wrapper>
 		{{ include('event/_calendar.html.twig') }}
 	</calendar-wrapper>
@@ -14,4 +24,5 @@
 	<raid-wrapper>
 		{{ include('event/_raids.html.twig')}}
 	</raid-wrapper>
+</main>
 {% endblock %}

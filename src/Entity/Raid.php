@@ -132,12 +132,12 @@ class Raid
         return $this->id;
     }
 
-	public function getIdentifier(): ?string
+	public function getIdentifier()
 	{
 		return $this->identifier;
 	}
 
-    public function setIdentifier(string $identifier): self
+    public function setIdentifier($identifier): self
     {
         $this->identifier = $identifier;
 

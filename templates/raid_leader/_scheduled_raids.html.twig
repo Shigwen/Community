@@ -1,0 +1,148 @@
+
+<div class="row d-flex justify-content-around">
+
+	<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+		<h2 class="text-center">Raids you scheduled</h2>
+		<table class="table table-striped table-bordered table-hover table-dark">
+			<thead class="text-center">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Date</th>
+					<th scope="col" class="d-none d-md-table-cell">RL as</th>
+					<th scope="col" class="d-none d-md-table-cell">Role</th>
+					<th scope="col">Details</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+
+			<tbody class="text-center ">
+				{% for raid in inProgressRaids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
+					<td class="d-none d-md-table-cell">{{ character.name }}</td>
+					<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+					<td>
+						clickMe
+
+						<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Click me</h5>
+
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+
+										<table class="table table-striped table-bordered table-hover table-dark">
+											<thead class="text-center">
+												<tr>
+													<th scope="col">Raid type</th>
+													<th scope="col">Min. and Max. Tanks</th>
+													<th scope="col">Min. and Max. Healers</th>
+												</tr>
+											</thead>
+
+											<tbody class="text-center">
+												<tr>
+													<td>{{ raid.raidType }}</td>
+													<td>{{ raid.minTank }} to {{ raid.maxTank }}</td>
+													<td>{{ raid.minHeal }} to {{ raid.maxHeal }}</td>
+												</tr>
+											</tbody>
+										</table>
+
+										<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
+									</div>
+									<div class="modal-footer d-flex d-md-none justify-content-between">
+										<span class="h5">
+											RL Character : {{ raidCharacter.userCharacter.name }}
+											<br>
+											Coming as : {{ raidCharacter.role.name }}
+										</span>
+
+										<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
+					</td>
+				</tr>
+				{% endfor %}
+
+				{% for raid in pendingRaids %}
+				<tr>
+					<td>{{ raid.name }}</td>
+					<td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
+					{% set raidCharacter = raid.raidCharacterFromUser(user) %}
+					<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+					<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
+					<td>
+						<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
+
+						<div class="modal fade" id="clickMeRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Click me</h5>
+
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+
+										<table class="table table-striped table-bordered table-hover table-dark">
+											<thead class="text-center">
+												<tr>
+													<th scope="col">Raid type</th>
+													<th scope="col">Min. and Max. Tanks</th>
+													<th scope="col">Min. and Max. Healers</th>
+												</tr>
+											</thead>
+
+											<tbody class="text-center">
+												<tr>
+													<td>{{ raid.raidType }}</td>
+													<td>{{ raid.minTank }} to {{ raid.maxTank }}</td>
+													<td>{{ raid.minHeal }} to {{ raid.maxHeal }}</td>
+												</tr>
+											</tbody>
+										</table>
+
+										<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
+									</div>
+									<div class="modal-footer d-flex d-md-none justify-content-between">
+										<span class="h5">
+											RL Character : {{ raidCharacter.userCharacter.name }}
+											<br>
+											Coming as : {{ raidCharacter.role.name }}
+										</span>
+
+										<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
+						<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modify</a>
+						<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Delete</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div class="d-flex justify-content-center">
+			<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_archived')}}">Show past raids</a>
+		</div>
+	</div>
+</div>
