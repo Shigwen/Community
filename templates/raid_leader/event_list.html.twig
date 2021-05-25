@@ -7,6 +7,7 @@
 <main class="container bg-dark">
 
 	{{ include('_tbc_banner.html.twig') }}
+
 	<div class="row d-flex justify-content-around">
 
 		<div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
@@ -70,7 +71,7 @@
 							<td class="d-none d-md-table-cell">-</td>
 						{% endif %}
 						<td>
-							<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">Click me</button>
+							<button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">Click me</button>
 
 							<div class="modal fade" id="clickMeTemplate_{{ template.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
@@ -389,7 +390,7 @@
 			<p class="text-center h3 mb-5">Create An Event (max. 5):</p>
 			<p>
 				Vous devez avoir au moins un personnage afin de pouvoir créer un raid. <br>
-				Vous pouvez créer un personnage ici : 
+				Vous pouvez créer un personnage ici :
 				<a href="{{ path('user_account') }}">Page profil</a>
 			</p>
 		{% endif %}
@@ -534,7 +535,7 @@
 			</table>
 
 			<div class="d-flex justify-content-center">
-				<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_archived')}}">Show finished raids</a>
+				<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_archived')}}">Show past raids</a>
 			</div>
 		</div>
 	</div>

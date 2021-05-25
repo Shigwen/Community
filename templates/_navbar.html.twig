@@ -17,7 +17,7 @@
 			{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
 				<li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'user_account' %}active{% endif %}">
-					<a class="nav-link" href="{{ path('user_account') }}">Profile</a>
+					<a class="nav-link" href="{{ path('user_account') }}">Account</a>
 				</li>
 
 			{% endif %}
