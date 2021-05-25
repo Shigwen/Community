@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\Raid;
-use App\Entity\RaidCharacter;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -23,6 +22,42 @@ class RaidRepository extends ServiceEntityRepository
     }
 
 	/************************
+	 *       Templates      *
+	 ************************/
+    /**
+     * @return Raid[]
+     */
+    public function getRaidTemplateByUser(User $user)
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.templateName IS NOT NULL')
+			->andWhere('r.user = :user')
+            ->setParameter('user' , $user)
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+	/**
+     * @return Raid
+     */
+    public function getRaidTemplateByIdAndUser( $raidId, User $user)
+    {
+		$now = new DateTime();
+        return $this->createQueryBuilder('r')
+            ->where('r.templateName IS NOT NULL')
+			->andWhere('r.user = :user')
+			->andWhere('r.id = :raidId')
+			->setParameters([
+				'raidId'=> $raidId,
+				'user' => $user,
+			])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+	/************************
 	 *      Raid Leader     *
 	 ************************/
 
@@ -33,7 +68,8 @@ class RaidRepository extends ServiceEntityRepository
     {
 		$now = new DateTime();
         return $this->createQueryBuilder('r')
-            ->where('r.startAt > :now')
+			->where('r.templateName IS NULL')
+            ->andWhere('r.startAt > :now')
 			->andWhere('r.user = :raidLeader')
             ->setParameters([
 				'now'=> $now,
@@ -51,7 +87,8 @@ class RaidRepository extends ServiceEntityRepository
     {
 		$now = new DateTime();
         return $this->createQueryBuilder('r')
-            ->where('r.startAt > :now')
+			->where('r.templateName IS NULL')
+            ->andWhere('r.startAt > :now')
             ->andWhere('r.endAt < :now')
 			->andWhere('r.user = :raidLeader')
             ->setParameters([
@@ -70,7 +107,8 @@ class RaidRepository extends ServiceEntityRepository
     {
 		$now = new DateTime();
         return $this->createQueryBuilder('r')
-            ->where('r.endAt < :now')
+			->where('r.templateName IS NULL')
+            ->andWhere('r.endAt < :now')
 			->andWhere('r.user = :raidLeader')
             ->setParameters([
 				'now'=> $now,
@@ -95,6 +133,7 @@ class RaidRepository extends ServiceEntityRepository
 			->innerJoin('r.raidCharacters', 'rc')
 			->join('rc.userCharacter', 'uc')
 			->where('uc.user = :player')
+			->andWhere('r.templateName IS NULL')
             ->andWhere('r.startAt > :now')
 			->andWhere('rc.status = :status')
             ->setParameters([
@@ -117,6 +156,7 @@ class RaidRepository extends ServiceEntityRepository
 			->innerJoin('r.raidCharacters', 'rc')
 			->join('rc.userCharacter', 'uc')
 			->where('uc.user = :player')
+			->andWhere('r.templateName IS NULL')
 			->andWhere('r.startAt > :now')
 			->andWhere('r.endAt < :now')
 			->andWhere('rc.status = :status')
@@ -140,6 +180,7 @@ class RaidRepository extends ServiceEntityRepository
 			->innerJoin('r.raidCharacters', 'rc')
 			->join('rc.userCharacter', 'uc')
 			->where('uc.user = :player')
+			->andWhere('r.templateName IS NULL')
 			->andWhere('r.endAt < :now')
 			->andWhere('rc.status = :status')
 			->setParameters([
@@ -166,6 +207,7 @@ class RaidRepository extends ServiceEntityRepository
 			->join('r.user', 'u')
 			->leftJoin('u.blockeds', 'ub')
 			->where('ub.id IS NULL OR ub.id != :player')
+			->andWhere('r.templateName IS NULL')
 			->andWhere('r.startAt > :now')
 			->andWhere('r.isPrivate = false')
 			->setParameters([
@@ -196,6 +238,7 @@ class RaidRepository extends ServiceEntityRepository
 			->join('r.user', 'u')
 			->leftJoin('u.blockeds', 'ub')
 			->where('ub.id IS NULL OR ub.id != :player')
+			->andWhere('r.templateName IS NULL')
 			->andWhere('r.startAt > :start')
 			->andWhere('r.endAt < :end')
 			->andWhere('r.isPrivate = false')
@@ -221,6 +264,7 @@ class RaidRepository extends ServiceEntityRepository
 		$now = new DateTime();
 		return $this->createQueryBuilder('r')
             ->where('r.startAt > :now')
+			->andWhere('r.templateName IS NULL')
 			->andWhere('r.isPrivate = false')
             ->setParameter('now', $now)
             ->orderBy('r.startAt', 'ASC')
@@ -244,6 +288,7 @@ class RaidRepository extends ServiceEntityRepository
 		$end->modify('+1 day')->setTime(23,59);
 
 		return $this->createQueryBuilder('r')
+			->where('r.templateName IS NULL')
 			->andWhere('r.startAt > :start')
 			->andWhere('r.endAt < :end')
 			->andWhere('r.isPrivate = false')

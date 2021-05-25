@@ -23,7 +23,7 @@ class Raid
     private $id;
 
 	/**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $identifier;
 
@@ -31,6 +31,11 @@ class Raid
      * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $templateName;
 
     /**
      * @ORM\Column(type="smallint")
@@ -105,7 +110,7 @@ class Raid
 
 	/**
      * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="raids")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $server;
 
@@ -145,6 +150,18 @@ class Raid
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getTemplateName()
+    {
+        return $this->templateName;
+    }
+
+    public function setTemplateName($templateName): self
+    {
+        $this->templateName = $templateName;
 
         return $this;
     }
@@ -197,13 +214,21 @@ class Raid
         return $this;
     }
 
-    public function getRaidDayOfWeek()
+    public function getVerboseStartDayOfWeek()
     {
         if (!$this->getStartAt()) {
             return null;
         }
-        // N format return 1 (for monday) to 7 (for sunday)
-        return $this->getStartAt()->format('N');
+        
+        return [
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
+            7 => 'Sunday',
+        ][$this->getStartAt()->format('N')]; // N format return 1 (for monday) to 7 (for sunday)
     }
 
     public function getInformation(): ?string

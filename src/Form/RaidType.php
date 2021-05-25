@@ -147,11 +147,11 @@ class RaidType extends AbstractType
 					'class' => 'form-control',
 					'rows' => '14',
 				],
-				'data' => 'Raid leading style and goals:
+				'data' => $options['raidInformation'] ? $options['raidInformation'] : "Raid leading style and goals:
 
 My goal is for everyone to enjoy discovering the raid at its own pace. I will take a few minutes before every boss to explain the strategy and make sure everyone understands what has to be done.
 OR
-I\'ll try to gather as many good players as I can so we can speed run this with full mats ! High-parsing players will most likely have more priority in this raid than other lower geared characters.
+I'll try to gather as many good players as I can so we can speed run this with full mats ! High-parsing players will most likely have more priority in this raid than other lower geared characters.
 
 Loot rules :
 
@@ -165,50 +165,47 @@ DBM, Angry Assignments, and so on...
 
 Anything else you might think is important to mention :
 
-Strategies will never be debated during the raid, no matter how much one might think he knows better.',
-			])
-
-			->add('save', SubmitType::class, [
-				'label' => $options['isEdit'] ? 'Modify raid' : 'Post event to calendar',
-				'attr' => [
-					'class' => 'btn btn-primary rounded-pill btn-lg',
-				],
+Strategies will never be debated during the raid, no matter how much one might think he knows better.",
 			]);
 
-
-			if ($options['raidTemplate']) {
+			if (!$options['isEdit']) {
 				$builder
-					->add('templateName', TextType::class, [
-						'mapped' => false,
-						'data' => $options['raidTemplate']->getName(),
-					])
-					->add('editTemplate', SubmitType::class, [
-						'label' => 'Edit template',
-						'attr' => [
-							'class' => 'btn btn-lg btn-primary',
-						],
-					]);
+				->add('templateName', TextType::class, [
+					'label' => 'Give it a template name :',
+					'label_attr' => [
+						'class' => 'h5',
+					],
+					'attr' => [
+						'class' => 'form-control',
+						'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
+					],
+					'required' => false,
+				]);
 			}
 
-			if (!$options['isEdit'] && !$options['raidTemplate']) {
+			if (!$options['isEdit'] && !$options['isRaidTemplate']) {
 				$builder
-					->add('templateName', TextType::class, [
-						'mapped' => false,
-						'label' => 'Give it a template name :',
-						'label_attr' => [
-							'class' => 'h5',
-						],
-						'attr' => [
-							'class' => 'form-control',
-							'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
-						],
-					])
-					->add('saveTemplate', SubmitType::class, [
-						'label' => 'Save template',
-						'attr' => [
-							'class' => 'btn btn-lg btn-primary',
-						],
-					]);
+				->add('saveTemplate', SubmitType::class, [
+					'label' => 'Save template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				]);
+			}
+
+			if ($options['isRaidTemplate']) {
+				$builder
+				->add('saveAsNewTemplate', SubmitType::class, [
+					'label' => 'Save as new template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				])->add('editTemplate', SubmitType::class, [
+					'label' => 'Edit template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				]);
 			}
     }
 
@@ -216,9 +213,10 @@ Strategies will never be debated during the raid, no matter how much one might t
     {
         $resolver->setDefaults([
             'data_class' => Raid::class,
+			'raidInformation' => null,
 			'user' => null,
 			'isEdit' => false,
-			'raidTemplate' => null,
+			'isRaidTemplate' => false,
 		]);
     }
 }
