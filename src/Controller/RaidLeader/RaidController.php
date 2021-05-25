@@ -5,11 +5,10 @@ namespace App\Controller\RaidLeader;
 use DateTime;
 use App\Entity\Raid;
 use App\Form\RaidType;
-use App\Entity\RaidTemplate;
 use App\Entity\RaidCharacter;
 use App\Service\Raid\Identifier;
-use App\Service\Template\Template;
-use App\Service\Raid\CreateRaidFromForm;
+use App\Service\Raid\RaidTemplate;
+use App\Service\Raid\RaidRelation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,16 +21,16 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class RaidController extends AbstractController
 {
 	/**
-	 * Create a raid OR create a template OR edit a template
+	 * Create a raid OR 
+	 * Create a template OR 
+	 * Edit a template
 	 *
      * @Route("/add", name="add")
      */
-    public function add(Request $request, Identifier $identifier, Template $template, CreateRaidFromForm $createRaidFromForm): Response
+    public function add(Request $request, Identifier $identifier, RaidTemplate $template, RaidRelation $raidService): Response
     {
         $raid = new Raid();
-		$raid
-			->setUser($this->getUser())
-			->setIdentifier($identifier->generate(Raid::IDENTIFIER_SIZE));
+		$raid->setUser($this->getUser());
 
 		$raidCharacter = new RaidCharacter();
 		$raidCharacter
@@ -40,36 +39,65 @@ class RaidController extends AbstractController
 
 		$raid->addRaidCharacter($raidCharacter);
 
-		// Hydrate raid from the chosen template
-        if ($raidTemplate = $this->getDoctrine()->getRepository(RaidTemplate::class)->findByIdAnduser(
+		$raidTemplate = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByIdAndUser(
 			$request->query->get('id'),
 			$this->getUser()
-			)) {
-            $raid = $template->hydrateRaidFromTemplate($raid, $raidTemplate);
-        }
+		);
 
 		$form = $this->createForm(RaidType::class, $raid, [
 			'user' => $this->getUser(),
-            'raidTemplate' => $raidTemplate,
+            'isRaidTemplate' => $raidTemplate ? true : false,
 		]);
+
 		$form->handleRequest($request);
 
-		// Create raid template
-		if (!$raidTemplate && $form->get('saveTemplate')->isClicked() && $form->isValid()){
-			$datas = $request->request->get('raid');
-			$template->createOrEditTemplateFromRaid($datas['templateName'], $raid);
+		if (!$raidTemplate) {	
+
+			// Create new template
+			if ($form->get('saveTemplate')->isClicked() && $form->isValid()) {
+				if (!$raid->getTemplateName()) {
+					$raid->setTemplateName($raid->getName());
+				}
+
+			// Create new raid
+			} else {
+				$raid
+				->setTemplateName(null)
+				->setIdentifier($raid->getIsPrivate() ? $identifier->generate(Raid::IDENTIFIER_SIZE) : null);
+			}
+
+			$raid = $raidService->addCharacterAndServerToRaid($raid, $raidCharacter, $request->request->get('raid'));
+			$this->getDoctrine()->getManager()->persist($raid);
+
+		} else {
+			
+			// Save chosen raid template as a new template 
+			if ($form->get('saveAsNewTemplate')->isClicked() && $form->isValid()) {
+				if (!$raidTemplate->getTemplateName()) {
+					$raidTemplate->setTemplateName($raidTemplate->getName());
+				}
+				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
+				$this->getDoctrine()->getManager()->persist($raid);
+				
+			// Edit chosen raid template 
+			} else if ($form->get('editTemplate')->isClicked() && $form->isValid() ) {
+				if (!$raidTemplate->getTemplateName()) {
+					$raidTemplate->setTemplateName($raidTemplate->getName());
+				}
+				$raidCharacter = $raidTemplate->getRaidCharacterFromUser($this->getUser());
+				$raidTemplate = $template->editTemplate($raidTemplate, $raid, $raidCharacter, $request->request->get('raid'));
+
+			// Create raid from the chosen raid template
+			} else {
+				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
+				$raid
+				->setTemplateName(null)
+				->setIdentifier($raid->getIsPrivate() ? $identifier->generate(Raid::IDENTIFIER_SIZE) : null);
+				$this->getDoctrine()->getManager()->persist($raid);
+			}
 		}
 
-		// Edit raid template
-		if ($raidTemplate && $form->get('editTemplate')->isClicked() && $form->isValid()){
-			$datas = $request->request->get('raid');
-			$template->createOrEditTemplateFromRaid($datas['templateName'], $raid, $raidTemplate);
-		}
-
-		// Create raid
-		if ($form->get('save')->isClicked() && $form->isValid()) {
-			$createRaidFromForm->create($form, $raidCharacter, $this->getUser(), $request->request->get('raid'));
-		}
+		$this->getDoctrine()->getManager()->flush();
 
        return $this->redirectToRoute('raidleader_events');
     }
@@ -105,6 +133,12 @@ class RaidController extends AbstractController
     {
 		if (!$this->getUser()->hasRaid($raid)) {
 			throw new AccessDeniedHttpException();
+		}
+
+		$now = new DateTime();
+		if ($now > $raid->getStartAt() ) {
+			$this->addFlash('danger', "You cannot modify a raid already start");
+			return $this->redirectToRoute('raidleader_events');
 		}
 
 		if (!$raidCharacter = $raid->getRaidCharacterFromUser($this->getUser())) {

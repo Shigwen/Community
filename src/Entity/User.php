@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use DateTime;
-use App\Entity\RaidTemplate;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
@@ -89,11 +88,6 @@ class User implements UserInterface
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=RaidTemplate::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $raidTemplates;
-
-    /**
      * @ORM\OneToMany(targetEntity=Raid::class, mappedBy="user", orphanRemoval=true)
      */
     private $raids;
@@ -123,7 +117,6 @@ class User implements UserInterface
 		$this->lastAttempt = new DateTime();
 
 		$this->createdAt = new DateTime();
-        $this->raidTemplates = new ArrayCollection();
         $this->raids = new ArrayCollection();
         $this->ips = new ArrayCollection();
         $this->blockeds = new ArrayCollection();
@@ -329,36 +322,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|RaidTemplate[]
-     */
-    public function getRaidTemplates(): Collection
-    {
-        return $this->raidTemplates;
-    }
-
-    public function addRaidTemplate(RaidTemplate $raidTemplate): self
-    {
-        if (!$this->raidTemplates->contains($raidTemplate)) {
-            $this->raidTemplates[] = $raidTemplate;
-            $raidTemplate->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRaidTemplate(RaidTemplate $raidTemplate): self
-    {
-        if ($this->raidTemplates->removeElement($raidTemplate)) {
-            // set the owning side to null (unless already changed)
-            if ($raidTemplate->getUser() === $this) {
-                $raidTemplate->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Raid[]
      */
     public function getRaids(): Collection
@@ -459,15 +422,6 @@ class User implements UserInterface
 	public function hasRaid(Raid $raid) : bool
 	{
 		if ($this->raids->contains($raid)) {
-			return true;
-		}
-
-		return false;
-	}
-
-    public function hasRaidTemplate(RaidTemplate $raidTemplate) : bool
-	{
-		if ($this->raidTemplates->contains($raidTemplate)) {
 			return true;
 		}
 

@@ -36,7 +36,7 @@ class ManageParticipantController extends AbstractController
 
 		$status = $request->query->get('status');
 		if (!in_array($status, [RaidCharacter::ACCEPT, RaidCharacter::REFUSED])) {
-			throw new BadRequestHttpException('Message');
+			throw new BadRequestHttpException('Statut erroné');
 		}
 
 		$raidCharacter->setStatus($status);

@@ -49,7 +49,7 @@
 				<thead class="text-center">
 					<tr>
 						<th scope="col">Name</th>
-						<th scope="col">Date</th>
+						<th scope="col">Day</th>
 						<th scope="col" class="d-none d-md-table-cell">RL as</th>
 						<th scope="col" class="d-none d-md-table-cell">Role</th>
 						<th scope="col">Details</th>
@@ -58,12 +58,18 @@
 				</thead>
 
 				<tbody class="text-center ">
-					{% for template in user.raidTemplates %}
+					{% for template in raidTemplates %}
                     <tr>
-                        <td>{{ template.name }}</td>
-						<td>dayOfTheWeek</td>
-						<td class="text-success d-none d-md-table-cell">Alexandross</td>
-						<td class="d-none d-md-table-cell">DPS</td>
+                        <td>{{ template.templateName }}</td>
+						<td>{{ template.verboseStartDayOfWeek }}</td>
+						{% set raidCharacter = template.raidCharacterFromUser(user) %}
+						{% if raidCharacter %}
+							<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+							<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
+						{% else %}
+							<td class="text-success d-none d-md-table-cell">-</td>
+							<td class="d-none d-md-table-cell">-</td>
+						{% endif %}
 						<td>
 							<button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">Click me</button>
 
@@ -111,7 +117,7 @@
 						</td>
                         <td>
                             <a href="{{ path('raidleader_events')}}?id={{template.id}}">Use/edit</a>
-							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Supprimer</a>
+							<a href="{{ path('raidleader_template_delete', {id: template.id})}}">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -152,6 +158,7 @@
 
 	<div class="row d-flex justify-content-around">
 		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+		{% if user.characters|length > 0 %}
 			{{ form_start(form) }}
 				<fieldset class="form-group">
 					<a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
@@ -314,13 +321,13 @@
 				</fieldset>
 
 				<div class="col-12 mt-4 d-flex justify-content-around">
-					<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">Save as template</button>
+					<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">{% if editTemplate %} Edit your {% else %} Save as {% endif %} template</button>
 
 					<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title">Save your template</h5>
+									<h5 class="modal-title">{% if editTemplate %} Edit {% else %} Save {% endif %} your template</h5>
 
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
@@ -351,10 +358,10 @@
 
 								</div>
 
-
 								<div class="modal-footer">
 
 										{% if editTemplate %}
+											{{ form_row(form.saveAsNewTemplate) }}
 											{{ form_row(form.editTemplate) }}
 
 										{% else %}
@@ -375,12 +382,21 @@
 							</div>
 						</div>
 					</div>
-					{{ form_row(form.save) }}
+					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event to calendar</button>
 				</div>
 
 			{{ form_end(form) }}
+		{% else %}
+			<p class="text-center h3 mb-5">Create An Event (max. 5):</p>
+			<p>
+				Vous devez avoir au moins un personnage afin de pouvoir créer un raid. <br>
+				Vous pouvez créer un personnage ici :
+				<a href="{{ path('user_account') }}">Page profil</a>
+			</p>
+		{% endif %}
 		</div>
 	</div>
+
 
 	<div class="row d-flex justify-content-around">
 
@@ -408,7 +424,7 @@
 						<td>
 							clickMe
 
-							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -459,13 +475,14 @@
 					{% for raid in pendingRaids %}
 					<tr>
 						<td>{{ raid.name }}</td>
-						<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
-						<td class="d-none d-md-table-cell">{{ character.name }}</td>
-						<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+						<td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
+						{% set raidCharacter = raid.raidCharacterFromUser(user) %}
+						<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+						<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
 						<td>
-							clickMe
+							<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
 
-							<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMeRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -498,8 +515,8 @@
 											<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
 										</div>
 										<div class="modal-footer d-flex d-md-none">
-											<span class="h5">RL Character : {{ character.name }}</span>
-											<span class="h5">Coming as : {{ character.role.name }}</span>
+											<span class="h5">RL Character : {# {{ character.name }} #} </span>
+											<span class="h5">Coming as : {# {{ character.role.name }} #} </span>
 
 											<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
 										</div>
@@ -514,15 +531,6 @@
 						</td>
 					</tr>
 					{% endfor %}
-
-					<tr>
-						<td>We have shamans too now ! <br>by <span class="text-success">AllianceLover</span></td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td>Alexandross</td>
-						<td class="d-none d-md-table-cell">Heal</td>
-						<td class="d-none d-md-table-cell">!</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
 				</tbody>
 			</table>
 
