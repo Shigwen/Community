@@ -135,6 +135,12 @@ class RaidController extends AbstractController
 			throw new AccessDeniedHttpException();
 		}
 
+		$now = new DateTime();
+		if ($now > $raid->getStartAt() ) {
+			$this->addFlash('danger', "You cannot modify a raid already start");
+			return $this->redirectToRoute('raidleader_events');
+		}
+
 		if (!$raidCharacter = $raid->getRaidCharacterFromUser($this->getUser())) {
 			$raidCharacter = new RaidCharacter();
 			$raidCharacter

@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use DateTime;
 use App\Entity\Raid;
 use App\Entity\RaidCharacter;
 use App\Form\RaidCharacterType;
@@ -9,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @Route("/user/raid", name="user_raid_")
@@ -41,6 +41,12 @@ class RaidController extends AbstractController
      */
     public function register(Request $request, Raid $raid): Response
     {
+		$now = new DateTime();
+		if ($now > $raid->getStartAt() ) {
+			$this->addFlash('danger', "You cannot register to a raid already start");
+			return $this->redirectToRoute('user_raid_show', ['id' => $raid->getId()]);
+		}
+		
 		if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
 			$this->getUser(),
 			$raid)
@@ -69,6 +75,12 @@ class RaidController extends AbstractController
      */
     public function unregister(Request $request, Raid $raid): Response
     {
+		$now = new DateTime();
+		if ($now > $raid->getStartAt() ) {
+			$this->addFlash('danger', "You cannot unregister to a raid already start");
+			return $this->redirectToRoute('user_raid_show', ['id' => $raid->getId()]);
+		}
+
 		$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
 			$this->getUser(),
 			$raid
