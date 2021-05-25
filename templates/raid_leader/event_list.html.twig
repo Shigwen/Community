@@ -157,6 +157,7 @@
 
 	<div class="row d-flex justify-content-around">
 		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+		{% if user.characters|length > 0 %}
 			{{ form_start(form) }}
 				<fieldset class="form-group">
 					<a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
@@ -384,8 +385,17 @@
 				</div>
 
 			{{ form_end(form) }}
+		{% else %}
+			<p class="text-center h3 mb-5">Create An Event (max. 5):</p>
+			<p>
+				Vous devez avoir au moins un personnage afin de pouvoir créer un raid. <br>
+				Vous pouvez créer un personnage ici : 
+				<a href="{{ path('user_account') }}">Page profil</a>
+			</p>
+		{% endif %}
 		</div>
 	</div>
+
 
 	<div class="row d-flex justify-content-around">
 
@@ -466,7 +476,7 @@
 						<td>{{ raid.name }}</td>
 						<td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
 						{% set raidCharacter = raid.raidCharacterFromUser(user) %}
-						<td class="d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+						<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
 						<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
 						<td>
 							<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
