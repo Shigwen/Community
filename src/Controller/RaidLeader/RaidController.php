@@ -84,6 +84,7 @@ class RaidController extends AbstractController
 				if (!$raidTemplate->getTemplateName()) {
 					$raidTemplate->setTemplateName($raidTemplate->getName());
 				}
+				$raidCharacter = $raidTemplate->getRaidCharacterFromUser($this->getUser());
 				$raidTemplate = $template->editTemplate($raidTemplate, $raid, $raidCharacter, $request->request->get('raid'));
 
 			// Create raid from the chosen raid template

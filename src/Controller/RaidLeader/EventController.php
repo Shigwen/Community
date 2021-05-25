@@ -36,6 +36,10 @@ class EventController extends AbstractController
 			$raid->addRaidCharacter($raidCharacter);
         } else {
 			$raid = $template->calculationOfDateAndTimeOfRaid($raid);
+			if ($raidCharacter = $raid->getRaidCharacterFromUser($this->getUser())) {
+				$character = $raidCharacter->getUserCharacter();
+				$role = $raidCharacter->getRole();
+			}
 		}
 
 		$url = $request->query->get('id')
@@ -48,7 +52,12 @@ class EventController extends AbstractController
             'isRaidTemplate' => $request->query->get('id') ? true: false,
 			'action' => $url,
 		]);
-		
+
+		if (isset($character) && isset($role)) {
+			$form->get('raidCharacter')->get('userCharacter')->setData($character);
+			$form->get('raidCharacter')->get('role')->setData($role);
+		}
+
 		$raidTemplates = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser());
 
         return $this->render('raid_leader/event_list.html.twig', [
