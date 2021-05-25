@@ -121,6 +121,8 @@ class Raid
 
     public function __construct()
     {
+		$this->startAt = new DateTime();
+		$this->endAt = new DateTime();
 		$this->createdAt = new DateTime();
         $this->raidCharacters = new ArrayCollection();
     }
@@ -219,7 +221,7 @@ class Raid
         if (!$this->getStartAt()) {
             return null;
         }
-        
+
         return [
             1 => 'Monday',
             2 => 'Tuesday',

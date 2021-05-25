@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -53,20 +54,35 @@ class RaidType extends AbstractType
 			])
 
             ->add('startAt', DateTimeType::class, [
-				'widget' => 'single_text',
+				'widget' => 'choice',
 				'label' => 'Raid starts at :',
 				'label_attr' => [
 					'class' => 'h5',
 				],
 			])
 
-            ->add('endAt', DateTimeType::class, [
-				'widget' => 'single_text',
+            ->add('endAt', TimeType::class, [
+				'widget' => 'choice',
 				'label' => 'Raid ends at :',
 				'label_attr' => [
 					'class' => 'h5',
 				],
 			])
+
+			->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+				$form = $event->getForm();
+
+				$startAt = $form->get('startAt');
+				$endAt = $form->get('endAt');
+
+				$endAt->setDate(
+					$startAt->format('Y'),
+					$startAt->format('m'),
+					$startAt->format('d')
+				);
+
+				$form->get('endAt')->setDatas($endAt);
+			})
 
 			->add('expectedAttendee', null, [
 				'label' => 'Amount of raiders you\'re looking for',

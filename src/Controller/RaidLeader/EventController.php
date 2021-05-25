@@ -74,17 +74,17 @@ class EventController extends AbstractController
 	/**
      * @Route("/template/{id}/delete", name="template_delete")
      */
-    public function templateDelete(Raid $raid): Response
+    public function templateDelete(Raid $raidTemplate): Response
     {
-		if ($this->getUser() && !$this->getUser()->hasRaid($raid)) {
+		if ($this->getUser() && !$this->getUser()->hasRaid($raidTemplate)) {
 			throw new AccessDeniedHttpException();
 		}
 
-		if (!$raid->getTemplateName()) {
+		if (!$raidTemplate->getTemplateName()) {
 			throw new BadRequestHttpException("Raid isn't a template");
 		}
 
-		$this->getDoctrine()->getManager()->remove($raid);
+		$this->getDoctrine()->getManager()->remove($raidTemplate);
 		$this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('raidleader_events');
