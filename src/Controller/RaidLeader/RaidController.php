@@ -21,8 +21,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class RaidController extends AbstractController
 {
 	/**
-	 * Create a raid OR 
-	 * Create a template OR 
+	 * Create a raid OR
+	 * Create a template OR
 	 * Edit a template
 	 *
      * @Route("/add", name="add")
@@ -51,10 +51,19 @@ class RaidController extends AbstractController
 
 		$form->handleRequest($request);
 
-		if (!$raidTemplate) {	
+		$allRaidTemplates = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser());
+
+		if (!$raidTemplate) {
 
 			// Create new template
 			if ($form->get('saveTemplate')->isClicked() && $form->isValid()) {
+				if (count($allRaidTemplates) >= 5) {
+					$this->addFlash('danger', "Oops, it seems that you've alreadu reached the maximum of templates allowed
+					for this version of the app. Sorry ! Edit an old one you're not using,
+					or delete one to free a slot in order to create a new one.");
+
+					return $this->redirectToRoute('raidleader_events');
+				}
 				if (!$raid->getTemplateName()) {
 					$raid->setTemplateName($raid->getName());
 				}
@@ -70,16 +79,23 @@ class RaidController extends AbstractController
 			$this->getDoctrine()->getManager()->persist($raid);
 
 		} else {
-			
-			// Save chosen raid template as a new template 
+
+			// Save chosen raid template as a new template
 			if ($form->get('saveAsNewTemplate')->isClicked() && $form->isValid()) {
+				if (count($allRaidTemplates) >= 5) {
+					$this->addFlash('danger', "Oops, it seems that you've alreadu reached the maximum of templates allowed
+					for this version of the app. Sorry ! Edit an old one you're not using,
+					or delete one to free a slot in order to create a new one.");
+
+					return $this->redirectToRoute('raidleader_events');
+				}
 				if (!$raidTemplate->getTemplateName()) {
 					$raidTemplate->setTemplateName($raidTemplate->getName());
 				}
 				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
 				$this->getDoctrine()->getManager()->persist($raid);
-				
-			// Edit chosen raid template 
+
+			// Edit chosen raid template
 			} else if ($form->get('editTemplate')->isClicked() && $form->isValid() ) {
 				if (!$raidTemplate->getTemplateName()) {
 					$raidTemplate->setTemplateName($raidTemplate->getName());
@@ -186,7 +202,7 @@ class RaidController extends AbstractController
      */
     public function delete(Raid $raid): Response
     {
-		if (!$this->getUser()->hasRaid($raid)) {			
+		if (!$this->getUser()->hasRaid($raid)) {
 			throw new AccessDeniedHttpException();
 		}
 

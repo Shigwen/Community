@@ -29,7 +29,7 @@ class EventController extends AbstractController
         if (!$raid = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByIdAndUser(
 			$request->query->get('id'),
 			$this->getUser()
-			)) 
+			))
 		{
 			$raid = new Raid();
 			$raidCharacter = new RaidCharacter();
