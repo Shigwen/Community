@@ -81,7 +81,30 @@ class RaidTemplate {
 
 	public function calculationOfDateAndTimeOfRaid(Raid $raid)
 	{
-		// @TODO : calculer date et heure
+		$start = $raid->getStartAt();
+		$end = $raid->getEndAt();
+		$dayOfWeek = $raid->getVerboseStartDayOfWeek();
+
+		$newStart = new DateTime();
+		$newStart->modify($dayOfWeek.' this week');
+		$newEnd = clone $newStart;
+
+		$newStart->setTime(
+			$start->format('H'),
+			$start->format('i'),
+			$start->format('s')
+		);
+
+		$newEnd->setTime(
+			$end->format('H'),
+			$end->format('i'),
+			$end->format('s')
+		);
+
+		$raid
+		->setStartAt($newStart)
+		->setEndAt($newEnd);
+
 		return $raid;
 	}
 }

@@ -35,7 +35,7 @@ class EventController extends AbstractController
 			$raidCharacter = new RaidCharacter();
 			$raid->addRaidCharacter($raidCharacter);
         } else {
-			$template->calculationOfDateAndTimeOfRaid($raid);
+			$raid = $template->calculationOfDateAndTimeOfRaid($raid);
 		}
 
 		$url = $request->query->get('id')
