@@ -48,7 +48,7 @@
 				<thead class="text-center">
 					<tr>
 						<th scope="col">Name</th>
-						<th scope="col">Date</th>
+						<th scope="col">Day</th>
 						<th scope="col" class="d-none d-md-table-cell">RL as</th>
 						<th scope="col" class="d-none d-md-table-cell">Role</th>
 						<th scope="col">Details</th>
@@ -60,9 +60,15 @@
 					{% for template in raidTemplates %}
                     <tr>
                         <td>{{ template.templateName }}</td>
-						<td>dayOfTheWeek</td>
-						<td class="text-success d-none d-md-table-cell">Alexandross</td>
-						<td class="d-none d-md-table-cell">DPS</td>
+						<td>{{ template.verboseStartDayOfWeek }}</td>
+						{% set raidCharacter = template.raidCharacterFromUser(user) %}
+						{% if raidCharacter %}
+							<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+							<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
+						{% else %}
+							<td class="text-success d-none d-md-table-cell">-</td>
+							<td class="d-none d-md-table-cell">-</td>
+						{% endif %}
 						<td>
 							<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">Click me</button>
 
@@ -458,13 +464,14 @@
 					{% for raid in pendingRaids %}
 					<tr>
 						<td>{{ raid.name }}</td>
-						<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
-						<td class="d-none d-md-table-cell"> {# {{ character.name }} #} </td>
-						<td class="d-none d-md-table-cell"> {# {{ character.role.name }} #} </td>
+						<td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
+						{% set raidCharacter = raid.raidCharacterFromUser(user) %}
+						<td class="d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+						<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
 						<td>
-							clickMe
+							<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
 
-							<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMeRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -513,15 +520,6 @@
 						</td>
 					</tr>
 					{% endfor %}
-
-					<tr>
-						<td>We have shamans too now ! <br>by <span class="text-success">AllianceLover</span></td>
-						<td>19/04/21<br>19h30 - 23h</td>
-						<td>Alexandross</td>
-						<td class="d-none d-md-table-cell">Heal</td>
-						<td class="d-none d-md-table-cell">!</td>
-						<td>! ! ! ! ! !</td>
-					</tr>
 				</tbody>
 			</table>
 

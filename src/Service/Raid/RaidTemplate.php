@@ -46,7 +46,10 @@ class RaidTemplate {
 			->setMaxHeal(5)
 			->setUser($user)
 			->setStartAt($start)
-			->setEndAt($end);
+			->setEndAt($end)
+			->setAutoAccept(false)
+			->setIsPrivate(true)
+			;
 
 		$this->em->persist($raid);
 		$this->em->flush();

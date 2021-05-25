@@ -21,16 +21,16 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class RaidController extends AbstractController
 {
 	/**
-	 * Create a raid OR create a template OR edit a template
+	 * Create a raid OR 
+	 * Create a template OR 
+	 * Edit a template
 	 *
      * @Route("/add", name="add")
      */
     public function add(Request $request, Identifier $identifier, RaidTemplate $template, RaidRelation $raidService): Response
     {
         $raid = new Raid();
-		$raid
-			->setUser($this->getUser())
-			->setIdentifier($identifier->generate(Raid::IDENTIFIER_SIZE));
+		$raid->setUser($this->getUser());
 
 		$raidCharacter = new RaidCharacter();
 		$raidCharacter
@@ -61,7 +61,9 @@ class RaidController extends AbstractController
 
 			// Create new raid
 			} else {
-				$raid->setTemplateName(null);
+				$raid
+				->setTemplateName(null)
+				->setIdentifier($raid->getIsPrivate() ? $identifier->generate(Raid::IDENTIFIER_SIZE) : null);
 			}
 
 			$raid = $raidService->addCharacterAndServerToRaid($raid, $raidCharacter, $request->request->get('raid'));
@@ -86,8 +88,10 @@ class RaidController extends AbstractController
 
 			// Create raid from the chosen raid template
 			} else {
-				$raid->setTemplateName(null);
 				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
+				$raid
+				->setTemplateName(null)
+				->setIdentifier($raid->getIsPrivate() ? $identifier->generate(Raid::IDENTIFIER_SIZE) : null);
 				$this->getDoctrine()->getManager()->persist($raid);
 			}
 		}

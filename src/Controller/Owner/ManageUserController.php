@@ -2,6 +2,7 @@
 
 namespace App\Controller\Owner;
 
+use App\Entity\Raid;
 use App\Entity\User;
 use App\Service\Raid\RaidTemplate;
 use Symfony\Component\HttpFoundation\Request;
