@@ -36,13 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 {
-    var CONTAINER = document.querySelector("calendar-wrapper");
+    var CONTAINER_1 = document.querySelector("calendar-wrapper");
     var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
-    if (CONTAINER === null) {
+    if (CONTAINER_1 === null) {
         throw new Error("Missing calendar wrapper");
     }
     var NOW_1 = new Date();
-    var STORED_MONTHS_1 = Array.from(CONTAINER.querySelectorAll("widget-calendar"));
+    var STORED_MONTHS_1 = Array.from(CONTAINER_1.querySelectorAll("widget-calendar"));
     if (STORED_MONTHS_1.length < 1) {
         throw new Error("Missing elements");
     }
@@ -57,7 +57,7 @@ var _this = this;
     }
     function select_date(target) {
         return __awaiter(this, void 0, Promise, function () {
-            var DATE_IDENTIFIER, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
+            var DATE_IDENTIFIER, ITEMS, i, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -70,6 +70,11 @@ var _this = this;
                         if (target.matches(".is-notavailable")) {
                             return [2 /*return*/];
                         }
+                        ITEMS = CONTAINER_1.querySelectorAll("li.is-selected");
+                        for (i = 0; i < ITEMS.length; ++i) {
+                            ITEMS[i].classList.remove("is-selected");
+                        }
+                        target.classList.add("is-selected");
                         chosen_date_1 = DATE_IDENTIFIER;
                         BODY = new FormData();
                         BODY.set("date", chosen_date_1);
@@ -180,7 +185,7 @@ var _this = this;
             });
         });
     }
-    CONTAINER.addEventListener("click", function (event) {
+    CONTAINER_1.addEventListener("click", function (event) {
         var TARGET = event.target;
         var BUTTON = TARGET.closest("button.next, button.prev");
         if (BUTTON) {

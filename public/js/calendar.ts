@@ -46,6 +46,13 @@
 				return;
 			}
 
+			const ITEMS = CONTAINER.querySelectorAll("li.is-selected");
+			for (let i: number = 0; i < ITEMS.length; ++i)
+			{
+				ITEMS[i].classList.remove("is-selected");
+			}
+
+			target.classList.add("is-selected");
 			chosen_date = DATE_IDENTIFIER;
 			const BODY: FormData = new FormData();
 			BODY.set("date", chosen_date);
