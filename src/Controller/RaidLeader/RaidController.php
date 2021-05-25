@@ -52,26 +52,39 @@ class RaidController extends AbstractController
 		$form->handleRequest($request);
 
 		if (!$raidTemplate) {	
-			// Create template
+
+			// Create new template
 			if ($form->get('saveTemplate')->isClicked() && $form->isValid()) {
 				if (!$raid->getTemplateName()) {
 					$raid->setTemplateName($raid->getName());
 				}
-			// Create raid
+
+			// Create new raid
 			} else {
 				$raid->setTemplateName(null);
 			}
 
 			$raid = $raidService->addCharacterAndServerToRaid($raid, $raidCharacter, $request->request->get('raid'));
 			$this->getDoctrine()->getManager()->persist($raid);
+
 		} else {
-			// Edit raid template 
-			if ($form->get('editTemplate')->isClicked() && $form->isValid()) {
+			
+			// Save chosen raid template as a new template 
+			if ($form->get('saveAsNewTemplate')->isClicked() && $form->isValid()) {
+				if (!$raidTemplate->getTemplateName()) {
+					$raidTemplate->setTemplateName($raidTemplate->getName());
+				}
+				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
+				$this->getDoctrine()->getManager()->persist($raid);
+				
+			// Edit chosen raid template 
+			} else if ($form->get('editTemplate')->isClicked() && $form->isValid() ) {
 				if (!$raidTemplate->getTemplateName()) {
 					$raidTemplate->setTemplateName($raidTemplate->getName());
 				}
 				$raidTemplate = $template->editTemplate($raidTemplate, $raid, $raidCharacter, $request->request->get('raid'));
-			// Create raid
+
+			// Create raid from the chosen raid template
 			} else {
 				$raid->setTemplateName(null);
 				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));

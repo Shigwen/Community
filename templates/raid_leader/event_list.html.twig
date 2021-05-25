@@ -64,9 +64,9 @@
 						<td class="text-success d-none d-md-table-cell">Alexandross</td>
 						<td class="d-none d-md-table-cell">DPS</td>
 						<td>
-								clickMe
+							<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">Click me</button>
 
-							<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+							<div class="modal fade" id="clickMeTemplate_{{ template.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -353,6 +353,7 @@
 								<div class="modal-footer">
 
 										{% if editTemplate %}
+											{{ form_row(form.saveAsNewTemplate) }}
 											{{ form_row(form.editTemplate) }}
 
 										{% else %}

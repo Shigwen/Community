@@ -195,7 +195,12 @@ Strategies will never be debated during the raid, no matter how much one might t
 
 			if ($options['isRaidTemplate']) {
 				$builder
-				->add('editTemplate', SubmitType::class, [
+				->add('saveAsNewTemplate', SubmitType::class, [
+					'label' => 'Save as new template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				])->add('editTemplate', SubmitType::class, [
 					'label' => 'Edit template',
 					'attr' => [
 						'class' => 'btn btn-lg btn-primary',
