@@ -18,7 +18,7 @@
 					<td>{{ raid.startAt|date("d/m/Y H:i") }}</td>
 					<td>{{ raid.endAt|date("d/m/Y H:i") }}</td>
 					<td>
-						<a href="{{ path('user_raid_register', {id: raid.id})}}">Show</a>
+						<a href="{{ path('event', {id: raid.id})}}">Show</a>
 					</td>
 				</tr>
 			{% endfor %}

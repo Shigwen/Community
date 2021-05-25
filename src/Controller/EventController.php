@@ -39,25 +39,27 @@ class EventController extends AbstractController
      */
     public function event(Raid $raid): Response
     {
-		$isEdit = true;
-		if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
-			$this->getUser(),
-			$raid)
-		) {
-			$isEdit = false;
-			$raidCharacter = new RaidCharacter();
-		}
+		if ($this->getUser()) {
+			$isEdit = true;
+			if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
+				$this->getUser(),
+				$raid)
+			) {
+				$isEdit = false;
+				$raidCharacter = new RaidCharacter();
+			}
 
-		$form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
-			'user' => $this->getUser(),
-			'action' => $this->generateUrl('user_raid_register', ['id' => $raid->getId()]),
-		]);
+			$form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
+				'user' => $this->getUser(),
+				'action' => $this->generateUrl('user_raid_register', ['id' => $raid->getId()]),
+			]);
+		}
 
         return $this->render('event/show_event.html.twig', [
             'raid' => $raid,
-			'user' => $this->getUser(),
-			'form' => $form->createView(),
-			'isEdit' => $isEdit,
+			'user' => $this->getUser() ? $this->getUser() : null,
+			'form' => $this->getUser() ? $form->createView() : null,
+			'isEdit' => $this->getUser() ? $isEdit : false,
         ]);
     }
 }
