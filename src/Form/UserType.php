@@ -18,34 +18,37 @@ class UserType extends AbstractType
 				'label' => 'Nickname',
 				'attr' => [
 					'placeholder' => 'Diana384',
-					'class' => 'form-control mb-1',
+					'class' => 'form-control',
 				]
 			]);
 		}
 
         $builder
             ->add('email', null, [
-				'label' => 'Email adress',
+				'label' => $options['isEdit'] ? 'New email' : 'Email',
+				'label_attr' => [
+					'class' => 'h5',
+				],
 				'attr' => [
-					'class' => 'form-control mb-1',
+					'class' => 'form-control',
 				]
 			])
             ->add('password', RepeatedType::class, [
 				'required' => $options['isEdit'] ? false : true,
 				'type' => PasswordType::class,
-				'invalid_message' => 'Les mots de passe saisis ne correspondent pas',
+				'invalid_message' => 'Passwords do not match.',
 				'first_options'  => [
-					'label' => 'Password',
+					'label' => 'New password',
 					'attr' => [
-						'class' => 'form-control mb-1',
-						'placeholder' => $options['isEdit'] ? 'Laisser vide si inchangé' : 'Password',
+						'class' => 'form-control',
+						'placeholder' => $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Password',
 					],
 				],
 				'second_options' => [
-					'label' => 'Confirm password',
+					'label' => 'Confirm new password',
 					'attr' => [
-						'class' => 'form-control mb-1',
-						'placeholder' =>  $options['isEdit'] ? 'Laisser vide si inchangé' : 'Repeat password',
+						'class' => 'form-control',
+						'placeholder' =>  $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Confirm password',
 					],
 				],
 				'empty_data' => '',

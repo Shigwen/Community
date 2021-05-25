@@ -1,0 +1,95 @@
+
+	<div class="row d-flex justify-content-around">
+		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+
+			<h2 class="text-center h3">Confirmed raids schedule</h2>
+
+			<table class="table table-striped table-bordered table-hover table-dark">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Date</th>
+						<th scope="col">As</th>
+						<th scope="col" class="d-none d-md-table-cell">Role</th>
+						<th scope="col" class="d-none d-md-table-cell">Notes</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+
+				<tbody class="text-center">
+					{% for raid in inProgressRaids %}
+						<tr>
+							<td>{{ raid.name }}</td>
+							<td>{{ raid.raidType }}</td>
+							<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+							<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+							<td>Have fun !</td>
+						</tr>
+					{% endfor %}
+
+					{% for raid in pendingRaids %}
+						<tr>
+							<td>{{ raid.name }}</td>
+							<td>{{ raid.raidType }}</td>
+							<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+							<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+							<td>
+								<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+							</td>
+						</tr>
+					{% endfor %}
+
+					<tr>
+						<td>We have shamans too now ! <br>by <span class="text-success">AllianceLover</span></td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td>Alexandross</td>
+						<td class="d-none d-md-table-cell">Heal</td>
+						<td class="d-none d-md-table-cell">!</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h2 class="text-center h3">Unconfirmed subscriptions</h2>
+			<table class="table table-striped table-bordered table-hover table-dark">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Date</th>
+						<th scope="col">As</th>
+						<th scope="col" class="d-none d-md-table-cell">Role</th>
+						<th scope="col" class="d-none d-md-table-cell">Notes</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+
+				<tbody class="text-center">
+
+					{% for raid in waitOfConfirmationRaids %}
+						<tr>
+							<td>{{ raid.name }}</td>
+							<td>{{ raid.raidType }}</td>
+							<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+							<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+							<td>
+								<a href="{{ path('event_unregister', {id: raid.id})}}">Unregister</a>
+							</td>
+						</tr>
+					{% endfor %}
+
+					<tr>
+						<td>We have shamans too now ! <br>by <span class="text-success">AllianceLover</span></td>
+						<td>19/04/21<br>19h30 - 23h</td>
+						<td>Alexandross</td>
+						<td class="d-none d-md-table-cell">Heal</td>
+						<td class="d-none d-md-table-cell">!</td>
+						<td>! ! ! ! ! !</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="d-flex justify-content-center">
+				<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('user_raid_archived')}}">Show past raids</a>
+			</div>
+		</div>
+	</div>

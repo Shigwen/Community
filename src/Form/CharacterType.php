@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Character;
+use App\Entity\Role;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,29 +16,69 @@ class CharacterType extends AbstractType
     {
         $builder
             ->add('name', null, [
-				'label' => 'Nom',
+				'label' => 'Name',
 				'label_attr' => [
-					'id' => 're',
-					'class' => 'CUSTOM_LABEL_CLASS',
+					'class' => 'h5',
 				],
 				'attr' => [
-					'class' => 'coucou comment ça va',
+					'class' => 'form-control',
 				]
 			])
-            ->add('information', null, [
-				'label' => 'Informations',
+
+			->add('server', null, [
+				'label' => 'Server',
+				'label_attr' => [
+					'class' => 'h5',
+				],
+				'attr' => [
+					'class' => 'custom-select',
+				]
 			])
+
             ->add('characterClass', null, [
-				'label' => 'Classe',
+				'label' => 'Class',
+				'label_attr' => [
+					'class' => 'h5',
+				],
+				'attr' => [
+					'class' => 'custom-select',
+				]
 			])
-            ->add('server', null, [
-				'label' => 'Serveur',
+
+            ->add('roles', EntityType::class, [
+				'label' => 'Roles (you can AND accept to play if asked to)',
+				'label_attr' => [
+					'class' => 'h5',
+				],
+				'attr' => [
+					'class' => 'form-check',
+				],
+				'class' => Role::class,
+
+				'choice_attr' => function(){
+					return ['class' => 'btn-check'];
+				},
+
+				'expanded' => true,
+				'multiple' => true,
 			])
-            ->add('roles', null, [
-				'label' => 'Roles',
+
+            ->add('information', null, [
+				'label' => 'Character notes (anything relevant you\'d like to show to the raid leaders)',
+				'label_attr' => [
+					'class' => 'h5',
+				],
+				'attr' => [
+					'class' => 'form-control',
+					'rows' => '3',
+				],
 			])
+
 			->add('button', SubmitType::class, [
 				'label' => $options['isEdit'] ? 'Modify' : 'Create',
+				'attr' => [
+					'class' => 'btn btn-primary rounded-pill btn-lg',
+				],
 			]);
     }
 

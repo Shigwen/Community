@@ -33,14 +33,14 @@ class RaidType extends AbstractType
 					'40' => 40,
 				],
 
-				'choice_attr' => function(){
-					return ['class' => 'btn-check'];
-				},
-
 				'label' => 'Raid type',
 				'label_attr' => [
 					'class' => 'h5',
 				],
+
+				'choice_attr' => function(){
+					return ['class' => 'btn-check'];
+				},
 
 				'expanded' => true,
 				'multiple' => false,
