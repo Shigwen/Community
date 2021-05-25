@@ -713,4 +713,41 @@ ragnaros-animation img.container {
   top: 20px;
   right: 20px;
 }
+
+calendar-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+calendar-body ul {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+}
+
+calendar-body ul li {
+  border: 1px solid blue;
+  list-style: none;
+  width: 7vw;
+  min-width: 70px;
+  margin: 0;
+  padding: 5px;
+}
 /*# sourceMappingURL=style.css.map */
