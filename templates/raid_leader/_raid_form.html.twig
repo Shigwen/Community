@@ -47,20 +47,26 @@
 					<div class="row d-flex justify-content-around">
 						<div class="col-lg-5 col-md-11 text-center">
 							{{ form_label(form.startAt) }}
-							<div>
+							<div class="row justify-content-center">
 								{% for row in form.startAt.date %}
-									{{ form_widget(row) }}
+									{{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
 								{% endfor %}
-								from
+							</div>
+							<div class="row justify-content-center">
+								<span class="col-lg-3"> from </span>
 								{% for row in form.startAt.time %}
-									{{ form_widget(row) }}
+									{{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
 								{% endfor %}
 							</div>
 						</div>
 
 						<div class="col-lg-5 col-md-11 text-center">
 							{{ form_label(form.endAt) }}
-							{{ form_widget(form.endAt) }}
+							<div class="row justify-content-center">
+								{% for row in form.endAt %}
+									{{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
+								{% endfor %}
+							</div>
 						</div>
 					</div>
 
