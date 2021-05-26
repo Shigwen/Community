@@ -1,8 +1,9 @@
 
 <div class="row d-flex justify-content-around">
-
 	<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+
 		<h2 class="text-center">Raids you scheduled</h2>
+
 		<table class="table table-striped table-bordered table-hover table-dark">
 			<thead class="text-center">
 				<tr>
@@ -84,7 +85,7 @@
 					<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
 					<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
 					<td>
-						<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
+						<button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
 
 						<div class="modal fade" id="clickMeRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 							<div class="modal-dialog modal-dialog-centered">

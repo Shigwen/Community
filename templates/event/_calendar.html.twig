@@ -1,47 +1,52 @@
 
 <div class="row d-flex justify-content-around">
 	<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
-		<widget-calendar>
-
-			{% if date|date('m/Y') != "now"|date('m/Y') %}
-				<button class="prev"> Previous month </button>
-			{% endif %}
-			<button class="next"> Next month </button>
-
+		<widget-calendar class="mb-4">
 			<calendar-head>
-				<h2 class="text-center h3">Calendar</h2>
-				{{ title }}
+				<h2 class="text-center mb-4">Calendar : {{ title }}</h2>
 			</calendar-head>
 
-			<calendar-body>
-				<ul >
-					<li >Monday</li>
-					<li >Tuesday</li>
-					<li >Wednesday</li>
-					<li >Thursday</li>
-					<li >Friday</li>
-					<li >Saturday</li>
-					<li >Sunday</li>
-				</ul>
-				<ul>
-					{% if emptyDaysPadding > 0 %}
-						{% for date in range(1, emptyDaysPadding) %}
-							<li class="empty-dates"></li>
-						{% endfor %}
-					{% endif %}
+			<month-selection class="mb-4">
+				{% if date|date('m/Y') != "now"|date('m/Y') %}
+					<button class="prev btn btn-primary rounded-pill"> Previous month </button>
+				{% else %}
+					<button class="btn btn-primary rounded-pill disabled"> Previous month </button>
+				{% endif %}
+				<button class="next btn btn-primary rounded-pill"> Next month </button>
+			</month-selection>
 
-					{% set style = '' %}
-
-					{% for item in days %}
-						{% if item['past'] %}
-							{% set style = 'is-notavailable' %}
-						{% else %}
-							{% set style = '' %}
+			<div class="d-flex justify-content-center mb-4">
+				<calendar-body>
+					<ul class="daysOfTheWeek">
+						<li>Monday</li>
+						<li>Tuesday</li>
+						<li>Wednesday</li>
+						<li>Thursday</li>
+						<li>Friday</li>
+						<li>Saturday</li>
+						<li>Sunday</li>
+					</ul>
+					<ul class="innerCalendarCells">
+						{% if emptyDaysPadding > 0 %}
+							{% for date in range(1, emptyDaysPadding) %}
+								<li class="empty-dates"></li>
+							{% endfor %}
 						{% endif %}
-						<li data-date="{{ item['date'] }}" >{{ item['number'] }}</li>
-					{% endfor %}
-				</ul>
-			</calendar-body>
+
+						{% set style = '' %}
+
+						{% for item in days %}
+							{% if item['past'] %}
+								{% set style = 'is-notavailable' %}
+							{% else %}
+								{% set style = '' %}
+							{% endif %}
+							<li data-date="{{ item['date'] }}" >{{ item['number'] }}</li>
+						{% endfor %}
+					</ul>
+				</calendar-body>
+			</div>
+
 
 		</widget-calendar>
 	</div>
