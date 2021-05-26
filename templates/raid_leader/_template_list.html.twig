@@ -19,7 +19,7 @@
 				{% for template in raidTemplates %}
 				<tr>
 					<td>{{ template.templateName }}</td>
-					<td>{{ template.verboseStartDayOfWeek }}</td>
+					<td>{{ template.verboseStartDayOfWeek }} from {{ template.startAt|date("H:i") }} to {{ template.endAt|date("H:i") }}</td>
 					{% set raidCharacter = template.raidCharacterFromUser(user) %}
 					{% if raidCharacter %}
 						<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>

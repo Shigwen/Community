@@ -87,14 +87,23 @@ class RaidTemplate {
 
 		$newStart = new DateTime();
 		$newStart->modify($dayOfWeek.' this week');
-		$newEnd = clone $newStart;
-
 		$newStart->setTime(
 			$start->format('H'),
 			$start->format('i'),
 			$start->format('s')
 		);
 
+		$now = new DateTime();
+		if ($now > $newStart) {
+			$newStart->modify($dayOfWeek.' next week');
+			$newStart->setTime(
+				$start->format('H'),
+				$start->format('i'),
+				$start->format('s')
+			);
+		}
+
+		$newEnd = clone $newStart;
 		$newEnd->setTime(
 			$end->format('H'),
 			$end->format('i'),
