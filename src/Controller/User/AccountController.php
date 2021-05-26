@@ -24,7 +24,6 @@ class AccountController extends AbstractController
     public function index(Request $request): Response
     {
 		$user = $this->getUser();
-
 		$formUser = $this->createForm(UserType::class, $user, [
 			'isEdit' => true,
 			'action' => $this->generateUrl('user_account_edit'),
@@ -49,6 +48,7 @@ class AccountController extends AbstractController
 			'formUser' => $formUser->createView(),
 			'formCharacter' => $formCharacter->createView(),
             'user' => $user,
+			'characters' => $this->getDoctrine()->getRepository(Character::class)->findBy(['user' => $user, 'isArchived' => false]),
 			'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
 			'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
 			'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
