@@ -119,6 +119,11 @@ class Raid
      */
     private $isPrivate;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
+
     public function __construct()
     {
 		$this->startAt = new DateTime();
@@ -133,9 +138,9 @@ class Raid
     }
 
 	public function getIdentifier()
-	{
-		return $this->identifier;
-	}
+         	{
+         		return $this->identifier;
+         	}
 
     public function setIdentifier($identifier): self
     {
@@ -294,9 +299,9 @@ class Raid
     }
 
 	public function getAutoAccept(): ?bool
-	{
-		return $this->autoAccept;
-	}
+         	{
+         		return $this->autoAccept;
+         	}
 
     public function setAutoAccept(bool $autoAccept): self
     {
@@ -350,24 +355,24 @@ class Raid
 	}
 
 	public function getCharacterFromUser(User $user): Character
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUser() === $user) {
-				return $raidCharacter->getUserCharacter();
-			}
-		}
-		return null;
-	}
+         	{
+         		foreach ($this->raidCharacters as $raidCharacter) {
+         			if ($raidCharacter->getUser() === $user) {
+         				return $raidCharacter->getUserCharacter();
+         			}
+         		}
+         		return null;
+         	}
 
 	public function hasCharacter(Character $character)
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUserCharacter = $character) {
-				return true;
-			}
-		}
-		return false;
-	}
+         	{
+         		foreach ($this->raidCharacters as $raidCharacter) {
+         			if ($raidCharacter->getUserCharacter = $character) {
+         				return true;
+         			}
+         		}
+         		return false;
+         	}
 
     public function addRaidCharacter(RaidCharacter $raidCharacter): self
     {
@@ -392,9 +397,9 @@ class Raid
     }
 
 	public function getServer(): ?Server
-    {
-        return $this->server;
-    }
+             {
+                 return $this->server;
+             }
 
     public function setServer(?Server $server): self
     {
@@ -411,6 +416,18 @@ class Raid
     public function setIsPrivate(bool $isPrivate): self
     {
         $this->isPrivate = $isPrivate;
+
+        return $this;
+    }
+
+    public function getIsArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }

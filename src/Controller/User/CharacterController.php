@@ -59,15 +59,15 @@ class CharacterController extends AbstractController
     }
 
 	/**
-     * @Route("/{id}/delete", name="delete")
+     * @Route("/{id}/archived", name="archived")
      */
-    public function delete(Character $character): Response
+    public function archived(Character $character): Response
     {
 		if(!$this->getUser()->hasCharacter($character)) {
 			throw new AccessDeniedHttpException();
 		}
 
-		$this->getDoctrine()->getManager()->remove($character);
+		$character->setIsArchived(true);
 		$this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('user_account');

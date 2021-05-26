@@ -52,7 +52,7 @@
 							</td>
 							<td>
 								<a href="{{ path('user_account')}}?id={{ character.id }}" class="btn btn-primary rounded-pill">Modify</a>
-								<a href="{{ path('user_character_delete', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
+								<a href="{{ path('user_character_archived', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
 							</td>
 						</tr>
 					{% endfor %}

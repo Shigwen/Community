@@ -17,11 +17,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class RaidController extends AbstractController
 {
 	/**
-     * @Route("/archived", name="archived")
+     * @Route("/past", name="past")
      */
-    public function archived(): Response
+    public function past(): Response
     {
-		return $this->render('user/archived_raid_list.html.twig', [
+		return $this->render('user/past_raid_list.html.twig', [
 			'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
 		]);
 	}
@@ -43,10 +43,10 @@ class RaidController extends AbstractController
     {
 		$now = new DateTime();
 		if ($now > $raid->getStartAt() ) {
-			$this->addFlash('danger', "You cannot register to a raid already start");
+			$this->addFlash('danger', "You cannot subscribe from a raid that already begun");
 			return $this->redirectToRoute('user_raid_show', ['id' => $raid->getId()]);
 		}
-		
+
 		if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
 			$this->getUser(),
 			$raid)
@@ -77,7 +77,7 @@ class RaidController extends AbstractController
     {
 		$now = new DateTime();
 		if ($now > $raid->getStartAt() ) {
-			$this->addFlash('danger', "You cannot unregister to a raid already start");
+			$this->addFlash('danger', "You cannot unsubscribe from a raid that already begun");
 			return $this->redirectToRoute('user_raid_show', ['id' => $raid->getId()]);
 		}
 

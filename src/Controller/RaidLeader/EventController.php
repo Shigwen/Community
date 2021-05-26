@@ -64,29 +64,9 @@ class EventController extends AbstractController
             'user' => $this->getUser(),
 			'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfRaidLeader($this->getUser()),
 			'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfRaidLeader($this->getUser()),
-			'nbrTemplate' => count($raidTemplates),
 			'raidTemplates' => $raidTemplates,
             'editTemplate' => $request->query->get('id') ? true: false,
             'form' => $form->createView(),
         ]);
     }
-
-	/**
-     * @Route("/template/{id}/delete", name="template_delete")
-     */
-    public function templateDelete(Raid $raidTemplate): Response
-    {
-		if ($this->getUser() && !$this->getUser()->hasRaid($raidTemplate)) {
-			throw new AccessDeniedHttpException();
-		}
-
-		if (!$raidTemplate->getTemplateName()) {
-			throw new BadRequestHttpException("Raid isn't a template");
-		}
-
-		$this->getDoctrine()->getManager()->remove($raidTemplate);
-		$this->getDoctrine()->getManager()->flush();
-
-		return $this->redirectToRoute('raidleader_events');
-	}
 }

@@ -135,7 +135,7 @@
 					<td>
 						<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
 						<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modify</a>
-						<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Delete</a>
+						<a href="{{ path('raidleader_raid_archived', {id: raid.id})}}">Delete</a>
 					</td>
 				</tr>
 				{% endfor %}
@@ -143,7 +143,7 @@
 		</table>
 
 		<div class="d-flex justify-content-center">
-			<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_archived')}}">Show past raids</a>
+			<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_past')}}">Show past raids</a>
 		</div>
 	</div>
 </div>
