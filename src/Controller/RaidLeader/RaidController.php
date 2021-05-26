@@ -53,6 +53,15 @@ class RaidController extends AbstractController
 
 		$allRaidTemplates = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser());
 
+		$startAt = $raid->getStartAt();
+		$endAt = $raid->getEndAt();
+
+		$endAt->setDate(
+			$startAt->format('Y'),
+			$startAt->format('m'),
+			$startAt->format('d')
+		);
+
 		if (!$raidTemplate) {
 
 			// Create new template

@@ -19,13 +19,14 @@
 				{% for raid in inProgressRaids %}
 				<tr>
 					<td>{{ raid.name }}</td>
-					<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
-					<td class="d-none d-md-table-cell">{{ character.name }}</td>
-					<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+					<td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
+					{% set raidCharacter = raid.raidCharacterFromUser(user) %}
+					<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+					<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
 					<td>
-						clickMe
+						<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
 
-						<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+						<div class="modal fade" id="clickMeRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 							<div class="modal-dialog modal-dialog-centered">
 								<div class="modal-content">
 									<div class="modal-header">

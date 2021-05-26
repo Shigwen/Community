@@ -5,7 +5,7 @@
 			{{ form_start(form) }}
 				<fieldset class="form-group">
 					<a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
-					<legend class="text-center h3 mb-5">Create An Event (max. 5):</legend>
+					<legend class="text-center h3 mb-5">Create An Event</legend>
 
 					<div class="row d-flex justify-content-around">
 						<div class="col-lg-5 col-md-11 text-center">
@@ -47,7 +47,15 @@
 					<div class="row d-flex justify-content-around">
 						<div class="col-lg-5 col-md-11 text-center">
 							{{ form_label(form.startAt) }}
-							{{ form_widget(form.startAt) }}
+							<div>
+								{% for row in form.startAt.date %}
+									{{ form_widget(row) }}
+								{% endfor %}
+								from
+								{% for row in form.startAt.time %}
+									{{ form_widget(row) }}
+								{% endfor %}
+							</div>
 						</div>
 
 						<div class="col-lg-5 col-md-11 text-center">

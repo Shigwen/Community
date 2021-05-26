@@ -69,21 +69,6 @@ class RaidType extends AbstractType
 				],
 			])
 
-			// ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-			// 	$form = $event->getForm();
-
-			// 	$startAt = $form->get('startAt');
-			// 	$endAt = $form->get('endAt');
-
-			// 	$endAt->setDate(
-			// 		$startAt->format('Y'),
-			// 		$startAt->format('m'),
-			// 		$startAt->format('d')
-			// 	);
-
-			// 	$form->get('endAt')->setDatas($endAt);
-			// })
-
 			->add('expectedAttendee', null, [
 				'label' => 'Amount of raiders you\'re looking for',
 				'label_attr' => [
