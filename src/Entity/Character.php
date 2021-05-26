@@ -41,6 +41,11 @@ class Character
      */
     private $updatedAt;
 
+	/**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
+
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
@@ -77,9 +82,9 @@ class Character
     }
 
 	function __toString()
-	{
-		return $this->name;
-	}
+         	{
+         		return $this->name;
+         	}
 
     public function getId(): ?int
     {
@@ -152,9 +157,9 @@ class Character
     }
 
 	public function getServer(): ?Server
-	{
-		return $this->server;
-	}
+         	{
+         		return $this->server;
+         	}
 
     public function setServer(?Server $server): self
     {
@@ -232,6 +237,18 @@ class Character
                 $raidCharacter->setUserCharacter(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }

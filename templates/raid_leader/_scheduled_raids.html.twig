@@ -20,13 +20,14 @@
 				{% for raid in inProgressRaids %}
 				<tr>
 					<td>{{ raid.name }}</td>
-					<td>{{ raid.startAt|date("d/m/Y from h:i") }}{{ raid.endAt|date("to h:i") }}</td>
-					<td class="d-none d-md-table-cell">{{ character.name }}</td>
-					<td class="d-none d-md-table-cell">{{ character.role.name }}</td>
+					<td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
+					{% set raidCharacter = raid.raidCharacterFromUser(user) %}
+					<td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+					<td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
 					<td>
-						clickMe
+						<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#clickMeRaid_{{ raid.id }}">Click me</button>
 
-						<div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+						<div class="modal fade" id="clickMeRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
 							<div class="modal-dialog modal-dialog-centered">
 								<div class="modal-content">
 									<div class="modal-header">
@@ -135,7 +136,7 @@
 					<td>
 						<a href="{{ path('raidleader_raid_show', {id: raid.id }) }}">Show</a>
 						<a href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Modify</a>
-						<a href="{{ path('raidleader_raid_delete', {id: raid.id})}}">Delete</a>
+						<a href="{{ path('raidleader_raid_archived', {id: raid.id})}}">Delete</a>
 					</td>
 				</tr>
 				{% endfor %}
@@ -143,7 +144,7 @@
 		</table>
 
 		<div class="d-flex justify-content-center">
-			<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_archived')}}">Show past raids</a>
+			<a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_past')}}">Show past raids</a>
 		</div>
 	</div>
 </div>

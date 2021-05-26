@@ -17,7 +17,7 @@
 				</thead>
 
 				<tbody class="text-center">
-					{% for character in user.characters %}
+					{% for character in characters %}
 						<tr>
 							<td>{{ character.name }}</td>
 							<td>{{ character.server.name }}</td>
@@ -52,7 +52,7 @@
 							</td>
 							<td>
 								<a href="{{ path('user_account')}}?id={{ character.id }}" class="btn btn-primary rounded-pill">Modify</a>
-								<a href="{{ path('user_character_delete', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
+								<a href="{{ path('user_character_archived', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
 							</td>
 						</tr>
 					{% endfor %}

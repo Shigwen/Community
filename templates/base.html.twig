@@ -24,6 +24,32 @@
 		{{ include('_navbar.html.twig') }}
 	</header>
 
+	{% if app.request.attributes.get('_route') != 'home' %}
+
+		{% block banner %}
+			<tbc-banner class="container d-flex justify-content-center bg-dark position-static">
+
+				{% block banner_image %}
+					<img class="container p-0" src="{{asset('images/jpg/backgrounds/wei-wang-dark-portal-cropped.jpg')}}"
+						alt="Stormwind, human capital city in World of Warcraft">
+				{% endblock %}
+
+				<page-title class="align-self-center p-0">
+
+					{% block banner_title %}
+						<span>
+							Welcome to Diana's
+						</span>
+						<h1>Community Project</h1>
+					{% endblock %}
+
+				</page-title>
+
+			</tbc-banner>
+		{% endblock %}
+
+	{% endif %}
+
 	{% block body %}{% endblock %}
 </body>
 </html>

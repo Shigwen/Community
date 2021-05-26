@@ -71,6 +71,7 @@ class RaidRepository extends ServiceEntityRepository
 			->where('r.templateName IS NULL')
             ->andWhere('r.startAt > :now')
 			->andWhere('r.user = :raidLeader')
+			->andWhere('r.isArchived = false')
             ->setParameters([
 				'now'=> $now,
 				'raidLeader' => $raidLeader,
@@ -91,6 +92,7 @@ class RaidRepository extends ServiceEntityRepository
             ->andWhere('r.startAt > :now')
             ->andWhere('r.endAt < :now')
 			->andWhere('r.user = :raidLeader')
+			->andWhere('r.isArchived = false')
             ->setParameters([
 				'now'=> $now,
 				'raidLeader' => $raidLeader,
@@ -110,6 +112,7 @@ class RaidRepository extends ServiceEntityRepository
 			->where('r.templateName IS NULL')
             ->andWhere('r.endAt < :now')
 			->andWhere('r.user = :raidLeader')
+			->andWhere('r.isArchived = false')
             ->setParameters([
 				'now'=> $now,
 				'raidLeader' => $raidLeader,
@@ -136,6 +139,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.templateName IS NULL')
             ->andWhere('r.startAt > :now')
 			->andWhere('rc.status = :status')
+			->andWhere('r.isArchived = false')
             ->setParameters([
 				'now'=> $now,
 				'player' => $player->getId(),
@@ -160,6 +164,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.startAt > :now')
 			->andWhere('r.endAt < :now')
 			->andWhere('rc.status = :status')
+			->andWhere('r.isArchived = false')
 			->setParameters([
 				'now'=> $now,
 				'player' => $player->getId(),
@@ -183,6 +188,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.templateName IS NULL')
 			->andWhere('r.endAt < :now')
 			->andWhere('rc.status = :status')
+			->andWhere('r.isArchived = false')
 			->setParameters([
 				'now'=> $now,
 				'player' => $player->getId(),
@@ -210,6 +216,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.templateName IS NULL')
 			->andWhere('r.startAt > :now')
 			->andWhere('r.isPrivate = false')
+			->andWhere('r.isArchived = false')
 			->setParameters([
 				'now'=> $now,
 				'player' => $player->getId(),
@@ -242,6 +249,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.startAt > :start')
 			->andWhere('r.endAt < :end')
 			->andWhere('r.isPrivate = false')
+			->andWhere('r.isArchived = false')
 			->setParameters([
 				'start'=> $start,
 				'end'=> $end,
@@ -255,7 +263,7 @@ class RaidRepository extends ServiceEntityRepository
 	/************************************
 	 *        Calendar - Anonymous      *
 	 ************************************/
-	
+
 	 /**
      * @return Raid[]
      */
@@ -266,6 +274,7 @@ class RaidRepository extends ServiceEntityRepository
             ->where('r.startAt > :now')
 			->andWhere('r.templateName IS NULL')
 			->andWhere('r.isPrivate = false')
+			->andWhere('r.isArchived = false')
             ->setParameter('now', $now)
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
@@ -292,6 +301,7 @@ class RaidRepository extends ServiceEntityRepository
 			->andWhere('r.startAt > :start')
 			->andWhere('r.endAt < :end')
 			->andWhere('r.isPrivate = false')
+			->andWhere('r.isArchived = false')
 			->setParameters([
 				'start'=> $start,
 				'end'=> $end,

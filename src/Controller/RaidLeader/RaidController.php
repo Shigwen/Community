@@ -53,6 +53,15 @@ class RaidController extends AbstractController
 
 		$allRaidTemplates = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser());
 
+		$startAt = $raid->getStartAt();
+		$endAt = $raid->getEndAt();
+
+		$endAt->setDate(
+			$startAt->format('Y'),
+			$startAt->format('m'),
+			$startAt->format('d')
+		);
+
 		if (!$raidTemplate) {
 
 			// Create new template
@@ -119,11 +128,11 @@ class RaidController extends AbstractController
     }
 
 	/**
-     * @Route("/archived", name="archived")
+     * @Route("/past", name="past")
      */
-    public function archived(): Response
+    public function past(): Response
     {
-		return $this->render('raid_leader/archived_raid_list.html.twig', [
+		return $this->render('raid_leader/past_raid_list.html.twig', [
 			'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
 		]);
 	}
@@ -153,7 +162,7 @@ class RaidController extends AbstractController
 
 		$now = new DateTime();
 		if ($now > $raid->getStartAt() ) {
-			$this->addFlash('danger', "You cannot modify a raid already start");
+			$this->addFlash('danger', "You cannot modify a raid that already begun");
 			return $this->redirectToRoute('raidleader_events');
 		}
 
@@ -198,15 +207,40 @@ class RaidController extends AbstractController
     }
 
 	/**
-     * @Route("/{id}/delete", name="delete")
+     * @Route("/template/{id}/delete", name="template_delete")
      */
-    public function delete(Raid $raid): Response
+    public function templateDelete(Raid $raidTemplate): Response
+    {
+		if ($this->getUser() && !$this->getUser()->hasRaid($raidTemplate)) {
+			throw new AccessDeniedHttpException();
+		}
+
+		if (!$raidTemplate->getTemplateName()) {
+			throw new BadRequestHttpException("This is not a template");
+		}
+
+		$this->getDoctrine()->getManager()->remove($raidTemplate);
+		$this->getDoctrine()->getManager()->flush();
+
+		return $this->redirectToRoute('raidleader_events');
+	}
+
+	/**
+     * @Route("/{id}/archived", name="archived")
+     */
+    public function archived(Raid $raid): Response
     {
 		if (!$this->getUser()->hasRaid($raid)) {
 			throw new AccessDeniedHttpException();
 		}
 
-		$this->getDoctrine()->getManager()->remove($raid);
+		$now = new DateTime();
+		if ($now > $raid->getStartAt() ) {
+			$this->addFlash('danger', "You cannot delete a raid that already begun");
+			return $this->redirectToRoute('raidleader_events');
+		}
+
+		$raid->setIsArchived(true);
 		$this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('raidleader_events');
