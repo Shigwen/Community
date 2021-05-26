@@ -35,7 +35,7 @@ class AccountController extends AbstractController
 			$character->setUser($this->getUser());
 		}
 
-		if($idCharacter && !$this->getUser()->hasCharacter($character)) {
+		if ($idCharacter && !$this->getUser()->hasCharacter($character)) {
 			throw $this->createNotFoundException('Une erreur est survenue');
 		}
 
