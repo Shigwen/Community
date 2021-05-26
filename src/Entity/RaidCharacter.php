@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\RaidCharacterRepository;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RaidCharacterRepository;
 
 /**
  * @ORM\Entity(repositoryClass=RaidCharacterRepository::class)
@@ -94,6 +95,15 @@ class RaidCharacter
 
         return $this;
     }
+
+	public function isRaidLeaderCharacter(User $user)
+	{
+		if ($this->userCharacter->getUser() !== $user) {
+            return false;
+        }
+
+        return true;
+	}
 
 	public function getRole(): ?Role
     {

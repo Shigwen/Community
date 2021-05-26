@@ -14,8 +14,11 @@
 	<p>Nombre de joueurs attendu : {{ raid.expectedAttendee }}</p>
 	<p>Min tank : {{ raid.minTank }}</p>
 	<p>Max tank : {{ raid.maxTank }}</p>
+	<p>Places remaining for tank : {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::TANK')) }}</p>
 	<p>Min heal : {{ raid.minHeal }}</p>
 	<p>Max heal : {{ raid.maxHeal }}</p>
+	<p>Places remaining for heal : {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::HEAL')) }}</p>
+	<p>Places remaining for dps : {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::DPS')) }}</p>
 	<p>Début du raid : {{ raid.startAt|date("d/m/Y h:i") }}</p>
 	<p>Fin du raid : {{ raid.endAt|date("d/m/Y h:i") }}</p>
 	<p>Informations : {{ raid.information }}</p>
@@ -59,7 +62,7 @@
 						<td>{{ raidCharacter.userCharacter.name }}</td>
 						<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
 						<td>{{ raidCharacter.role.name }}</td>
-						{% if user and user.hasCharacter(raidCharacter.userCharacter) and is_raid_leader_character(user, raidCharacter.userCharacter, raid) == false %}
+						{% if user and user.hasCharacter(raidCharacter.userCharacter) and raidCharacter.isRaidLeaderCharacter(user) == false %}
 							<td>
 								<a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
 							</td>
@@ -88,7 +91,7 @@
 						<td>{{ raidCharacter.userCharacter.name }}</td>
 						<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
 						<td>{{ raidCharacter.role.name }}</td>
-						{% if user and user.hasCharacter(raidCharacter.userCharacter) and is_raid_leader_character(user, raidCharacter.userCharacter, raid) == false %}
+						{% if user and user.hasCharacter(raidCharacter.userCharacter) and raidCharacter.isRaidLeaderCharacter(user) == false %}
 							<td>
 								<a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
 							</td>

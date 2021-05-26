@@ -355,24 +355,24 @@ class Raid
 	}
 
 	public function getCharacterFromUser(User $user): Character
-         	{
-         		foreach ($this->raidCharacters as $raidCharacter) {
-         			if ($raidCharacter->getUser() === $user) {
-         				return $raidCharacter->getUserCharacter();
-         			}
-         		}
-         		return null;
-         	}
+	{
+		foreach ($this->raidCharacters as $raidCharacter) {
+			if ($raidCharacter->getUser() === $user) {
+				return $raidCharacter->getUserCharacter();
+			}
+		}
+		return null;
+	}
 
 	public function hasCharacter(Character $character)
-         	{
-         		foreach ($this->raidCharacters as $raidCharacter) {
-         			if ($raidCharacter->getUserCharacter = $character) {
-         				return true;
-         			}
-         		}
-         		return false;
-         	}
+	{
+		foreach ($this->raidCharacters as $raidCharacter) {
+			if ($raidCharacter->getUserCharacter = $character) {
+				return true;
+			}
+		}
+		return false;
+	}
 
     public function addRaidCharacter(RaidCharacter $raidCharacter): self
     {

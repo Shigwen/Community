@@ -13,6 +13,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Role
 {
+	const TANK = 1;
+	const HEAL = 2;
+	const DPS = 3;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -147,4 +151,14 @@ class Role
 
         return $this;
     }
+
+	public function isTank()
+	{
+		return $this->id === self::TANK;
+	}
+
+	public function isHeal()
+	{
+		return $this->id === self::HEAL;
+	}
 }
