@@ -34,6 +34,10 @@ input, select, div.form-check {
   margin-bottom: 25px;
 }
 
+.table td, .table th {
+  vertical-align: middle;
+}
+
 page-title {
   position: absolute;
   z-index: 2;

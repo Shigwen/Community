@@ -22,7 +22,9 @@ class CharacterController extends AbstractController
     public function add(Request $request): Response
     {
 		$character = new Character();
-		$character->setUser($this->getUser());
+		$character
+		->setUser($this->getUser())
+		->setIsArchived(false);
 
 		$form = $this->createForm(CharacterType::class, $character);
 		$form->handleRequest($request);

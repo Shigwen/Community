@@ -30,7 +30,9 @@ class RaidController extends AbstractController
     public function add(Request $request, Identifier $identifier, RaidTemplate $template, RaidRelation $raidService): Response
     {
         $raid = new Raid();
-		$raid->setUser($this->getUser());
+		$raid
+		->setUser($this->getUser())
+		->setIsArchived(false);
 
 		$raidCharacter = new RaidCharacter();
 		$raidCharacter
