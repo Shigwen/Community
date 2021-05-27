@@ -2,13 +2,15 @@
 
 namespace App\Form;
 
-use App\Entity\Character;
 use App\Entity\Role;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Character;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Validator\Constraints\Callback;
 
 class CharacterType extends AbstractType
 {
@@ -22,7 +24,10 @@ class CharacterType extends AbstractType
 				],
 				'attr' => [
 					'class' => 'form-control',
-				]
+				],
+				'constraints' => [
+					new NotBlank(['message' => 'The name cannot be blank'])
+				],
 			])
 
 			->add('server', null, [
@@ -54,13 +59,16 @@ class CharacterType extends AbstractType
 					'class' => 'form-check',
 				],
 				'class' => Role::class,
-
 				'choice_attr' => function(){
 					return ['class' => 'btn-check'];
 				},
-
 				'expanded' => true,
 				'multiple' => true,
+				'constraints' => [
+					new Callback([
+						Role::class, 'validate'
+					])
+				],
 			])
 
             ->add('information', null, [
@@ -72,6 +80,7 @@ class CharacterType extends AbstractType
 					'class' => 'form-control',
 					'rows' => '3',
 				],
+				'required' => false,
 			])
 
 			->add('button', SubmitType::class, [

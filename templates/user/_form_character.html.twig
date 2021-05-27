@@ -12,6 +12,7 @@
 			<div class="col-lg-5 col-md-11 text-center">
 				{{ form_label(formCharacter.name) }}
 				{{ form_widget(formCharacter.name) }}
+				{{ form_errors(formCharacter.name) }}
 			</div>
 
 			<div class="col-lg-5 col-md-11 text-center">
@@ -42,6 +43,7 @@
 						}}
 					{% endfor %}
 				</div>
+				{{ form_errors(formCharacter.roles) }}
 			</div>
 
 			<div class="col-12 col-md-11">

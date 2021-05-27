@@ -3,10 +3,15 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\Character;
+use App\Entity\RaidCharacter;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RoleRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass=RoleRepository::class)
@@ -60,6 +65,19 @@ class Role
 	{
 		return $this->name;
 	}
+
+	public function validate(ArrayCollection $roles, ExecutionContextInterface $context)
+    {
+		foreach ($roles as $role) {
+			if (in_array($role->getId(), [self::TANK, self::HEAL, self::DPS])) {
+				return true;
+			}
+		}
+
+		$context->buildViolation('You must choose at least one role')
+			->atPath('name')
+			->addViolation();
+    }
 
     public function getId(): ?int
     {

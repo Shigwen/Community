@@ -49,7 +49,6 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
     private $password;
@@ -134,24 +133,24 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName($name)
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail($email)
     {
         $this->email = $email;
 
@@ -161,7 +160,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername()
     {
         return (string) $this->email;
     }
@@ -169,7 +168,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    public function getRoles()
     {
 		if (empty($roles = $this->roles)) {
 			$roles[] = 'ROLE_USER';
@@ -178,7 +177,7 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
-    public function getStrRole(): string
+    public function getStrRole()
     {
         return $this->roles[0];
     }
@@ -187,7 +186,7 @@ class User implements UserInterface
 	 * Get the verbose name of user's first role
      * @return string
      */
-    public function getVerboseStrRole(): string
+    public function getVerboseStrRole()
     {
 		switch($this->roles[0]) {
 			case 'ROLE_USER':
@@ -207,7 +206,7 @@ class User implements UserInterface
         return  $role;
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles($roles)
     {
         $this->roles = $roles;
 
@@ -217,60 +216,60 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getPassword(): string
+    public function getPassword()
     {
         return (string) $this->password;
     }
 
-    public function setPassword($password): self
+    public function setPassword($password)
     {
         $this->password = $password;
 
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus($status)
     {
         $this->status = $status;
 
         return $this;
     }
 
-	public function getNbrOfAttempt(): ?int
+	public function getNbrOfAttempt()
 	{
 		return $this->nbrOfAttempt;
 	}
 
-    public function setNbrOfAttempt(int $nbrOfAttempt): self
+    public function setNbrOfAttempt($nbrOfAttempt)
     {
         $this->nbrOfAttempt = $nbrOfAttempt;
 
         return $this;
     }
 
-    public function getLastAttempt(): ?\DateTimeInterface
+    public function getLastAttempt()
     {
         return $this->lastAttempt;
     }
 
-    public function setLastAttempt(\DateTimeInterface $lastAttempt): self
+    public function setLastAttempt($lastAttempt)
     {
         $this->lastAttempt = $lastAttempt;
 
         return $this;
     }
 
-    public function getToken(): string
+    public function getToken()
     {
         return (string) $this->token;
     }
 
-    public function setToken($token): self
+    public function setToken($token)
     {
         $this->token = $token;
 
@@ -297,7 +296,7 @@ class User implements UserInterface
      * @param  \DateTime  $updatedAt
      * @return  self
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
@@ -307,7 +306,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt(): ?string
+    public function getSalt()
     {
         return null;
     }
@@ -324,12 +323,12 @@ class User implements UserInterface
     /**
      * @return Collection|Raid[]
      */
-    public function getRaids(): Collection
+    public function getRaids()
     {
         return $this->raids;
     }
 
-    public function addRaid(Raid $raid): self
+    public function addRaid($raid)
     {
         if (!$this->raids->contains($raid)) {
             $this->raids[] = $raid;
@@ -339,7 +338,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeRaid(Raid $raid): self
+    public function removeRaid($raid)
     {
         if ($this->raids->removeElement($raid)) {
             // set the owning side to null (unless already changed)
@@ -351,12 +350,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getBlockeds(): Collection
+    public function getBlockeds()
     {
         return $this->blockeds;
     }
 
-    public function hasBlocked(self $blockedToSearch)
+    public function hasBlocked($blockedToSearch)
     {
         foreach ($this->blockeds as $blocked) {
             if ($blocked === $blockedToSearch) {
@@ -367,7 +366,7 @@ class User implements UserInterface
         return null;
     }
 
-    public function addBlocked(self $blocked): self
+    public function addBlocked($blocked)
     {
         if (!$this->blockeds->contains($blocked)) {
             $this->blockeds[] = $blocked;
@@ -376,7 +375,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeBlocked(self $blocked): self
+    public function removeBlocked($blocked)
     {
         $this->blockeds->removeElement($blocked);
 
@@ -388,7 +387,7 @@ class User implements UserInterface
         return $this->characters;
     }
 
-    public function addCharacter(Character $character): self
+    public function addCharacter($character)
     {
         if (!$this->characters->contains($character)) {
             $this->characters[] = $character;
@@ -398,7 +397,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeCharacter(Character $character): self
+    public function removeCharacter($character)
     {
         if ($this->characters->removeElement($character)) {
             // set the owning side to null (unless already changed)
@@ -410,7 +409,7 @@ class User implements UserInterface
         return $this;
     }
 
-	public function hasCharacter(Character $character) : bool
+	public function hasCharacter($character)
 	{
 		if ($this->characters->contains($character)) {
 			return true;
@@ -419,7 +418,7 @@ class User implements UserInterface
 		return false;
 	}
 
-	public function hasRaid(Raid $raid) : bool
+	public function hasRaid($raid)
 	{
 		if ($this->raids->contains($raid)) {
 			return true;

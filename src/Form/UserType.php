@@ -3,11 +3,14 @@
 namespace App\Form;
 
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
@@ -19,7 +22,10 @@ class UserType extends AbstractType
 				'attr' => [
 					'placeholder' => 'Diana384',
 					'class' => 'form-control',
-				]
+				],
+				'constraints' => [
+					new NotBlank(['message' => 'The name cannot be blank'])
+				],
 			]);
 		}
 
@@ -31,7 +37,11 @@ class UserType extends AbstractType
 				],
 				'attr' => [
 					'class' => 'form-control',
-				]
+				],
+				'constraints' => [
+					new NotBlank(['message' => 'The email cannot be blank']),
+					new Email(['message' => 'The email is not valid']),
+				],
 			])
             ->add('password', RepeatedType::class, [
 				'required' => $options['isEdit'] ? false : true,
@@ -43,12 +53,18 @@ class UserType extends AbstractType
 						'class' => 'form-control',
 						'placeholder' => $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Password',
 					],
+					'constraints' => $options['isEdit'] ? [] : [
+						new NotBlank(['message' => 'The password cannot be blank'])
+					],
 				],
 				'second_options' => [
 					'label' => 'Confirm new password',
 					'attr' => [
 						'class' => 'form-control',
 						'placeholder' =>  $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Confirm password',
+					],
+					'constraints' => $options['isEdit'] ? [] : [
+						new NotBlank(['message' => 'The password cannot be blank'])
 					],
 				],
 				'empty_data' => '',
