@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Event
+{% block title %}Event{% endblock %}
+
+{% block banner_title %}
+	<h1>Raid</h1>
 {% endblock %}
 
 {% block body %}
@@ -100,35 +103,7 @@
 		</table>
 
 		<hr>
-		<h4>
-			Waiting players :
-		</h4>
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Class</th>
-					<th>Role</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for raidCharacter in raid.raidCharacters %}
-					{% if raidCharacter.isWaitingConfirmation %}
-						<tr>
-							<td>{{ raidCharacter.userCharacter.name }}</td>
-							<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-							<td>{{ raidCharacter.role.name }}</td>
-							{% if user and user.hasCharacter(raidCharacter.userCharacter) and raidCharacter.isRaidLeaderCharacter(user) == false %}
-								<td>
-									<a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
-								</td>
-							{% endif %}
-						</tr>
-					{% endif %}
-				{% endfor %}
-			</tbody>
-		</table>
+
 	</div> #}
 
 
@@ -137,6 +112,87 @@
 
 
 	<main class="container bg-dark">
+
+		<div class="row d-flex justify-content-around">
+			<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+				<h4>
+					Waiting players :
+				</h4>
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Class</th>
+							<th>Role</th>
+							<th></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for raidCharacter in raid.raidCharacters %}
+							{% if raidCharacter.isWaitingConfirmation %}
+								<tr>
+									<td>{{ raidCharacter.userCharacter.name }}</td>
+									<td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+									<td>{{ raidCharacter.role.name }}</td>
+									{% if user and user.hasCharacter(raidCharacter.userCharacter) and raidCharacter.isRaidLeaderCharacter(user) == false %}
+										<td>
+											<a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
+										</td>
+									{% endif %}
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="row d-flex justify-content-around">
+			<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+				{% if form %}
+					{% if user.characters|length > 0 %}
+						<h3 class="text-center mb-5">Subscription</h3>
+
+						{{ form_start(form) }}
+						<div class="row d-flex justify-content-around mb-2">
+							<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
+								{{ form_label(form.userCharacter) }}
+								{{ form_widget(form.userCharacter) }}
+							</div>
+							<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
+								{{ form_label(form.role) }}
+								{{ form_widget(form.role) }}
+							</div>
+
+							<div class="col-12 col-md-11 text-center d-flex justify-content-center">
+
+								{% if isEdit %}
+									<button type="submit" class="btn btn-primary rounded-pill btn-lg mt-3">Save changes</button>
+								{% else %}
+									<button type="submit" class="btn btn-primary rounded-pill btn-lg mt-3">Subscribe</button>
+								{% endif %}
+
+								{{ form_end(form) }}
+							</div>
+						</div>
+					{% else %}
+						<div class="row d-flex justify-content-around mb-2">
+							<div class="col-12 col-md-11 text-center d-flex justify-content-center">
+								<button type="button" class="btn btn-primary rounded-pill btn-lg disabled mt-3">Subscribe</button>
+								<p class="text-center">
+									You need to register at least one raiding character in your
+									<a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
+									in order to subscribe.
+								</p>
+							</div>
+						</div>
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+
+
 		<div class="row d-flex justify-content-around">
 			<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 
@@ -145,7 +201,7 @@
 				<div class="row d-flex justify-content-around mb-4">
 					<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
 						<span class="h5">Name :</span>
-						<span class="h4 text-success mt-0 mb-3">{{ raid.name }}</span>
+						<span class="h4 mt-0 mb-3">{{ raid.name }}</span>
 					</div>
 
 					<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
@@ -173,7 +229,7 @@
 
 					<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
 						<span class="h5">Server :</span>
-						<span class="h4 text-success mt-0 mb-3">TBC Hydraxian Waterlord</span>
+						<span class="h4 mt-0 mb-3">TBC Hydraxian Waterlord</span>
 					</div>
 				</div>
 
@@ -182,81 +238,61 @@
 						<span class="h5">
 							The Raid Leader is still looking for
 							<span class="text-success h4">{{ raid.expectedAttendee }}</span>
-							raiders.
+							raiders :
 						</span>
 					</div>
-					<span class="h4">Including...</span>
 
-
-
-					if ($minTank === $maxTank === 0)
-
-
-					<p>Places remaining for tank :
-						{{ number_of_places_remaining(raid, constant('App\\Entity\\Role::TANK')) }}</p>
-					<p>Min heal :
-						{{ raid.minHeal }}</p>
-					<p>Max heal :
-						{{ raid.maxHeal }}</p>
-					<p>Places remaining for heal :
-						{{ number_of_places_remaining(raid, constant('App\\Entity\\Role::HEAL')) }}</p>
-					<p>Places remaining for dps :
-						{{ number_of_places_remaining(raid, constant('App\\Entity\\Role::DPS')) }}</p>
+					<div class="col-12 col-md-11 d-flex flex-column">
+						<span class="h5">Tanks :</span>
+						<span class="h5 mt-0 mb-3">{{ number_of_places_remaining(raid, constant('App\\Entity\\Role::TANK')) }}</span>
+					</div>
+					<div class="col-12 col-md-11 d-flex flex-column">
+						<span class="h5">Healers :</span>
+						<span class="h5 mt-0 mb-3">{{ number_of_places_remaining(raid, constant('App\\Entity\\Role::HEAL')) }}</span>
+					</div>
+					<div class="col-12 col-md-11 d-flex flex-column">
+						<span class="h5">DPS :</span>
+						<span class="h5 mt-0 mb-3">{{ number_of_places_remaining(raid, constant('App\\Entity\\Role::DPS')) }}</span>
+					</div>
 				</div>
 
-
-
-
-
-
-				<div class="row d-flex justify-content-around p-2 p-md-4 pl-md-5 pr-md-5 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
+				<div class="row d-flex justify-content-around p-2 p-md-4 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
 					<div class="col-12">
-						<h4 class="text-center">Raid Leader guidelines :</h4>
+						<h4 class="text-center mb-3">Raid Leader guidelines :</h4>
 						<p>
 							{{ raid.information }}
 						</p>
 					</div>
 				</div>
 
+				<div class="row d-flex justify-content-around p-2 p-md-4 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
 
-				<div class="row d-flex justify-content-around p-2 p-md-4 pl-md-5 pr-md-5 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
+					<details>
+						<summary class="h5">
+							<span>Parameters</span>
+						</summary>
 
-					<h3>Parameters</h3>
+						<p class="h5 mt-4">The Raid Leader is looking for a total of
+							<span class="text-info">{{ raid.expectedAttendee }}</span> raiders :
+							<span class="text-warning">{{ raid.minTank }}</span> to <span class="text-warning">{{ raid.maxTank }}</span> Tanks,
+							<span class="text-success">{{ raid.minHeal }}</span> to <span class="text-success">{{ raid.maxHeal }}</span> Healers,
+							and the rest as DPS.
+						</p>
 
-					<div class="form-row justify-content-between">
-						<div class="col-12 col-form-label">
-							<span class="h4">The Raid Leader is looking for a total of
-								<span class="text-success h4">{{ raid.expectedAttendee }}</span> raiders.
-							</span>
-						</div>
-					</div>
-
-					<span class="h4">Including...</span>
-
-					<div class="form-row justify-content-between">
-						<div class="col-6 col-form-label">
-							{{ raid.minTank }} to {{ raid.maxTank }} Tanks,
-						</div>
-						<div class="col-6 col-form-label">
-							{{ raid.minHeal }} to {{ raid.maxHeal }} Healers,
-						</div>
-					</div>
-
-					<div class="form-row justify-content-between">
-						<div class="col-12 col-form-label">
-							... and the rest in DPS.
-						</div>
-					</div>
-
-					<div class="form-row justify-content-around mb-4">
 						{% if (raid.autoAccept == 1) %}
-						test 1
+							<p>Any raider subscribing to the raid is automatically accepted as long as he fills a slot that requires to be filled.</p>
+						{% else %}
+							<p>The Raid Leader will manually accept the raiders he wants in his raid.
+								If he always waits for the last second before the raid to validate his roster,
+								leading to a lot of people not knowing if they are taken in or not, you have my blessing to pester him in game.</p>
 						{% endif %}
 
 						{% if (raid.isPrivate == 1) %}
-						test 2
+							<p class="mb-1">The raid is set to be private, and won't be displayed in the calendar.</p>
+						{% else %}
+							<p class="mb-1">The raid is not set to be private, and as such is normally displayed in the Calendar.</p>
 						{% endif %}
-					</div>
+					</details>
 				</div>
 			</div>
 		</div>
