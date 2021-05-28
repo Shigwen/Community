@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\Constraints\UniqueEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -41,6 +41,7 @@ class UserType extends AbstractType
 				'constraints' => [
 					new NotBlank(['message' => 'The email cannot be blank']),
 					new Email(['message' => 'The email is not valid']),
+					new UniqueEmail(),
 				],
 			])
             ->add('password', RepeatedType::class, [

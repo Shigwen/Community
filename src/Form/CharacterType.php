@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Count;
 
 class CharacterType extends AbstractType
 {
@@ -65,8 +65,11 @@ class CharacterType extends AbstractType
 				'expanded' => true,
 				'multiple' => true,
 				'constraints' => [
-					new Callback([
-						Role::class, 'validate'
+					new Count([
+						'min' => 1,
+						'max' => 3,
+						'minMessage' => 'You must specify at least one role',
+						'maxMessage' => 'You cannot specify more than {{ limit }} roles',
 					])
 				],
 			])
