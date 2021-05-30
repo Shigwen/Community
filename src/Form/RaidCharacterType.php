@@ -20,6 +20,7 @@ class RaidCharacterType extends AbstractType
 				'query_builder' => function (EntityRepository $er) use ($options) {
 					return $er->createQueryBuilder('uc')
 						->where('uc.user = :user')
+						->andWhere('uc.isArchived = 0')
 						->orderBy('uc.name', 'ASC')
 						->setParameter('user', $options['user']);
 				},
