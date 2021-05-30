@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class CharacterType extends AbstractType
 {
@@ -37,7 +38,10 @@ class CharacterType extends AbstractType
 				],
 				'attr' => [
 					'class' => 'custom-select',
-				]
+				],
+				'constraints' => [
+					new NotNull(['message' => 'You must specify a server'])
+				],
 			])
 
             ->add('characterClass', null, [
@@ -47,7 +51,10 @@ class CharacterType extends AbstractType
 				],
 				'attr' => [
 					'class' => 'custom-select',
-				]
+				],
+				'constraints' => [
+					new NotNull(['message' => 'You must specify a class'])
+				],
 			])
 
             ->add('roles', EntityType::class, [
@@ -67,9 +74,7 @@ class CharacterType extends AbstractType
 				'constraints' => [
 					new Count([
 						'min' => 1,
-						'max' => 3,
 						'minMessage' => 'You must specify at least one role',
-						'maxMessage' => 'You cannot specify more than {{ limit }} roles',
 					])
 				],
 			])
