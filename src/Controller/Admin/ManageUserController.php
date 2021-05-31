@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Raid;
 use App\Entity\User;
-use App\Service\Raid\RaidTemplate;
+use App\Service\Raid\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,7 +35,7 @@ class ManageUserController extends AbstractController
 	/**
      * @Route("/promote-or-demote/user/{id}", name="promote_or_demote")
      */
-    public function promoteOrDemote(User $user, RaidTemplate $template): Response
+    public function promoteOrDemote(User $user, Template $template): Response
     {
 		if ($user->getStrRole() === User::ROLE_USER) {
 			$user->setRoles([User::ROLE_RAID_LEADER]);

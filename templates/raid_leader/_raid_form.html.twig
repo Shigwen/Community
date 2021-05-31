@@ -234,19 +234,17 @@
 								<div class="modal-footer">
 
 										{% if editTemplate %}
-											{{ form_row(form.saveAsNewTemplate) }}
 											{{ form_row(form.editTemplate) }}
+										{% endif %}
 
+										{% if raidTemplates|length < 5 %}
+											{{ form_row(form.saveTemplate) }}
 										{% else %}
-											{% if raidTemplates|length < 5 %}
-												{{ form_row(form.saveTemplate) }}
-											{% else %}
-												<div class="d-flex align-items-center justify-content-center">
-													<button type="button" class="btn btn-lg btn-primary text-danger">
-														No fun allowed !
-													</button>
-												</div>
-											{% endif %}
+											<div class="d-flex align-items-center justify-content-center">
+												<button type="button" class="btn btn-lg btn-primary text-danger">
+													No fun allowed !
+												</button>
+											</div>
 										{% endif %}
 
 									<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>

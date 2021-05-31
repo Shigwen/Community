@@ -90,7 +90,7 @@ class RaidRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
 			->where('r.templateName IS NULL')
             ->andWhere('r.startAt > :now')
-            ->andWhere('r.endAt < :now')
+            ->andWhere('r.endAt > :now')
 			->andWhere('r.user = :raidLeader')
 			->andWhere('r.isArchived = false')
             ->setParameters([
@@ -161,8 +161,8 @@ class RaidRepository extends ServiceEntityRepository
 			->join('rc.userCharacter', 'uc')
 			->where('uc.user = :player')
 			->andWhere('r.templateName IS NULL')
-			->andWhere('r.startAt > :now')
-			->andWhere('r.endAt < :now')
+			->andWhere('r.startAt < :now')
+			->andWhere('r.endAt > :now')
 			->andWhere('rc.status = :status')
 			->andWhere('r.isArchived = false')
 			->setParameters([

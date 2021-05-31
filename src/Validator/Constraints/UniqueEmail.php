@@ -9,6 +9,6 @@ class UniqueEmail extends Constraint
 
   public function validatedBy()
   {
-      return 'unique.email.validator';
+      return 'validator.unique_email';
   }
 }

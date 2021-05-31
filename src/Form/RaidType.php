@@ -181,11 +181,7 @@ Strategies will never be debated during the raid, no matter how much one might t
 						'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
 					],
 					'required' => false,
-				]);
-			}
-
-			if (!$options['isEdit'] && !$options['isRaidTemplate']) {
-				$builder
+				])
 				->add('saveTemplate', SubmitType::class, [
 					'label' => 'Save template',
 					'attr' => [
@@ -196,12 +192,7 @@ Strategies will never be debated during the raid, no matter how much one might t
 
 			if ($options['isRaidTemplate']) {
 				$builder
-				->add('saveAsNewTemplate', SubmitType::class, [
-					'label' => 'Save as new template',
-					'attr' => [
-						'class' => 'btn btn-lg btn-primary',
-					],
-				])->add('editTemplate', SubmitType::class, [
+				->add('editTemplate', SubmitType::class, [
 					'label' => 'Edit template',
 					'attr' => [
 						'class' => 'btn btn-lg btn-primary',
