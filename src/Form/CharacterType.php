@@ -7,11 +7,12 @@ use App\Entity\Character;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class CharacterType extends AbstractType
 {
@@ -27,7 +28,11 @@ class CharacterType extends AbstractType
 					'class' => 'form-control',
 				],
 				'constraints' => [
-					new NotBlank(['message' => 'The name cannot be blank'])
+					new NotBlank(['message' => 'The name cannot be blank']),
+					new Length([
+						'max' => 250,
+						'maxMessage' => 'Your first name cannot be longer than 250 characters'
+					])
 				],
 			])
 

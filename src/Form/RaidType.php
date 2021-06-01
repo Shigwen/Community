@@ -3,8 +3,17 @@
 namespace App\Form;
 
 use App\Entity\Raid;
+use App\Form\RaidCharacterType;
+use App\Validator\Constraints\GreaterThanMaxTankAndHeal;
+use App\Validator\Constraints\GreaterThanMinHeal;
+use App\Validator\Constraints\GreaterThanMinTank;
 use Symfony\Component\Form\AbstractType;
+use App\Validator\Constraints\LessThanRaidType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -26,6 +35,14 @@ class RaidType extends AbstractType
 				'attr' => [
 					'class' => 'form-control',
 				],
+				'required' => false,
+				'constraints' => [
+					new NotBlank(['message' => 'You must specify a raid name']),
+					new Length([
+						'max' => 250,
+						'maxMessage' => 'The raid name cannot be longer than 250 characters'
+					])
+				],
 			])
             ->add('raidType', ChoiceType::class, [
 				'choices'  => [
@@ -45,6 +62,9 @@ class RaidType extends AbstractType
 
 				'expanded' => true,
 				'multiple' => false,
+				'constraints' => [
+					new NotNull(['message' => 'You must specify a raid type'])
+				],
 			])
 
 			->add('raidCharacter', RaidCharacterType::class, [
@@ -77,6 +97,13 @@ class RaidType extends AbstractType
 				'attr' => [
 					'class' => 'col-2 form-control text-center',
 				],
+				'required' => false,
+				'constraints' => [
+					new NotBlank(['message' => 'The number of people you are looking for cannot be blank']),
+					new Positive(['message' => 'Cannot use negative value']),
+					new LessThanRaidType(),
+					new GreaterThanMaxTankAndHeal(),
+				],
 			])
 
             ->add('minTank', null, [
@@ -86,6 +113,12 @@ class RaidType extends AbstractType
 				],
 				'attr' => [
 					'class' => 'col-2 form-control text-center',
+				],
+				'empty_data' => '1',
+				'required' => false,
+				'constraints' => [
+					new NotBlank(['message' => 'The miniumum tank you are looking for cannot be blank']),
+					new Positive(['message' => 'Cannot use negative value']),
 				],
 			])
 
@@ -97,6 +130,12 @@ class RaidType extends AbstractType
 				'attr' => [
 					'class' => 'col-2 form-control text-center',
 				],
+				'required' => false,
+				'constraints' => [
+					new NotBlank(['message' => 'The maximum tank you are looking for cannot be blank']),
+					new Positive(['message' => 'Cannot use negative value']),
+					new GreaterThanMinTank(),
+				],
 			])
 
             ->add('minHeal', null, [
@@ -107,6 +146,12 @@ class RaidType extends AbstractType
 				'attr' => [
 					'class' => 'col-2 form-control text-center',
 				],
+				'required' => false,
+				'empty_data' => '1',
+				'constraints' => [
+					new NotBlank(['message' => 'The minimum heal you are looking for cannot be blank']),
+					new Positive(['message' => 'Cannot use negative value'])
+				],
 			])
 
             ->add('maxHeal', null, [
@@ -116,6 +161,12 @@ class RaidType extends AbstractType
 				],
 				'attr' => [
 					'class' => 'col-2 form-control text-center',
+				],
+				'required' => false,
+				'constraints' => [
+					new NotBlank(['message' => 'The maximum heal you are looking for cannot be blank']),
+					new Positive(['message' => 'Cannot use negative value']),
+					new GreaterThanMinHeal(),
 				],
 			])
 
@@ -148,6 +199,7 @@ class RaidType extends AbstractType
 					'class' => 'form-control',
 					'rows' => '14',
 				],
+				'required' => false,
 				'data' => $options['raidInformation'] ? $options['raidInformation'] : "Raid leading style and goals:
 
 My goal is for everyone to enjoy discovering the raid at its own pace. I will take a few minutes before every boss to explain the strategy and make sure everyone understands what has to be done.

@@ -3,12 +3,11 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-class UniqueEmail extends Constraint
+class GreaterThanMinTank extends Constraint
 {
-	public $message = 'The Email already used.';
 
 	public function validatedBy()
 	{
-		return 'validator.unique_email';
+		return 'validator.greater_than_min_tank';
 	}
 }

@@ -6,7 +6,6 @@
 				<fieldset class="form-group">
 					<a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
 					<legend class="text-center h3 mb-5">Create An Event</legend>
-					{{ form_errors(form) }}
 
 					<div class="row d-flex justify-content-around">
 						<div class="col-lg-5 col-md-11 text-center">
@@ -33,8 +32,8 @@
 										)
 									}}
 								{% endfor %}
-								{{ form_errors(form.raidType) }}
 							</div>
+							{{ form_errors(form.raidType) }}
 						</div>
 					</div>
 

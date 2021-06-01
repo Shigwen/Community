@@ -1,12 +1,11 @@
 <?php
 namespace App\Validator\Constraints;
 
-use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class UniqueEmailValidator extends ConstraintValidator
+class LessThanRaidTypeValidator extends ConstraintValidator
 {
    protected $em;
 
@@ -17,12 +16,12 @@ class UniqueEmailValidator extends ConstraintValidator
 
   public function validate($value, Constraint $constraint)
   {
-      $user = $this->em->getRepository(User::class)->findOneBy(['email' => $value]);
+	  $raidForm = $this->context->getObject()->getParent()->getViewData();
 
-      if ($user) {
-          $this->context
+	  if ($value >= $raidForm->getRaidType()) {
+		$this->context
 			->buildViolation($constraint->message)
 			->addViolation();
-      }
+	  }
   }
 }
