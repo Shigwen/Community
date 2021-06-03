@@ -42,6 +42,7 @@ class RaidCharacterType extends AbstractType
 				'attr' => [
 					'class' => 'custom-select',
 				],
+				// not null
 			]);
     }
 

@@ -63,6 +63,7 @@ class RaidType extends AbstractType
 				'expanded' => true,
 				'multiple' => false,
 				'constraints' => [
+					// vérifier que ça soit bien 10 25 ou 40
 					new NotNull(['message' => 'You must specify a raid type'])
 				],
 			])
@@ -79,6 +80,7 @@ class RaidType extends AbstractType
 				'label_attr' => [
 					'class' => 'h5',
 				],
+				// doit être < à maintenant
 			])
 
             ->add('endAt', TimeType::class, [
@@ -87,6 +89,7 @@ class RaidType extends AbstractType
 				'label_attr' => [
 					'class' => 'h5',
 				],
+				// doit être > à startAt
 			])
 
 			->add('expectedAttendee', null, [
@@ -233,6 +236,12 @@ Strategies will never be debated during the raid, no matter how much one might t
 						'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
 					],
 					'required' => false,
+					'constraints' => [
+						new Length([
+							'max' => 250,
+							'maxMessage' => 'The raid name cannot be longer than 250 characters'
+						])
+					],
 				])
 				->add('saveTemplate', SubmitType::class, [
 					'label' => 'Save template',
