@@ -4,16 +4,8 @@ namespace App\Form;
 
 use App\Entity\Raid;
 use App\Form\RaidCharacterType;
-use App\Validator\Constraints\GreaterThanMaxTankAndHeal;
-use App\Validator\Constraints\GreaterThanMinHeal;
-use App\Validator\Constraints\GreaterThanMinTank;
 use Symfony\Component\Form\AbstractType;
-use App\Validator\Constraints\LessThanRaidType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -35,14 +27,6 @@ class RaidType extends AbstractType
 				'attr' => [
 					'class' => 'form-control',
 				],
-				'required' => false,
-				'constraints' => [
-					new NotBlank(['message' => 'You must specify a raid name']),
-					new Length([
-						'max' => 250,
-						'maxMessage' => 'The raid name cannot be longer than 250 characters'
-					])
-				],
 			])
             ->add('raidType', ChoiceType::class, [
 				'choices'  => [
@@ -62,10 +46,6 @@ class RaidType extends AbstractType
 
 				'expanded' => true,
 				'multiple' => false,
-				'constraints' => [
-					// vérifier que ça soit bien 10 25 ou 40
-					new NotNull(['message' => 'You must specify a raid type'])
-				],
 			])
 
 			->add('raidCharacter', RaidCharacterType::class, [
@@ -80,7 +60,6 @@ class RaidType extends AbstractType
 				'label_attr' => [
 					'class' => 'h5',
 				],
-				// doit être < à maintenant
 			])
 
             ->add('endAt', TimeType::class, [
@@ -89,7 +68,6 @@ class RaidType extends AbstractType
 				'label_attr' => [
 					'class' => 'h5',
 				],
-				// doit être > à startAt
 			])
 
 			->add('expectedAttendee', null, [
@@ -101,12 +79,6 @@ class RaidType extends AbstractType
 					'class' => 'col-2 form-control text-center',
 				],
 				'required' => false,
-				'constraints' => [
-					new NotBlank(['message' => 'The number of people you are looking for cannot be blank']),
-					new Positive(['message' => 'Cannot use negative value']),
-					new LessThanRaidType(),
-					new GreaterThanMaxTankAndHeal(),
-				],
 			])
 
             ->add('minTank', null, [
@@ -119,10 +91,6 @@ class RaidType extends AbstractType
 				],
 				'empty_data' => '1',
 				'required' => false,
-				'constraints' => [
-					new NotBlank(['message' => 'The miniumum tank you are looking for cannot be blank']),
-					new Positive(['message' => 'Cannot use negative value']),
-				],
 			])
 
             ->add('maxTank', null, [
@@ -134,11 +102,6 @@ class RaidType extends AbstractType
 					'class' => 'col-2 form-control text-center',
 				],
 				'required' => false,
-				'constraints' => [
-					new NotBlank(['message' => 'The maximum tank you are looking for cannot be blank']),
-					new Positive(['message' => 'Cannot use negative value']),
-					new GreaterThanMinTank(),
-				],
 			])
 
             ->add('minHeal', null, [
@@ -151,10 +114,6 @@ class RaidType extends AbstractType
 				],
 				'required' => false,
 				'empty_data' => '1',
-				'constraints' => [
-					new NotBlank(['message' => 'The minimum heal you are looking for cannot be blank']),
-					new Positive(['message' => 'Cannot use negative value'])
-				],
 			])
 
             ->add('maxHeal', null, [
@@ -166,11 +125,6 @@ class RaidType extends AbstractType
 					'class' => 'col-2 form-control text-center',
 				],
 				'required' => false,
-				'constraints' => [
-					new NotBlank(['message' => 'The maximum heal you are looking for cannot be blank']),
-					new Positive(['message' => 'Cannot use negative value']),
-					new GreaterThanMinHeal(),
-				],
 			])
 
             ->add('autoAccept', null, [
@@ -236,12 +190,6 @@ Strategies will never be debated during the raid, no matter how much one might t
 						'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
 					],
 					'required' => false,
-					'constraints' => [
-						new Length([
-							'max' => 250,
-							'maxMessage' => 'The raid name cannot be longer than 250 characters'
-						])
-					],
 				])
 				->add('saveTemplate', SubmitType::class, [
 					'label' => 'Save template',

@@ -2,18 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\RaidRepository;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RaidRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AssertCustom;
 
 /**
  * @ORM\Entity(repositoryClass=RaidRepository::class)
  */
 class Raid
 {
-	const IDENTIFIER_SIZE = 20;
+    const IDENTIFIER_SIZE = 20;
 
     /**
      * @ORM\Id
@@ -22,37 +24,75 @@ class Raid
      */
     private $id;
 
-	/**
+    /**
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $identifier;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a raid name"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "The raid name cannot be longer than 250 characters"
+     * )
+     * 
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "The template name cannot be longer than 250 characters"
+     * )
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $templateName;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a raid type"
+     * )
+     * @Assert\Choice(
+     *     choices = {10, 25, 40},
+     *     message = "Choose a valid raid type"
+     * )
+     * 
      * @ORM\Column(type="smallint")
      */
     private $raidType;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "The number of people you are looking for cannot be blank"
+     * )
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     * @Assert\LessThan(
+     *     propertyPath = "raidType",
+     *     message = "The number of people you are looking for must be inferior to the size of the raid"
+     * )
+     * @AssertCustom\GreaterThanMaxTankAndHeal()
+     * 
      * @ORM\Column(type="smallint")
      */
     private $expectedAttendee;
 
-	/**
+    /**
+     * @Assert\GreaterThan(
+     *     value = "+ 1 hour",
+     *     message = "The date must be in the future"
+     * )
      * @ORM\Column(type="datetime")
      */
     private $startAt;
 
     /**
+     * @AssertCustom\GreaterThanStartAt()
+     * 
      * @ORM\Column(type="datetime")
      */
     private $endAt;
@@ -63,26 +103,50 @@ class Raid
     private $information;
 
     /**
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     *  
      * @ORM\Column(type="smallint")
      */
     private $minTank;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @Assert\NotBlank(
+     *     message = "The maximum number of tanks you are looking for cannot be blank"
+     * ) 
+     * @Assert\GreaterThan(
+     *     propertyPath = "minTank",
+     *     message = "The maximum number of tanks cannot be inferior to the minimum"
+     * )
+     *  
+     * @ORM\Column(type="smallint")
      */
     private $maxTank;
 
     /**
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     *  
      * @ORM\Column(type="smallint")
      */
     private $minHeal;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @Assert\NotBlank(
+     *     message = "The maximum number of healers you are looking for cannot be blank"
+     * ) 
+     * @Assert\GreaterThan(
+     *     propertyPath = "minHeal",
+     *     message = "The maximum number of healers cannot be inferior to the minimum"
+     * )
+     *  
+     * @ORM\Column(type="smallint")
      */
     private $maxHeal;
 
-	/**
+    /**
      * @ORM\Column(type="boolean")
      */
     private $autoAccept;
@@ -108,7 +172,7 @@ class Raid
      */
     private $raidCharacters;
 
-	/**
+    /**
      * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="raids")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -126,9 +190,9 @@ class Raid
 
     public function __construct()
     {
-		$this->startAt = new DateTime();
-		$this->endAt = new DateTime();
-		$this->createdAt = new DateTime();
+        $this->startAt = new DateTime();
+        $this->endAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->raidCharacters = new ArrayCollection();
     }
 
@@ -137,10 +201,10 @@ class Raid
         return $this->id;
     }
 
-	public function getIdentifier()
-         	{
-         		return $this->identifier;
-         	}
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
 
     public function setIdentifier($identifier): self
     {
@@ -298,10 +362,10 @@ class Raid
         return $this;
     }
 
-	public function getAutoAccept(): ?bool
-         	{
-         		return $this->autoAccept;
-         	}
+    public function getAutoAccept(): ?bool
+    {
+        return $this->autoAccept;
+    }
 
     public function setAutoAccept(bool $autoAccept): self
     {
@@ -345,34 +409,34 @@ class Raid
     }
 
     public function getRaidCharacterFromUser(User $user): RaidCharacter
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUser() === $user) {
-				return $raidCharacter;
-			}
-		}
-		return null;
-	}
+    {
+        foreach ($this->raidCharacters as $raidCharacter) {
+            if ($raidCharacter->getUser() === $user) {
+                return $raidCharacter;
+            }
+        }
+        return null;
+    }
 
-	public function getCharacterFromUser(User $user): Character
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUser() === $user) {
-				return $raidCharacter->getUserCharacter();
-			}
-		}
-		return null;
-	}
+    public function getCharacterFromUser(User $user): Character
+    {
+        foreach ($this->raidCharacters as $raidCharacter) {
+            if ($raidCharacter->getUser() === $user) {
+                return $raidCharacter->getUserCharacter();
+            }
+        }
+        return null;
+    }
 
-	public function hasCharacter(Character $character)
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUserCharacter = $character) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public function hasCharacter(Character $character)
+    {
+        foreach ($this->raidCharacters as $raidCharacter) {
+            if ($raidCharacter->getUserCharacter = $character) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function addRaidCharacter(RaidCharacter $raidCharacter): self
     {
@@ -396,10 +460,10 @@ class Raid
         return $this;
     }
 
-	public function getServer(): ?Server
-             {
-                 return $this->server;
-             }
+    public function getServer(): ?Server
+    {
+        return $this->server;
+    }
 
     public function setServer(?Server $server): self
     {
