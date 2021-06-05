@@ -27,17 +27,16 @@ class RaidCharacterRepository extends ServiceEntityRepository
     public function userAlreadyRegisterInRaid(User $user, Raid $raid)
     {
         return $this->createQueryBuilder('rc')
-			->join('rc.userCharacter', 'uc')
-			->join('rc.raid', 'r')
+            ->join('rc.userCharacter', 'uc')
+            ->join('rc.raid', 'r')
             ->andWhere('rc.raid = :raid')
             ->andWhere('uc.user = :user')
             ->setParameters([
-				'raid' => $raid,
-				'user' => $user,
-			])
-			->setMaxResults(1)
+                'raid' => $raid,
+                'user' => $user,
+            ])
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
-
 }

@@ -19,9 +19,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class Role
 {
-	const TANK = 1;
-	const HEAL = 2;
-	const DPS = 3;
+    const TANK = 1;
+    const HEAL = 2;
+    const DPS = 3;
 
     /**
      * @ORM\Id
@@ -57,15 +57,15 @@ class Role
 
     public function __construct()
     {
-		$this->createdAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
     }
 
-	public function __toString()
-	{
-		return $this->name;
-	}
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {
@@ -158,13 +158,13 @@ class Role
         return $this;
     }
 
-	public function isTank()
-	{
-		return $this->id === self::TANK;
-	}
+    public function isTank()
+    {
+        return $this->id === self::TANK;
+    }
 
-	public function isHeal()
-	{
-		return $this->id === self::HEAL;
-	}
+    public function isHeal()
+    {
+        return $this->id === self::HEAL;
+    }
 }

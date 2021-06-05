@@ -47,15 +47,15 @@ class Server
 
     public function __construct()
     {
-		$this->createdAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
         $this->raids = new ArrayCollection();
     }
 
-	public function __toString()
-               	{
-               		return $this->name;
-               	}
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {

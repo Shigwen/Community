@@ -18,12 +18,12 @@ class CalendarController extends AbstractController
     public function calendar(Request $request, Calendar $calendar): Response
     {
         $date = new DateTime($request->request->get('date'));
-		$month = $calendar::Process($date->format('Y-m-d'));
+        $month = $calendar::Process($date->format('Y-m-d'));
 
         $html =  $this->renderView('event/_calendar.html.twig', [
             'title' => $month['title'],
-			'emptyDaysPadding' => $month['empty_days_padding'],
-			'days' => $month['days'],
+            'emptyDaysPadding' => $month['empty_days_padding'],
+            'days' => $month['days'],
             'date' => $date,
         ]);
 
@@ -36,10 +36,10 @@ class CalendarController extends AbstractController
     public function raidOfDay(Request $request, Calendar $calendar): Response
     {
         $date = new DateTime($request->request->get('date'));
-        
+
         $raids = $this->getUser()
-		? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAcceptedFromDate($this->getUser(), $date)
-		: $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date);
+            ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAcceptedFromDate($this->getUser(), $date)
+            : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date);
 
         $html =  $this->renderView('event/_raids.html.twig', [
             'chosenDate' => $date,

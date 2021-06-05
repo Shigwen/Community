@@ -17,22 +17,22 @@ class ContactController extends AbstractController
      */
     public function contact(Request $request): Response
     {
-		$message = new Message();
-		$message->setCreatedAt(new DateTime());
+        $message = new Message();
+        $message->setCreatedAt(new DateTime());
 
-		$form = $this->createForm(MessageType::class, $message);
-		$form->handleRequest($request);
+        $form = $this->createForm(MessageType::class, $message);
+        $form->handleRequest($request);
 
-		if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
-			$message = $form->getData();
+            $message = $form->getData();
             $this->getDoctrine()->getManager()->persist($message);
             $this->getDoctrine()->getManager()->flush();
 
-			$this->addFlash('success', 'Your message has been sent');
+            $this->addFlash('success', 'Your message has been sent');
 
-			return $this->redirectToRoute('home');
-		}
+            return $this->redirectToRoute('home');
+        }
 
         return $this->render('home/contact.html.twig', [
             'form' => $form->createView(),

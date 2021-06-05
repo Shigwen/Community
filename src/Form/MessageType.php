@@ -13,14 +13,13 @@ class MessageType extends AbstractType
     {
         $builder
             ->add('name', null, [
-				'label' => 'Your name'
-			])
+                'label' => 'Your name'
+            ])
             ->add('email')
             ->add('messageType', null, [
-				'label' => false,
-			])
-            ->add('message')
-        ;
+                'label' => false,
+            ])
+            ->add('message');
     }
 
     public function configureOptions(OptionsResolver $resolver)

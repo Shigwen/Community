@@ -21,7 +21,7 @@ class Character
      */
     private $id;
 
-	/**
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -41,7 +41,7 @@ class Character
      */
     private $updatedAt;
 
-	/**
+    /**
      * @ORM\Column(type="boolean")
      */
     private $isArchived;
@@ -64,7 +64,7 @@ class Character
      */
     private $server;
 
-	/**
+    /**
      * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="characters")
      */
     private $roles;
@@ -76,15 +76,15 @@ class Character
 
     public function __construct()
     {
-		$this->createdAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->roles = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
     }
 
-	function __toString()
-         	{
-         		return $this->name;
-         	}
+    function __toString()
+    {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {
@@ -156,10 +156,10 @@ class Character
         return $this;
     }
 
-	public function getServer(): ?Server
-         	{
-         		return $this->server;
-         	}
+    public function getServer(): ?Server
+    {
+        return $this->server;
+    }
 
     public function setServer(?Server $server): self
     {
@@ -175,7 +175,7 @@ class Character
         return $this;
     }
 
-	/**
+    /**
      * @return Collection|Role[]
      */
     public function getRoles(): Collection
@@ -183,21 +183,21 @@ class Character
         return $this->roles;
     }
 
-	/**
-	 * List of role in the following format : Tank / Heal / DPS
+    /**
+     * List of role in the following format : Tank / Heal / DPS
      * @return string
      */
     public function getStrRoles(): string
     {
-		$string = '';
+        $string = '';
 
-		foreach ($this->roles as $index => $role) {
-			$string .= $role->getName();
+        foreach ($this->roles as $index => $role) {
+            $string .= $role->getName();
 
-			if($index + 1 < count($this->roles)) {
-				$string .= ' / ';
-			}
-		}
+            if ($index + 1 < count($this->roles)) {
+                $string .= ' / ';
+            }
+        }
 
         return $string;
     }

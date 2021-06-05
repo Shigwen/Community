@@ -69,53 +69,53 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         }
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
-			'email' => $credentials['email']
-		]);
+            'email' => $credentials['email']
+        ]);
 
         if (!$user) {
             throw new CustomUserMessageAuthenticationException("Your login credentials don't match an account in our system");
         }
 
-		if ($user->getStatus() === User::STATUS_BAN) {
+        if ($user->getStatus() === User::STATUS_BAN) {
             throw new CustomUserMessageAuthenticationException('Your account haved be banned');
-		}
+        }
 
-		if ($user->getStatus() === User::STATUS_WAITING_EMAIL_CONFIRMATION) {
+        if ($user->getStatus() === User::STATUS_WAITING_EMAIL_CONFIRMATION) {
             throw new CustomUserMessageAuthenticationException('You must confirm your email address before you can log in');
-		}
+        }
 
         return $user;
     }
 
-	/**
+    /**
      * Check the user password and the number of user login attempts
-	 * After x attempts the user can no longer try to connect
-	 * He will have to wait x minutes before trying again
+     * After x attempts the user can no longer try to connect
+     * He will have to wait x minutes before trying again
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-		$passValid = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-		$intervalBtwAttempt = date_create('now')->diff($user->getLastAttempt());
+        $passValid = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        $intervalBtwAttempt = date_create('now')->diff($user->getLastAttempt());
 
-		if(intval($intervalBtwAttempt->i) > User::DELAY_AFTER_MAX_ATTEMPT) {
-			$user->setNbrOfAttempt(0);
-		}
+        if (intval($intervalBtwAttempt->i) > User::DELAY_AFTER_MAX_ATTEMPT) {
+            $user->setNbrOfAttempt(0);
+        }
 
-		if($user->getNbrOfAttempt() >= User::NUMBER_MAX_OF_ATTEMPT) {
-			throw new CustomUserMessageAuthenticationException(
-				'You have tried logging in too many times. Please wait '. User::DELAY_AFTER_MAX_ATTEMPT .' minutes before retrying.'
-			);
-		}
+        if ($user->getNbrOfAttempt() >= User::NUMBER_MAX_OF_ATTEMPT) {
+            throw new CustomUserMessageAuthenticationException(
+                'You have tried logging in too many times. Please wait ' . User::DELAY_AFTER_MAX_ATTEMPT . ' minutes before retrying.'
+            );
+        }
 
-		$user->setLastAttempt(new DateTime());
+        $user->setLastAttempt(new DateTime());
 
-		if(!$passValid) {
-			$user->setNbrOfAttempt($user->getNbrOfAttempt() + 1);
-		} else {
-			$user->setNbrOfAttempt(0);
-		}
+        if (!$passValid) {
+            $user->setNbrOfAttempt($user->getNbrOfAttempt() + 1);
+        } else {
+            $user->setNbrOfAttempt(0);
+        }
 
-		$this->entityManager->flush();
+        $this->entityManager->flush();
         return $passValid;
     }
 
@@ -133,7 +133,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
-		return new RedirectResponse($this->urlGenerator->generate('user_account'));
+        return new RedirectResponse($this->urlGenerator->generate('user_account'));
     }
 
     protected function getLoginUrl()

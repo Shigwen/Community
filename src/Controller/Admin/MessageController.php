@@ -23,7 +23,7 @@ class MessageController extends AbstractController
         ]);
     }
 
-	/**
+    /**
      * @Route("/archived-messages", name="archived_messages")
      */
     public function archivedMessages(): Response
@@ -33,7 +33,7 @@ class MessageController extends AbstractController
         ]);
     }
 
-	/**
+    /**
      * @Route("/messages/{id}", name="message")
      */
     public function message(Message $message): Response
@@ -43,19 +43,19 @@ class MessageController extends AbstractController
         ]);
     }
 
-	/**
+    /**
      * @Route("/archive-message/{id}", name="archive_message")
      */
     public function archiveMessage(Message $message): Response
     {
-		if ($message->getArchivedAt()) {
-			$message->setArchivedAt(null);
-		} else {
-			$message
-				->setArchivedAt(new DateTime())
-				->setArchivedBy($this->getUser());
-		}
-		$this->getDoctrine()->getManager()->flush();
+        if ($message->getArchivedAt()) {
+            $message->setArchivedAt(null);
+        } else {
+            $message
+                ->setArchivedAt(new DateTime())
+                ->setArchivedBy($this->getUser());
+        }
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('admin_messages');
     }

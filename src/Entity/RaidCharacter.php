@@ -11,9 +11,9 @@ use App\Repository\RaidCharacterRepository;
  */
 class RaidCharacter
 {
-	const WAITING_CONFIRMATION = 0;
-	const ACCEPT = 1;
-	const REFUSED = 2;
+    const WAITING_CONFIRMATION = 0;
+    const ACCEPT = 1;
+    const REFUSED = 2;
 
     /**
      * @ORM\Id
@@ -39,7 +39,7 @@ class RaidCharacter
      */
     private $userCharacter;
 
-	/**
+    /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="raidCharacters")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -96,16 +96,16 @@ class RaidCharacter
         return $this;
     }
 
-	public function isRaidLeaderCharacter(User $user)
-	{
-		if ($this->userCharacter->getUser() !== $user) {
+    public function isRaidLeaderCharacter(User $user)
+    {
+        if ($this->userCharacter->getUser() !== $user) {
             return false;
         }
 
         return true;
-	}
+    }
 
-	public function getRole(): ?Role
+    public function getRole(): ?Role
     {
         return $this->role;
     }
@@ -117,21 +117,21 @@ class RaidCharacter
         return $this;
     }
 
-	public function getCharacterServer()
-	{
-		if (!$this->userCharacter) {
-			return null;
-		}
+    public function getCharacterServer()
+    {
+        if (!$this->userCharacter) {
+            return null;
+        }
 
-		return $this->userCharacter->getServer();
-	}
+        return $this->userCharacter->getServer();
+    }
 
-	public function getUser()
-	{
-		if (!$this->userCharacter) {
-			return null;
-		}
+    public function getUser()
+    {
+        if (!$this->userCharacter) {
+            return null;
+        }
 
-		return $this->userCharacter->getUser();
-	}
+        return $this->userCharacter->getUser();
+    }
 }
