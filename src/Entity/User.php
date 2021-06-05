@@ -8,23 +8,25 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AssertCustom;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
 {
-	const DELAY_AFTER_MAX_ATTEMPT = 5;
-	const NUMBER_MAX_OF_ATTEMPT = 5;
+    const DELAY_AFTER_MAX_ATTEMPT = 5;
+    const NUMBER_MAX_OF_ATTEMPT = 5;
 
-	const STATUS_WAITING_EMAIL_CONFIRMATION = 0;
-	const STATUS_EMAIL_CONFIRMED = 1;
-	const STATUS_BAN = 2;
+    const STATUS_WAITING_EMAIL_CONFIRMATION = 0;
+    const STATUS_EMAIL_CONFIRMED = 1;
+    const STATUS_BAN = 2;
 
-	const ROLE_USER = 'ROLE_USER';
-	const ROLE_RAID_LEADER = 'ROLE_RAID_LEADER';
-	const ROLE_ADMIN = 'ROLE_ADMIN';
-	const ROLE_OWNER = 'ROLE_OWNER';
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_RAID_LEADER = 'ROLE_RAID_LEADER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_OWNER = 'ROLE_OWNER';
 
     /**
      * @ORM\Id
@@ -34,11 +36,23 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a character name"
+     * )
+     * 
      * @ORM\Column(type="string", length=100, unique=true)
      */
     private $name;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "You must specify an email"
+     * )
+     * @Assert\Email(
+     *     message = "This email is not valid"
+     * )
+     * @AssertCustom\UniqueEmail()
+     * 
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -53,12 +67,12 @@ class User implements UserInterface
      */
     private $password;
 
-	/**
+    /**
      * @ORM\Column(type="smallint")
      */
     private $status;
 
-	/**
+    /**
      * @ORM\Column(type="smallint")
      */
     private $nbrOfAttempt;
@@ -68,19 +82,19 @@ class User implements UserInterface
      */
     private $lastAttempt;
 
-	/**
+    /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
      */
     private $token;
 
-	/**
+    /**
      * @var Date
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
-	/**
+    /**
      * @var Date
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -110,12 +124,12 @@ class User implements UserInterface
 
     public function __construct()
     {
-		$this->roles = [self::ROLE_USER];
-		$this->status = self::STATUS_WAITING_EMAIL_CONFIRMATION;
-		$this->nbrOfAttempt = 0;
-		$this->lastAttempt = new DateTime();
+        $this->roles = [self::ROLE_USER];
+        $this->status = self::STATUS_WAITING_EMAIL_CONFIRMATION;
+        $this->nbrOfAttempt = 0;
+        $this->lastAttempt = new DateTime();
 
-		$this->createdAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->raids = new ArrayCollection();
         $this->ips = new ArrayCollection();
         $this->blockeds = new ArrayCollection();
@@ -123,10 +137,10 @@ class User implements UserInterface
         $this->characters = new ArrayCollection();
     }
 
-	public function __toString()
-	{
-		return $this->email;
-	}
+    public function __toString()
+    {
+        return $this->email;
+    }
 
     public function getId(): ?int
     {
@@ -170,9 +184,9 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-		if (empty($roles = $this->roles)) {
-			$roles[] = 'ROLE_USER';
-		}
+        if (empty($roles = $this->roles)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
     }
@@ -182,26 +196,26 @@ class User implements UserInterface
         return $this->roles[0];
     }
 
-	/**
-	 * Get the verbose name of user's first role
+    /**
+     * Get the verbose name of user's first role
      * @return string
      */
     public function getVerboseStrRole()
     {
-		switch($this->roles[0]) {
-			case 'ROLE_USER':
-				$role = 'User';
-				break;
-			case 'ROLE_RAID_LEADER':
-				$role = 'Raid Leader';
-				break;
-			case 'ROLE_ADMIN':
-				$role = 'Administrator';
-				break;
-			case 'ROLE_OWNER':
-				$role = 'Owner';
-				break;
-		}
+        switch ($this->roles[0]) {
+            case 'ROLE_USER':
+                $role = 'User';
+                break;
+            case 'ROLE_RAID_LEADER':
+                $role = 'Raid Leader';
+                break;
+            case 'ROLE_ADMIN':
+                $role = 'Administrator';
+                break;
+            case 'ROLE_OWNER':
+                $role = 'Owner';
+                break;
+        }
 
         return  $role;
     }
@@ -240,10 +254,10 @@ class User implements UserInterface
         return $this;
     }
 
-	public function getNbrOfAttempt()
-	{
-		return $this->nbrOfAttempt;
-	}
+    public function getNbrOfAttempt()
+    {
+        return $this->nbrOfAttempt;
+    }
 
     public function setNbrOfAttempt($nbrOfAttempt)
     {
@@ -276,7 +290,7 @@ class User implements UserInterface
         return $this;
     }
 
-	/**
+    /**
      * @return  \DateTime
      */
     public function getCreatedAt()
@@ -409,21 +423,21 @@ class User implements UserInterface
         return $this;
     }
 
-	public function hasCharacter($character)
-	{
-		if ($this->characters->contains($character)) {
-			return true;
-		}
+    public function hasCharacter($character)
+    {
+        if ($this->characters->contains($character)) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function hasRaid($raid)
-	{
-		if ($this->raids->contains($raid)) {
-			return true;
-		}
+    public function hasRaid($raid)
+    {
+        if ($this->raids->contains($raid)) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

@@ -29,11 +29,3 @@ services:
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
-
-  validator.unique_email:
-    class: App\Validator\UniqueEmailValidator
-    tags: [{ name: validator.constraint_validator, alias: validator.unique_email }]
-
-  validator.greater_than_max_tank_and_heal:
-    class: App\Validator\GreaterThanMaxTankAndHealValidator
-    tags: [{ name: validator.constraint_validator, alias: validator.greater_than_max_tank_and_heal }]
