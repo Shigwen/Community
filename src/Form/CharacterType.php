@@ -7,10 +7,6 @@ use App\Entity\Character;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -26,14 +22,7 @@ class CharacterType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'The name cannot be blank']),
-                    new Length([
-                        'max' => 250,
-                        'maxMessage' => 'Your first name cannot be longer than 250 characters'
-                    ])
-                ],
+                ]
             ])
 
             ->add('server', null, [
@@ -43,10 +32,7 @@ class CharacterType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'custom-select',
-                ],
-                'constraints' => [
-                    new NotNull(['message' => 'You must specify a server'])
-                ],
+                ]
             ])
 
             ->add('characterClass', null, [
@@ -56,10 +42,7 @@ class CharacterType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'custom-select',
-                ],
-                'constraints' => [
-                    new NotNull(['message' => 'You must specify a class'])
-                ],
+                ]
             ])
 
             ->add('roles', EntityType::class, [
@@ -75,13 +58,7 @@ class CharacterType extends AbstractType
                     return ['class' => 'btn-check'];
                 },
                 'expanded' => true,
-                'multiple' => true,
-                'constraints' => [
-                    new Count([
-                        'min' => 1,
-                        'minMessage' => 'You must specify at least one role',
-                    ])
-                ],
+                'multiple' => true
             ])
 
             ->add('information', null, [

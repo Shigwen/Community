@@ -37,7 +37,7 @@ class User implements UserInterface
 
     /**
      * @Assert\NotBlank(
-     *     message = "You must specify a character name"
+     *     message = "You must specify a username"
      * )
      * 
      * @ORM\Column(type="string", length=100, unique=true)
