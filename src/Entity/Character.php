@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CharacterRepository::class)
@@ -22,6 +23,13 @@ class Character
     private $id;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a character name"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "Your username cannot be longer than 250 characters"
+     * ) 
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -53,18 +61,31 @@ class Character
     private $user;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a character class"
+     * )
+     *  
      * @ORM\ManyToOne(targetEntity=CharacterClass::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $characterClass;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a server"
+     * )
+     *  
      * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $server;
 
     /**
+     * @Assert\Count(
+     *     min = 1,
+     *     minMessage = "You must specify at least one role"
+     * )
+     * 
      * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="characters")
      */
     private $roles;
