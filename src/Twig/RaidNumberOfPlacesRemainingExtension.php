@@ -41,11 +41,11 @@ class RaidNumberOfPlacesRemainingExtension extends AbstractExtension
 			$minTankSpotsLeft = $raid->getMinTank() - $tank; // 2 - 1 = 1
 
 			if ($maxTankSpotsLeft <= 0) {
-				$placesRemaining = "There is no Tank spot left.";
+				$placesRemaining = "There is no Tank slot left.";
 			}
 
 			if ($maxTankSpotsLeft > $minTankSpotsLeft && $minTankSpotsLeft === 0 && $maxTankSpotsLeft > 1) {
-				$placesRemaining = "Minimum amount of Tanks reached. $maxTankSpotsLeft spots left before reaching the maximum set up.";
+				$placesRemaining = "Minimum amount of Tanks reached. <span class='text-warning font-weight-bold'>$maxTankSpotsLeft</span> slots left before reaching the maximum set up.";
 			}
 
 			if ($maxTankSpotsLeft > $minTankSpotsLeft && $maxTankSpotsLeft === 1) {
@@ -53,44 +53,40 @@ class RaidNumberOfPlacesRemainingExtension extends AbstractExtension
 			}
 
 			if ($maxTankSpotsLeft === $minTankSpotsLeft && $minTankSpotsLeft === 1) {
-			$placesRemaining = "Only 1 Tank spot left.";
+			$placesRemaining = "Only 1 Tank slot left.";
 			}
 
 			if ($maxTankSpotsLeft === $minTankSpotsLeft && $minTankSpotsLeft > 1) {
-			$placesRemaining = "$minTankSpotsLeft Tank spots left.";
+			$placesRemaining = "<span class='text-warning font-weight-bold'>$minTankSpotsLeft</span> Tank slots left.";
 			}
 
 			if ($maxTankSpotsLeft > $minTankSpotsLeft && $minTankSpotsLeft >= 1) {
-			$placesRemaining = "There are between $minTankSpotsLeft and $maxTankSpotsLeft Tank spots left.";
+			$placesRemaining = "There are between <span class='text-warning font-weight-bold'>$minTankSpotsLeft</span> and <span class='text-warning font-weight-bold'>$maxTankSpotsLeft</span> Tank slots left.";
 			}
-
-			// dump($minTankSpotsLeft);
-			// dump($maxTankSpotsLeft);
-			// die();
 
 		} else if ($role === Role::HEAL) {
 			$maxHealerSpotsLeft = $raid->getMaxHeal() - $heal;
 			$minHealerSpotsLeft = $raid->getMaxHeal() - $heal;
 
 			if ($maxHealerSpotsLeft <= 0) {
-				$placesRemaining = "There is no Healer spot left.";
+				$placesRemaining = "There is no Healer slot left.";
 			}
 
 			if ($maxHealerSpotsLeft > $minHealerSpotsLeft && $minHealerSpotsLeft === 0 && $maxHealerSpotsLeft > 1) {
-				$placesRemaining = "Minimum amount of Healers reached. $maxHealerSpotsLeft spots left before reaching the maximum set up.";
+				$placesRemaining = "Minimum amount of Healers reached. <span class='text-success font-weight-bold'>$maxHealerSpotsLeft</span> slots left before reaching the maximum set up.";
 			}
 
 			if ($maxHealerSpotsLeft > $minHealerSpotsLeft && $maxHealerSpotsLeft === 1) {
 				$placesRemaining = "Minimum amount of Healers reached. Only 1 slot left before reaching the maximum set up.";
 			}
 			if ($maxHealerSpotsLeft === $minHealerSpotsLeft && $minHealerSpotsLeft === 1) {
-			$placesRemaining = "Only 1 Healer spot left.";
+			$placesRemaining = "Only 1 Healer slot left.";
 			}
 			if ($maxHealerSpotsLeft === $minHealerSpotsLeft && $minHealerSpotsLeft > 1) {
-			$placesRemaining = "$minHealerSpotsLeft Healer spots left.";
+			$placesRemaining = "<span class='text-success font-weight-bold'>$minHealerSpotsLeft</span> Healer slots left.";
 			}
 			if ($maxHealerSpotsLeft > $minHealerSpotsLeft && $minHealerSpotsLeft >= 1) {
-			$placesRemaining = "There are between $minHealerSpotsLeft and $maxHealerSpotsLeft Healer spots left.";
+			$placesRemaining = "There are between <span class='text-success font-weight-bold'>$minHealerSpotsLeft</span> and <span class='text-success font-weight-bold'>$maxHealerSpotsLeft</span> Healer slots left.";
 			}
 
 		} else {
@@ -131,26 +127,26 @@ class RaidNumberOfPlacesRemainingExtension extends AbstractExtension
 			$minDPSSpotsLeft = $totalSpotsLeft - ($slotsPotentiallyContestedByTanks + $slotsPotentiallyContestedByHealers); // 10 - 3 - 3 = 4
 
 			if ($maxDPSSpotsLeft <= 0) {
-				$placesRemaining = "There is no DPS spot left.";
+				$placesRemaining = "There is no DPS slot left.";
 			}
 
 			if ($maxDPSSpotsLeft > $minDPSSpotsLeft && $minDPSSpotsLeft === 0 && $maxDPSSpotsLeft > 1) {
-				$placesRemaining = "Minimum amount of DPS reached. $maxDPSSpotsLeft spots left before reaching the maximum set up.";
+				$placesRemaining = "Minimum amount of DPS reached. <span class='text-info font-weight-bold'>$maxDPSSpotsLeft</span> slots left before reaching the maximum set up.";
 			}
 
 			if ($maxDPSSpotsLeft > $minDPSSpotsLeft && $maxDPSSpotsLeft === 1) {
 				$placesRemaining = "Minimum amount of DPS reached. Only 1 slot left before reaching the maximum set up.";
 			}
 			if ($maxDPSSpotsLeft === $minDPSSpotsLeft && $minDPSSpotsLeft === 1) {
-				$placesRemaining = "Only 1 DPS spot left.";
+				$placesRemaining = "Only 1 DPS slot left.";
 			}
 
 			if ($maxDPSSpotsLeft === $minDPSSpotsLeft && $minDPSSpotsLeft > 1) {
-			$placesRemaining = "$minDPSSpotsLeft DPS spots left.";
+			$placesRemaining = "<span class='text-info font-weight-bold'>$minDPSSpotsLeft</span> DPS slots left.";
 			}
 
 			if ($maxDPSSpotsLeft > $minDPSSpotsLeft && $minDPSSpotsLeft >= 1) {
-			$placesRemaining = "There are between $minDPSSpotsLeft and $maxDPSSpotsLeft DPS spots left.";
+			$placesRemaining = "There are between <span class='text-info font-weight-bold'>$minDPSSpotsLeft</span> and <span class='text-info font-weight-bold'>$maxDPSSpotsLeft</span> DPS slots left.";
 			}
 		}
 
