@@ -34,6 +34,10 @@ input, select, div.form-check {
   margin-bottom: 25px;
 }
 
+.table td, .table th {
+  vertical-align: middle;
+}
+
 page-title {
   position: absolute;
   z-index: 2;
@@ -714,6 +718,19 @@ ragnaros-animation img.container {
   right: 20px;
 }
 
+month-selection {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
 calendar-body {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -725,6 +742,8 @@ calendar-body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  text-align: center;
+  width: 840px;
 }
 
 calendar-body ul {
@@ -738,16 +757,39 @@ calendar-body ul {
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   border-collapse: collapse;
+  text-align: center;
   padding: 0;
   margin: 0;
 }
 
+calendar-body ul.daysOfTheWeek li {
+  background-color: #375a7f;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+calendar-body ul.innerCalendarCells li {
+  cursor: pointer;
+  border: 1px solid #375a7f;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+calendar-body ul.innerCalendarCells li:hover {
+  background-color: #e74c3c;
+}
+
 calendar-body ul li {
-  border: 1px solid blue;
+  font-size: 1.2rem;
   list-style: none;
-  width: 7vw;
+  text-align: center;
+  width: 120px;
   min-width: 70px;
   margin: 0;
   padding: 5px;
+}
+
+calendar-body ul li.is-selected {
+  border: 2px solid #fd7e14;
 }
 /*# sourceMappingURL=style.css.map */

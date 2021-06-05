@@ -148,6 +148,7 @@ class RaidType extends AbstractType
             ])
 
             ->add('information', TextareaType::class, [
+<<<<<<< HEAD
                 'label' => 'Raid Leader notes',
                 'label_attr' => [
                     'class' => 'h5',
@@ -208,6 +209,58 @@ Strategies will never be debated during the raid, no matter how much one might t
                     ],
                 ]);
         }
+=======
+				'label' => 'Raid Leader notes',
+				'label_attr' => [
+					'class' => 'h5',
+				],
+				'attr' => [
+					'class' => 'form-control',
+					'rows' => '14',
+				],
+				'data' => $options['raidInformation'] ? $options['raidInformation'] : "Discord link : ",
+			]);
+
+			if (!$options['isEdit']) {
+				$builder
+				->add('templateName', TextType::class, [
+					'label' => 'Give it a template name :',
+					'label_attr' => [
+						'class' => 'h5',
+					],
+					'attr' => [
+						'class' => 'form-control',
+						'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
+					],
+					'required' => false,
+				]);
+			}
+
+			if (!$options['isEdit'] && !$options['isRaidTemplate']) {
+				$builder
+				->add('saveTemplate', SubmitType::class, [
+					'label' => 'Save template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				]);
+			}
+
+			if ($options['isRaidTemplate']) {
+				$builder
+				->add('saveAsNewTemplate', SubmitType::class, [
+					'label' => 'Save as new template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				])->add('editTemplate', SubmitType::class, [
+					'label' => 'Edit template',
+					'attr' => [
+						'class' => 'btn btn-lg btn-primary',
+					],
+				]);
+			}
+>>>>>>> 1f627dae5e5d1becaeff086f0b569ee232177c4a
     }
 
     public function configureOptions(OptionsResolver $resolver)
