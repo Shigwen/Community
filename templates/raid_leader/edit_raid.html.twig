@@ -3,7 +3,12 @@
 {% block title %}Raid{% endblock %}
 
 {% block body %}
+
 <main class="container bg-dark">
+
+    <div class="row col-12">
+        <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">Back to RL HQ</a>
+    </div>
 
     {% if raid.isPrivate %}
         <div class="row d-flex justify-content-around">
@@ -11,7 +16,7 @@
         </div>
     {% endif %}
 
-    {{include('raid_leader/_raid_form.html.twig')}}
+    {{ include('raid_leader/_raid_form.html.twig') }}
 
     <h4> Validated players </h4>
     <table>
