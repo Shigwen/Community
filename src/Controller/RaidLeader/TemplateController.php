@@ -76,9 +76,9 @@ class TemplateController extends AbstractController
 
         return $this->render('raid_leader/event_list.html.twig', [
             'user' => $this->getUser(),
+            'raidTemplates' => $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser()),
             'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfRaidLeader($this->getUser()),
             'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfRaidLeader($this->getUser()),
-            'raidTemplates' => $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser()),
             'editTemplate' => $request->query->get('id') ? true : false,
             'form' => $form->createView(),
         ]);

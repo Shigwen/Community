@@ -5,8 +5,10 @@
     {% if user.characters|length > 0 %}
         {{ form_start(form) }}
             <fieldset class="form-group">
-                <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
-                <legend class="text-center h3 mb-5">Create An Event</legend>
+                {% if raidTemplates is defined %}
+                    <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
+                    <legend class="text-center h3 mb-5">Create An Event</legend>
+                {% endif %}
 
                 <div class="row d-flex justify-content-around">
                     <div class="col-lg-5 col-md-11 text-center">
@@ -192,68 +194,73 @@
             </fieldset>
 
             <div class="col-12 mt-4 d-flex justify-content-around">
-                <button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">{% if editTemplate %} Edit your {% else %} Save as {% endif %} template</button>
 
-                <div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">{% if editTemplate %} Edit {% else %} Save {% endif %} your template</h5>
+                {% if raidTemplates is defined %}
+                    <button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">{% if editTemplate %} Edit your {% else %} Save as {% endif %} template</button>
 
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+                    <div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{% if editTemplate %} Edit {% else %} Save {% endif %} your template</h5>
 
-                                {% if editTemplate %}
-                                    <span class="h5 form-label">
-                                        Modify your template's name (or not)
-                                    </span>
-                                    {{ form_widget(form.templateName) }}
-                                    {{ form_errors(form.templateName) }}
-
-                                {% else %}
-                                    {% if raidTemplates|length < 5 %}
-                                        {{ form_label(form.templateName) }}
-                                        {{ form_widget(form.templateName) }}
-                                        {{ form_errors(form.templateName) }}
-                                    {% else %}
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <p class="h5 text-danger">
-                                                Oops, it seems that you've already reached the maximum amount of templates allowed
-                                                for this version of the app. Sorry ! Edit an old one you're not using,
-                                                or delete one to free a slot in order to create a new one.
-                                            </p>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-
-                            </div>
-
-                            <div class="modal-footer">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
 
                                     {% if editTemplate %}
-                                        {{ form_row(form.editTemplate) }}
-                                    {% endif %}
+                                        <span class="h5 form-label">
+                                            Modify your template's name (or not)
+                                        </span>
+                                        {{ form_widget(form.templateName) }}
+                                        {{ form_errors(form.templateName) }}
 
-                                    {% if raidTemplates|length < 5 %}
-                                        {{ form_row(form.saveTemplate) }}
                                     {% else %}
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <button type="button" class="btn btn-lg btn-primary text-danger">
-                                                No fun allowed !
-                                            </button>
-                                        </div>
+                                        {% if raidTemplates|length < 5 %}
+                                            {{ form_label(form.templateName) }}
+                                            {{ form_widget(form.templateName) }}
+                                            {{ form_errors(form.templateName) }}
+                                        {% else %}
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <p class="h5 text-danger">
+                                                    Oops, it seems that you've already reached the maximum amount of templates allowed
+                                                    for this version of the app. Sorry ! Edit an old one you're not using,
+                                                    or delete one to free a slot in order to create a new one.
+                                                </p>
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
 
-                                <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
 
+                                <div class="modal-footer">
+
+                                        {% if editTemplate %}
+                                            {{ form_row(form.editTemplate) }}
+                                        {% endif %}
+
+                                        {% if raidTemplates|length < 5 %}
+                                            {{ form_row(form.saveTemplate) }}
+                                        {% else %}
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <button type="button" class="btn btn-lg btn-primary text-danger">
+                                                    No fun allowed !
+                                                </button>
+                                            </div>
+                                        {% endif %}
+
+                                    <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event to calendar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event to calendar</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary rounded-pill btn-lg">Modify raid</button>
+                {% endif %}
             </div>
 
         {{ form_end(form) }}

@@ -90,9 +90,9 @@ class RaidController extends AbstractController
         }
 
         return $this->render('raid_leader/edit_raid.html.twig', [
-            'form' => $form->createView(),
-            'raid' => $raid,
             'user' => $this->getUser(),
+            'raid' => $raid,
+            'form' => $form->createView(),
         ]);
     }
 
