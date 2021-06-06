@@ -147,9 +147,19 @@ class Raid
     private $maxHeal;
 
     /**
+     * @ORM\Column(type="string", length=8)
+     */
+    private $faction;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $autoAccept;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPrivate;
 
     /**
      * @ORM\Column(type="datetime")
@@ -160,6 +170,11 @@ class Raid
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids")
@@ -177,16 +192,6 @@ class Raid
      * @ORM\JoinColumn(nullable=true)
      */
     private $server;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isPrivate;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isArchived;
 
     public function __construct()
     {
@@ -362,7 +367,19 @@ class Raid
         return $this;
     }
 
-    public function getAutoAccept(): ?bool
+    public function getFaction(): ?string
+    {
+        return $this->faction;
+    }
+
+    public function setFaction(string $faction): self
+    {
+        $this->faction = $faction;
+
+        return $this;
+    }
+
+    public function isAutoAccept(): ?bool
     {
         return $this->autoAccept;
     }
@@ -370,6 +387,18 @@ class Raid
     public function setAutoAccept(bool $autoAccept): self
     {
         $this->autoAccept = $autoAccept;
+
+        return $this;
+    }
+
+    public function isPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setIsPrivate(bool $isPrivate): self
+    {
+        $this->isPrivate = $isPrivate;
 
         return $this;
     }
@@ -387,6 +416,18 @@ class Raid
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
@@ -468,30 +509,6 @@ class Raid
     public function setServer(?Server $server): self
     {
         $this->server = $server;
-
-        return $this;
-    }
-
-    public function getIsPrivate(): ?bool
-    {
-        return $this->isPrivate;
-    }
-
-    public function setIsPrivate(bool $isPrivate): self
-    {
-        $this->isPrivate = $isPrivate;
-
-        return $this;
-    }
-
-    public function getIsArchived(): ?bool
-    {
-        return $this->isArchived;
-    }
-
-    public function setIsArchived(bool $isArchived): self
-    {
-        $this->isArchived = $isArchived;
 
         return $this;
     }

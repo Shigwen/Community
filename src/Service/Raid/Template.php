@@ -139,7 +139,7 @@ class Template
 
         $newRaid
             ->setTemplateName(null)
-            ->setIdentifier($newRaid->getIsPrivate() ? $this->identifier->generate(Raid::IDENTIFIER_SIZE) : null);
+            ->setIdentifier($newRaid->isPrivate() ? $this->identifier->generate(Raid::IDENTIFIER_SIZE) : null);
 
         $this->addCharacterAndServerToRaid($newRaid, $newRaidCharacter, $request->request->get('raid'));
 

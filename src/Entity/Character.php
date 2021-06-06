@@ -39,6 +39,11 @@ class Character
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=8)
+     */
+    private $faction;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $information;
@@ -128,6 +133,18 @@ class Character
         return $this;
     }
 
+    public function getFaction(): ?string
+    {
+        return $this->faction;
+    }
+
+    public function setFaction(string $faction): self
+    {
+        $this->faction = $faction;
+
+        return $this;
+    }
+
     public function getInformation(): ?string
     {
         return $this->information;
@@ -153,6 +170,18 @@ class Character
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
@@ -262,18 +291,6 @@ class Character
                 $raidCharacter->setUserCharacter(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getIsArchived(): ?bool
-    {
-        return $this->isArchived;
-    }
-
-    public function setIsArchived(bool $isArchived): self
-    {
-        $this->isArchived = $isArchived;
 
         return $this;
     }

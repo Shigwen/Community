@@ -26,6 +26,11 @@ class Server
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $timezone;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -70,6 +75,18 @@ class Server
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): self
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

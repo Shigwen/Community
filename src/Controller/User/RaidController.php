@@ -54,7 +54,7 @@ class RaidController extends AbstractController
             $raidCharacter = new RaidCharacter();
             $raidCharacter
                 ->setRaid($raid)
-                ->setStatus($raid->getAutoAccept());
+                ->setStatus($raid->isAutoAccept());
             $this->getDoctrine()->getManager()->persist($raidCharacter);
         }
 

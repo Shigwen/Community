@@ -23,11 +23,6 @@ class RaidCharacter
     private $id;
 
     /**
-     * @ORM\Column(type="smallint")
-     */
-    private $status;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Raid::class, inversedBy="raidCharacters")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -45,31 +40,14 @@ class RaidCharacter
      */
     private $role;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function isAccept(): ?int
-    {
-        return $this->status === $this::ACCEPT;
-    }
-
-    public function isWaitingConfirmation(): ?int
-    {
-        return $this->status === $this::WAITING_CONFIRMATION;
-    }
-
-    public function isRefused(): ?int
-    {
-        return $this->status === $this::REFUSED;
-    }
-
-    public function setStatus(int $status): self
-    {
-        $this->status = $status;
-
-        return $this;
     }
 
     public function getRaid(): ?Raid
@@ -133,5 +111,27 @@ class RaidCharacter
         }
 
         return $this->userCharacter->getUser();
+    }
+
+    public function isAccept(): ?int
+    {
+        return $this->status === $this::ACCEPT;
+    }
+
+    public function isWaitingConfirmation(): ?int
+    {
+        return $this->status === $this::WAITING_CONFIRMATION;
+    }
+
+    public function isRefused(): ?int
+    {
+        return $this->status === $this::REFUSED;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
     }
 }
