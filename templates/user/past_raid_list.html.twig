@@ -10,30 +10,30 @@
 
 <div class="example-wrapper">
     <h1>Past raids</h1>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Début</th>
-				<th>Fin</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for raid in raids %}
-				<tr>
-					<td>{{ raid.name }}</td>
-					<td>{{ raid.raidType }}</td>
-					<td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
-					<td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
-					<td>
-						<a href="{{ path('user_raid_show', {id: raid.id }) }}">Show</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for raid in raids %}
+                <tr>
+                    <td>{{ raid.name }}</td>
+                    <td>{{ raid.raidType }}</td>
+                    <td>{{ raid.startAt|date("d/m/Y h:i") }}</td>
+                    <td>{{ raid.endAt|date("d/m/Y h:i") }}</td>
+                    <td>
+                        <a href="{{ path('user_raid_show', {id: raid.id }) }}">Show</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     </div>
 </div>
 {% endblock %}

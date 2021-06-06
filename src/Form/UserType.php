@@ -15,13 +15,15 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (!$options['isEdit']) {
-            $builder->add('name', null, [
-                'label' => 'Nickname',
-                'attr' => [
-                    'placeholder' => 'Diana384',
-                    'class' => 'form-control',
-                ]
-            ]);
+            $builder
+                ->add('name', null, [
+                    'label' => 'Nickname',
+                    'attr' => [
+                        'placeholder' => 'Diana384',
+                        'class' => 'form-control',
+                    ],
+                    'required' => false,
+                ]);
         }
 
         $builder
@@ -32,7 +34,8 @@ class UserType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                ]
+                ],
+                'required' => false,
             ])
             ->add('password', RepeatedType::class, [
                 'required' => $options['isEdit'] ? false : true,
@@ -47,6 +50,7 @@ class UserType extends AbstractType
                     'constraints' => $options['isEdit'] ? [] : [
                         new NotBlank(['message' => 'The password cannot be blank'])
                     ],
+                    'required' => false,
                 ],
                 'second_options' => [
                     'label' => 'Confirm new password',
@@ -57,8 +61,10 @@ class UserType extends AbstractType
                     'constraints' => $options['isEdit'] ? [] : [
                         new NotBlank(['message' => 'The password cannot be blank'])
                     ],
+                    'required' => false,
                 ],
                 'empty_data' => '',
+                'required' => false,
             ]);
     }
 

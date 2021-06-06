@@ -1,62 +1,62 @@
 
-	<div class="row d-flex justify-content-around">
+<div class="row d-flex justify-content-around">
 
-		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+    <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 
-			<h2 class="text-center h3">Character list</h2>
-			<table class="table table-striped table-bordered table-hover table-dark">
-				<thead class="text-center">
-					<tr>
-						<th scope="col">Name</th>
-						<th scope="col">Server</th>
-						<th scope="col">Class</th>
-						<th scope="col" class="d-none d-md-table-cell">Role</th>
-						<th scope="col" class="d-none d-md-table-cell">Notes</th>
-						<th scope="col">Actions</th>
-					</tr>
-				</thead>
+        <h2 class="text-center h3">Character list</h2>
+        <table class="table table-striped table-bordered table-hover table-dark">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Server</th>
+                    <th scope="col">Class</th>
+                    <th scope="col" class="d-none d-md-table-cell">Role</th>
+                    <th scope="col" class="d-none d-md-table-cell">Notes</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
 
-				<tbody class="text-center">
-					{% for character in characters %}
-						<tr>
-							<td>{{ character.name }}</td>
-							<td>{{ character.server.name }}</td>
-							<td>{{ character.characterClass.name }}</td>
-							<td>{{ character.strRoles }}</td>
-							<td>
-								<button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}">Click me</button>
+            <tbody class="text-center">
+                {% for character in characters %}
+                    <tr>
+                        <td>{{ character.name }}</td>
+                        <td>{{ character.server.name }}</td>
+                        <td>{{ character.characterClass.name }}</td>
+                        <td>{{ character.strRoles }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}">Click me</button>
 
-								<div class="modal fade" id="clickMeCharacter_{{ character.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title">Info</h5>
+                            <div class="modal fade" id="clickMeCharacter_{{ character.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Info</h5>
 
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div class="modal-body">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
 
-												{{ character.information }}
+                                            {{ character.information }}
 
-												<button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
-											</div>
-											<div class="modal-footer d-flex d-md-none">
-												<p>Those notes cannot be seen by other players, only Raid Leaders and Admins.</p>
-												<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</td>
-							<td>
-								<a href="{{ path('user_account')}}?id={{ character.id }}" class="btn btn-primary rounded-pill">Modify</a>
-								<a href="{{ path('user_character_archived', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
+                                            <button type="button" class="btn btn-lg btn-secondary d-none d-md-inline-block" data-dismiss="modal">Close</button>
+                                        </div>
+                                        <div class="modal-footer d-flex d-md-none">
+                                            <p>Those notes cannot be seen by other players, only Raid Leaders and Admins.</p>
+                                            <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{{ path('user_account')}}?id={{ character.id }}" class="btn btn-primary rounded-pill">Modify</a>
+                            <a href="{{ path('user_character_archived', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

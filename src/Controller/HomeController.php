@@ -56,21 +56,21 @@ class HomeController extends AbstractController
                 ->setPassword($pwdEncoded)
                 ->setToken($token);
 
-            $message = (new \Swift_Message('Validez votre inscription à Community'))
-                ->setFrom('akmennra@gmail.com')
-                ->setTo($user->getEmail())
-                ->setBody(
-                    $this->renderView(
-                        'email/registration.html.twig',
-                        [
-                            'user' => $user->getName(),
-                            'url' => $url
-                        ]
-                    ),
-                    'text/html'
-                );
+            // $message = (new \Swift_Message('Validez votre inscription à Community'))
+            //     ->setFrom('akmennra@gmail.com')
+            //     ->setTo($user->getEmail())
+            //     ->setBody(
+            //         $this->renderView(
+            //             'email/registration.html.twig',
+            //             [
+            //                 'user' => $user->getName(),
+            //                 'url' => $url
+            //             ]
+            //         ),
+            //         'text/html'
+            //     );
 
-            $mailer->send($message);
+            // $mailer->send($message);
 
             $this->addFlash(
                 'success',
@@ -82,7 +82,11 @@ class HomeController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
         }
 
-        return $this->redirectToRoute('home');
+        return $this->render('home/home.html.twig', [
+            'form' => $form->createView(),
+            'last_username' => '',
+            'error' => '',
+        ]);
     }
 
     /**

@@ -9,104 +9,104 @@
 </style>
 
 <div class="example-wrapper">
-	<table>
-		<thead>
-			<tr>
-				<th>Pseudo</th>
-				<th>Mail</th>
-				<th>Rôle</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for user in users %}
-				<tr>
-					<td>{{ user.name }}</td>
-					<td>{{ user.email }}</td>
-					<td>
-						{% if is_granted('ROLE_OWNER') %}
-							{{ include('admin_owner/_select_role.html.twig') }}
-						{% else %}
-							{{ user.verboseStrRole }}
-						{% endif %}
-					</td>
-					<td>
-						{% if is_granted('ROLE_OWNER') %}
-							<a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Ban Hammer</a>
-						{% else %}
-							<a class="nav-link" href="{{ path('admin_promote_or_demote', {id: user.id}) }}">Promote to raid leader</a>
-						{% endif %}
-					</td>
-				</tr>
-			{% endfor %}
+    <table>
+        <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Mail</th>
+                <th>Rôle</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if is_granted('ROLE_OWNER') %}
+                            {{ include('admin_owner/_select_role.html.twig') }}
+                        {% else %}
+                            {{ user.verboseStrRole }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if is_granted('ROLE_OWNER') %}
+                            <a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Ban Hammer</a>
+                        {% else %}
+                            <a class="nav-link" href="{{ path('admin_promote_or_demote', {id: user.id}) }}">Promote to raid leader</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
 
-			{% for user in raidLeaders %}
-				<tr>
-					<td>{{ user.name }}</td>
-					<td>{{ user.email }}</td>
-					<td>
-						{% if is_granted('ROLE_OWNER') %}
-							{{ include('admin_owner/_select_role.html.twig') }}
-						{% else %}
-							{{ user.verboseStrRole }}
-						{% endif %}
-					</td>
-					<td>
-						{% if is_granted('ROLE_OWNER') %}
-							<a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Ban Hammer</a>
-						{% else %}
-							<a class="nav-link" href="{{ path('admin_promote_or_demote', {id: user.id}) }}">Demote to user</a>
-						{% endif %}
-					</td>
-				</tr>
-			{% endfor %}
+            {% for user in raidLeaders %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if is_granted('ROLE_OWNER') %}
+                            {{ include('admin_owner/_select_role.html.twig') }}
+                        {% else %}
+                            {{ user.verboseStrRole }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if is_granted('ROLE_OWNER') %}
+                            <a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Ban Hammer</a>
+                        {% else %}
+                            <a class="nav-link" href="{{ path('admin_promote_or_demote', {id: user.id}) }}">Demote to user</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
 
-			{% if is_granted('ROLE_OWNER') %}
-				{% for user in admins %}
-					<tr>
-						<td>{{ user.name }}</td>
-						<td>{{ user.email }}</td>
-						<td>{{ include('admin_owner/_select_role.html.twig') }}</td>
-						<td>
-							<a class="nav-link" href="{{ path('admin_promote_or_demote', {id: user.id}) }}">Demote to user</a>
-							{% if is_granted('ROLE_OWNER') %}
-								<a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Ban Hammer</a>
-							{% endif %}
-						</td>
-					</tr>
-				{% endfor %}
-			{% endif %}
+            {% if is_granted('ROLE_OWNER') %}
+                {% for user in admins %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ include('admin_owner/_select_role.html.twig') }}</td>
+                        <td>
+                            <a class="nav-link" href="{{ path('admin_promote_or_demote', {id: user.id}) }}">Demote to user</a>
+                            {% if is_granted('ROLE_OWNER') %}
+                                <a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Ban Hammer</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
 
-		</tbody>
-	</table>
+        </tbody>
+    </table>
 
-	{% if is_granted('ROLE_OWNER') %}
+    {% if is_granted('ROLE_OWNER') %}
 
-		<span> Utilisateurs banni du site </span>
+        <span> Utilisateurs banni du site </span>
 
-		<table>
-			<thead>
-				<tr>
-					<th>Pseudo</th>
-					<th>Mail</th>
-					<th>Rôle</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for user in banned %}
-					<tr>
-						<td>{{ user.name }}</td>
-						<td>{{ user.email }}</td>
-						<td>{{ user.verboseStrRole }}</td>
-						<td>
-							<a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Unban</a>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Mail</th>
+                    <th>Rôle</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in banned %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.verboseStrRole }}</td>
+                        <td>
+                            <a class="nav-link" href="{{ path('owner_ban_hammer', {id: user.id}) }}">Unban</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-	{% endif %}
+    {% endif %}
 </div>
 {% endblock %}

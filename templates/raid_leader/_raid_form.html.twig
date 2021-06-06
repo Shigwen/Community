@@ -1,267 +1,268 @@
+{% form_theme form 'form_theme/form_errors.html.twig' %}
 
-	<div class="row d-flex justify-content-around">
-		<div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
-		{% if user.characters|length > 0 %}
-			{{ form_start(form) }}
-				<fieldset class="form-group">
-					<a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
-					<legend class="text-center h3 mb-5">Create An Event</legend>
+<div class="row d-flex justify-content-around">
+    <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+    {% if user.characters|length > 0 %}
+        {{ form_start(form) }}
+            <fieldset class="form-group">
+                <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
+                <legend class="text-center h3 mb-5">Create An Event</legend>
 
-					<div class="row d-flex justify-content-around">
-						<div class="col-lg-5 col-md-11 text-center">
-							{{ form_label(form.name) }}
-							{{ form_widget(form.name) }}
-							{{ form_errors(form.name) }}
-						</div>
+                <div class="row d-flex justify-content-around">
+                    <div class="col-lg-5 col-md-11 text-center">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
 
-						<div class="col-lg-5 col-md-11 text-center d-flex flex-column">
+                    <div class="col-lg-5 col-md-11 text-center d-flex flex-column">
 
-							{{ form_label(form.raidType) }}
-							<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-								{% for row in form.raidType %}
-									{{ form_widget(row) }}
-									{{
-										form_label(row, null,
-											{label_attr:
-												{
-													class: 'btn btn-outline-primary',
-													autocomplete: 'off',
-													checked: '',
-												}
-											}
-										)
-									}}
-								{% endfor %}
-							</div>
-							{{ form_errors(form.raidType) }}
-						</div>
-					</div>
+                        {{ form_label(form.raidType) }}
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            {% for row in form.raidType %}
+                                {{ form_widget(row) }}
+                                {{
+                                    form_label(row, null,
+                                        {label_attr:
+                                            {
+                                                class: 'btn btn-outline-primary',
+                                                autocomplete: 'off',
+                                                checked: '',
+                                            }
+                                        }
+                                    )
+                                }}
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.raidType) }}
+                    </div>
+                </div>
 
-					<div class="row d-flex justify-content-around">
-						{% for row in form.raidCharacter %}
-							<div class="col-lg-5 col-md-11 text-center">
-								{{ form_label(row) }}
-								{{ form_widget(row) }}
-								{{ form_errors(row) }}
-							</div>
-						{% endfor %}
-					</div>
+                <div class="row d-flex justify-content-around">
+                    {% for row in form.raidCharacter %}
+                        <div class="col-lg-5 col-md-11 text-center">
+                            {{ form_label(row) }}
+                            {{ form_widget(row) }}
+                            {{ form_errors(row) }}
+                        </div>
+                    {% endfor %}
+                </div>
 
-					<div class="row d-flex justify-content-around">
-						<div class="col-lg-5 col-md-11 text-center">
-							{{ form_label(form.startAt) }}
-							<div class="row justify-content-center">
-								{% for row in form.startAt.date %}
-									{{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
-								{% endfor %}
-									{{ form_errors(form.startAt) }}
-							</div>
-							<div class="row justify-content-center">
-								<span class="col-lg-3"> from </span>
-								{% for row in form.startAt.time %}
-									{{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
-								{% endfor %}
-							</div>
-						</div>
+                <div class="row d-flex justify-content-around">
+                    <div class="col-lg-5 col-md-11 text-center">
+                        {{ form_label(form.startAt) }}
+                        <div class="row justify-content-center">
+                            {% for row in form.startAt.date %}
+                                {{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
+                            {% endfor %}
+                                {{ form_errors(form.startAt) }}
+                        </div>
+                        <div class="row justify-content-center">
+                            <span class="col-lg-3"> from </span>
+                            {% for row in form.startAt.time %}
+                                {{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
+                            {% endfor %}
+                        </div>
+                    </div>
 
-						<div class="col-lg-5 col-md-11 text-center">
-							{{ form_label(form.endAt) }}
-							<div class="row justify-content-center">
-								{% for row in form.endAt %}
-									{{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
-								{% endfor %}
-								{{ form_errors(form.endAt) }}
-							</div>
-						</div>
-					</div>
+                    <div class="col-lg-5 col-md-11 text-center">
+                        {{ form_label(form.endAt) }}
+                        <div class="row justify-content-center">
+                            {% for row in form.endAt %}
+                                {{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
+                            {% endfor %}
+                            {{ form_errors(form.endAt) }}
+                        </div>
+                    </div>
+                </div>
 
-					<div class="row d-flex justify-content-around p-2 p-md-4 pl-md-5 pr-md-5 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
-						<details class="mb-4">
-							<summary class="h5 text-success">
-									Click here if you want to know how to use these inputs properly.
-							</summary>
+                <div class="row d-flex justify-content-around p-2 p-md-4 pl-md-5 pr-md-5 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
+                    <details class="mb-4">
+                        <summary class="h5 text-success">
+                                Click here if you want to know how to use these inputs properly.
+                        </summary>
 
-							<p class="mb-5">
-								<br>
-								While everything is quite self-explanatory in its gist, you might want to know exactly what it does, and it's perfectly understandable.
-								<br><br>
-								The amount of raiders you're looking for tells the app (and the users) how many people you're looking for.
-								Do not think that this number will always be "24" for a 25-men raid (you + 24 raiders) because it's not the case.
-								<br><br>
-								Let's say you have 20 guildies max level, and you need 5 extra raiders for your 25-men raid.
-								Then you can tell everyone you're looking for 5 extra raiders only (and maybe this number includes 2 extra healers ?).
-								<br><br>
-								The minimum amount of tanks and healers you're looking for is included in the total number of raiders you're loooking for.
-								It helps the app display raids to the right people. For exemple, as a user, if the character you're looking a raid for can heal,
-								raids looking for a healer will be listed at the top of the list in the calendar.
-								This is to ensure one raid doesn't end up with more healers than it should while another lacks a healer to be good to go.
-								<br><br>
-								The maximum number of healers or tanks is here to make sure you don't end up with 4 tanks in your Karazhan group if you only want 2 (for example).
-								<br><br>
-								The "auto-accept" checkbox, if checked, tells the app and the users that you'll accept anyone that want to attend your raids, and you don't want to
-								spend time confirming them manually. If you need a healer, and a healer subscribes to your raid, his subscription is automatically confirmed.
-								If you want to spend time talking to your subscribers to get to know them,
-								maybe verify their gear or their skills by running a dungeon with them before manually confirming them (or not) to your raids,
-								it will obviously be better to leave it unchecked.
-								<br><br>
-								Setting your raid to "private" simply means it will not be listed in the calendar, and you will have to send a code to your raiders.
-								It can be a good idea to use this for cross-guild raids, where you still don't want any pick-up.
-								In thise scenario, you might want to also check "auto-accept".
-								<br><br>
-								That's it for now, but we'll add more features over time if need be, depending on what people ask of us.
-							</p>
-						</details>
+                        <p class="mb-5">
+                            <br>
+                            While everything is quite self-explanatory in its gist, you might want to know exactly what it does, and it's perfectly understandable.
+                            <br><br>
+                            The amount of raiders you're looking for tells the app (and the users) how many people you're looking for.
+                            Do not think that this number will always be "24" for a 25-men raid (you + 24 raiders) because it's not the case.
+                            <br><br>
+                            Let's say you have 20 guildies max level, and you need 5 extra raiders for your 25-men raid.
+                            Then you can tell everyone you're looking for 5 extra raiders only (and maybe this number includes 2 extra healers ?).
+                            <br><br>
+                            The minimum amount of tanks and healers you're looking for is included in the total number of raiders you're loooking for.
+                            It helps the app display raids to the right people. For exemple, as a user, if the character you're looking a raid for can heal,
+                            raids looking for a healer will be listed at the top of the list in the calendar.
+                            This is to ensure one raid doesn't end up with more healers than it should while another lacks a healer to be good to go.
+                            <br><br>
+                            The maximum number of healers or tanks is here to make sure you don't end up with 4 tanks in your Karazhan group if you only want 2 (for example).
+                            <br><br>
+                            The "auto-accept" checkbox, if checked, tells the app and the users that you'll accept anyone that want to attend your raids, and you don't want to
+                            spend time confirming them manually. If you need a healer, and a healer subscribes to your raid, his subscription is automatically confirmed.
+                            If you want to spend time talking to your subscribers to get to know them,
+                            maybe verify their gear or their skills by running a dungeon with them before manually confirming them (or not) to your raids,
+                            it will obviously be better to leave it unchecked.
+                            <br><br>
+                            Setting your raid to "private" simply means it will not be listed in the calendar, and you will have to send a code to your raiders.
+                            It can be a good idea to use this for cross-guild raids, where you still don't want any pick-up.
+                            In thise scenario, you might want to also check "auto-accept".
+                            <br><br>
+                            That's it for now, but we'll add more features over time if need be, depending on what people ask of us.
+                        </p>
+                    </details>
 
-						<div class="form-row justify-content-between">
-							<div class="col-9 col-form-label">
-								{{ form_label(form.expectedAttendee) }}
-							</div>
-							{{ form_widget(form.expectedAttendee) }}
-							{{ form_errors(form.expectedAttendee) }}
-						</div>
+                    <div class="form-row justify-content-between">
+                        <div class="col-9 col-form-label">
+                            {{ form_label(form.expectedAttendee) }}
+                        </div>
+                        {{ form_widget(form.expectedAttendee) }}
+                        {{ form_errors(form.expectedAttendee) }}
+                    </div>
 
-						<div class="form-row justify-content-between">
-							<div class="col-9 col-form-label">
-								{{ form_label(form.minTank) }}
-							</div>
-							{{ form_widget(form.minTank) }}
-							{{ form_errors(form.minTank) }}
-						</div>
+                    <div class="form-row justify-content-between">
+                        <div class="col-9 col-form-label">
+                            {{ form_label(form.minTank) }}
+                        </div>
+                        {{ form_widget(form.minTank) }}
+                        {{ form_errors(form.minTank) }}
+                    </div>
 
-						<div class="form-row justify-content-between">
-							<div class="col-9 col-form-label">
-								{{ form_label(form.maxTank) }}
-							</div>
-							{{ form_widget(form.maxTank) }}
-							{{ form_errors(form.maxTank) }}
-						</div>
+                    <div class="form-row justify-content-between">
+                        <div class="col-9 col-form-label">
+                            {{ form_label(form.maxTank) }}
+                        </div>
+                        {{ form_widget(form.maxTank) }}
+                        {{ form_errors(form.maxTank) }}
+                    </div>
 
-						<div class="form-row justify-content-between">
-							<div class="col-9 col-form-label">
-								{{ form_label(form.minHeal) }}
-							</div>
-							{{ form_widget(form.minHeal) }}
-							{{ form_errors(form.minHeal) }}
-						</div>
+                    <div class="form-row justify-content-between">
+                        <div class="col-9 col-form-label">
+                            {{ form_label(form.minHeal) }}
+                        </div>
+                        {{ form_widget(form.minHeal) }}
+                        {{ form_errors(form.minHeal) }}
+                    </div>
 
-						<div class="form-row justify-content-between">
-							<div class="col-9 col-form-label">
-								{{ form_label(form.maxHeal) }}
-							</div>
-							{{ form_widget(form.maxHeal) }}
-							{{ form_errors(form.maxHeal) }}
-						</div>
+                    <div class="form-row justify-content-between">
+                        <div class="col-9 col-form-label">
+                            {{ form_label(form.maxHeal) }}
+                        </div>
+                        {{ form_widget(form.maxHeal) }}
+                        {{ form_errors(form.maxHeal) }}
+                    </div>
 
-						<div class="form-row justify-content-around mb-4">
-							<div>
-								{{ form_widget(form.autoAccept) }}
-								{{ form_label(form.autoAccept) }}
-								{{ form_errors(form.autoAccept) }}
-							</div>
+                    <div class="form-row justify-content-around mb-4">
+                        <div>
+                            {{ form_widget(form.autoAccept) }}
+                            {{ form_label(form.autoAccept) }}
+                            {{ form_errors(form.autoAccept) }}
+                        </div>
 
-							<div>
-								{{ form_widget(form.isPrivate) }}
-								{{ form_label(form.isPrivate) }}
-								{{ form_errors(form.isPrivate) }}
-							</div>
-						</div>
+                        <div>
+                            {{ form_widget(form.isPrivate) }}
+                            {{ form_label(form.isPrivate) }}
+                            {{ form_errors(form.isPrivate) }}
+                        </div>
+                    </div>
 
-						<p class="text-success mb-1">These informations are important for the matchmaking, please do not neglect them.</p>
-					</div>
+                    <p class="text-success mb-1">These informations are important for the matchmaking, please do not neglect them.</p>
+                </div>
 
-					<div class="row d-flex justify-content-around mb-3">
-						<div class="col-12 col-md-11">
-							<div class="form-group">
-								<div class="text-center">
-									{{ form_label(form.information) }}
-								</div>
-								<div class="mb-3 text-left">
-									It must contain anything relevant you'd like to show to your raiders.
-									May it be mandatory add-ons, loot rules, raid leading style, objectives,
-									and so on. It is pre-filled in order to show you what's mainly supposed to be in it,
-									but feel free to add or remove some parts.
-								</div>
+                <div class="row d-flex justify-content-around mb-3">
+                    <div class="col-12 col-md-11">
+                        <div class="form-group">
+                            <div class="text-center">
+                                {{ form_label(form.information) }}
+                            </div>
+                            <div class="mb-3 text-left">
+                                It must contain anything relevant you'd like to show to your raiders.
+                                May it be mandatory add-ons, loot rules, raid leading style, objectives,
+                                and so on. It is pre-filled in order to show you what's mainly supposed to be in it,
+                                but feel free to add or remove some parts.
+                            </div>
 
-								{{ form_widget(form.information) }}
-								{{ form_errors(form.information) }}
+                            {{ form_widget(form.information) }}
+                            {{ form_errors(form.information) }}
 
-							</div>
-						</div>
-					</div>
-				</fieldset>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
 
-				<div class="col-12 mt-4 d-flex justify-content-around">
-					<button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">{% if editTemplate %} Edit your {% else %} Save as {% endif %} template</button>
+            <div class="col-12 mt-4 d-flex justify-content-around">
+                <button type="button" class="btn btn-primary rounded-pill btn-lg" data-toggle="modal" data-target="#saveYourTemplate">{% if editTemplate %} Edit your {% else %} Save as {% endif %} template</button>
 
-					<div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title">{% if editTemplate %} Edit {% else %} Save {% endif %} your template</h5>
+                <div class="modal fade" id="saveYourTemplate" tabindex="-1" aria-labelledby="Save your template" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{% if editTemplate %} Edit {% else %} Save {% endif %} your template</h5>
 
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
 
-									{% if editTemplate %}
-										<span class="h5 form-label">
-											Modify your template's name (or not)
-										</span>
-										{{ form_widget(form.templateName) }}
-										{{ form_errors(form.templateName) }}
+                                {% if editTemplate %}
+                                    <span class="h5 form-label">
+                                        Modify your template's name (or not)
+                                    </span>
+                                    {{ form_widget(form.templateName) }}
+                                    {{ form_errors(form.templateName) }}
 
-									{% else %}
-										{% if raidTemplates|length < 5 %}
-											{{ form_label(form.templateName) }}
-											{{ form_widget(form.templateName) }}
-											{{ form_errors(form.templateName) }}
-										{% else %}
-											<div class="d-flex align-items-center justify-content-center">
-												<p class="h5 text-danger">
-													Oops, it seems that you've already reached the maximum amount of templates allowed
-													for this version of the app. Sorry ! Edit an old one you're not using,
-													or delete one to free a slot in order to create a new one.
-												</p>
-											</div>
-										{% endif %}
-									{% endif %}
+                                {% else %}
+                                    {% if raidTemplates|length < 5 %}
+                                        {{ form_label(form.templateName) }}
+                                        {{ form_widget(form.templateName) }}
+                                        {{ form_errors(form.templateName) }}
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <p class="h5 text-danger">
+                                                Oops, it seems that you've already reached the maximum amount of templates allowed
+                                                for this version of the app. Sorry ! Edit an old one you're not using,
+                                                or delete one to free a slot in order to create a new one.
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
 
-								</div>
+                            </div>
 
-								<div class="modal-footer">
+                            <div class="modal-footer">
 
-										{% if editTemplate %}
-											{{ form_row(form.editTemplate) }}
-										{% endif %}
+                                    {% if editTemplate %}
+                                        {{ form_row(form.editTemplate) }}
+                                    {% endif %}
 
-										{% if raidTemplates|length < 5 %}
-											{{ form_row(form.saveTemplate) }}
-										{% else %}
-											<div class="d-flex align-items-center justify-content-center">
-												<button type="button" class="btn btn-lg btn-primary text-danger">
-													No fun allowed !
-												</button>
-											</div>
-										{% endif %}
+                                    {% if raidTemplates|length < 5 %}
+                                        {{ form_row(form.saveTemplate) }}
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <button type="button" class="btn btn-lg btn-primary text-danger">
+                                                No fun allowed !
+                                            </button>
+                                        </div>
+                                    {% endif %}
 
-									<button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Close</button>
 
-								</div>
-							</div>
-						</div>
-					</div>
-					<button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event to calendar</button>
-				</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-pill btn-lg">Post event to calendar</button>
+            </div>
 
-			{{ form_end(form) }}
-		{% else %}
-			<p class="text-center h3 mb-5">Create An Event (max. 5):</p>
-			<p class="text-center">
-				You need to register at least one raiding character in your <a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
-				 in order to create raids.
-			</p>
-		{% endif %}
-		</div>
-	</div>
+        {{ form_end(form) }}
+    {% else %}
+        <p class="text-center h3 mb-5">Create An Event (max. 5):</p>
+        <p class="text-center">
+            You need to register at least one raiding character in your <a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
+                in order to create raids.
+        </p>
+    {% endif %}
+    </div>
+</div>

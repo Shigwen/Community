@@ -1,59 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>{% block title %}Welcome !{% endblock %}</title>
+    <title>{% block title %}Welcome !{% endblock %}</title>
 
-	{% block stylesheets %}
-		<!-- Style -->
-		<link rel="stylesheet" href="{{asset('bootstrap-css/bootstrap.css')}}">
-		<link rel="stylesheet" href="{{asset('css/style.css')}}">
-	{% endblock %}
+    {% block stylesheets %}
+        <!-- Style -->
+        <link rel="stylesheet" href="{{asset('bootstrap-css/bootstrap.css')}}">
+        <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    {% endblock %}
 
-	{% block javascripts %}
-		<!-- Scripts -->
-		<script defer src="{{asset('bootstrap-js/jquery-3.6.0.min.js')}}"></script>
-		<script defer src="{{asset('bootstrap-js/bootstrap.bundle.js')}}"></script>
-	{% endblock %}
+    {% block javascripts %}
+        <!-- Scripts -->
+        <script defer src="{{asset('bootstrap-js/jquery-3.6.0.min.js')}}"></script>
+        <script defer src="{{asset('bootstrap-js/bootstrap.bundle.js')}}"></script>
+    {% endblock %}
 
-	{% block custom_scripts %}
-		<!-- Custom Scripts -->
-	{% endblock %}
+    {% block custom_scripts %}
+        <!-- Custom Scripts -->
+    {% endblock %}
 </head>
 
 <body>
-	<header>
-		{{ include('_navbar.html.twig') }}
-	</header>
+    <header>
+        {{ include('_navbar.html.twig') }}
+    </header>
 
-	{% if app.request.attributes.get('_route') != 'home' %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success text-center mb-2">
+            {{ message }}
+        </div>
+    {% endfor %}
 
-		{% block banner %}
-			<tbc-banner class="container d-flex justify-content-center bg-dark position-static">
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger text-center mb-2">
+            {{ message }}
+        </div>
+    {% endfor %}
 
-				{% block banner_image %}
-					<img class="container p-0" src="{{asset('images/jpg/backgrounds/wei-wang-dark-portal-cropped.jpg')}}"
-						alt="Stormwind, human capital city in World of Warcraft">
-				{% endblock %}
+    {% if app.request.attributes.get('_route') != 'home' and app.request.attributes.get('_route') != 'sign_up' %}
 
-				<page-title class="align-self-center p-0">
+        {% block banner %}
+            <tbc-banner class="container d-flex justify-content-center bg-dark position-static">
 
-					{% block banner_title %}
-						<span>
-							Welcome to Diana's
-						</span>
-						<h1>Community Project</h1>
-					{% endblock %}
+                {% block banner_image %}
+                    <img class="container p-0" src="{{asset('images/jpg/backgrounds/wei-wang-dark-portal-cropped.jpg')}}"
+                        alt="Stormwind, human capital city in World of Warcraft">
+                {% endblock %}
 
-				</page-title>
+                <page-title class="align-self-center p-0">
 
-			</tbc-banner>
-		{% endblock %}
+                    {% block banner_title %}
+                        <span>
+                            Welcome to Diana's
+                        </span>
+                        <h1>Community Project</h1>
+                    {% endblock %}
 
-	{% endif %}
+                </page-title>
 
-	{% block body %}{% endblock %}
+            </tbc-banner>
+        {% endblock %}
+
+    {% endif %}
+
+    {% block body %}{% endblock %}
 </body>
 </html>

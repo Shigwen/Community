@@ -9,19 +9,17 @@
 </style>
 
 <div class="example-wrapper">
+    <div> {{ message.name }} </div>
+    <div> {{ message.email }} </div>
+    <div> {{ message.messageType.name }} </div>
+    <div> {{ message.message }} </div>
 
-	<div> {{ message.name }} </div>
-	<div> {{ message.email }} </div>
-	<div> {{ message.messageType.name }} </div>
-	<div> {{ message.message }} </div>
-
-	<a href="{{ path('admin_archive_message', {id: message.id}) }}">
-		{% if message.archivedAt is null %}
-			Archived
-		{% else %}
-			Unarchived
-		{% endif %}
-	</a>
-
+    <a href="{{ path('admin_archive_message', {id: message.id}) }}">
+        {% if message.archivedAt is null %}
+            Archived
+        {% else %}
+            Unarchived
+        {% endif %}
+    </a>
 </div>
 {% endblock %}

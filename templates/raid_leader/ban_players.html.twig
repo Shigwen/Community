@@ -9,24 +9,24 @@
 </style>
 
 <div class="example-wrapper">
-	<h4> Ban of futures raid - Player list </h4>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for user in user.blockeds %}
-				<tr>
-					<td>{{ user.name }}</td>
-					<td>
-						<a href="{{ path('raidleader_manage_participant_ban_hammer', {id: user.id }) }}">Unban</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <h4> Ban of futures raid - Player list </h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in user.blockeds %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>
+                        <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: user.id }) }}">Unban</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
