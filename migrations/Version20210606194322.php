@@ -7,17 +7,15 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-final class Version20210522172437 extends AbstractMigration
+
+final class Version20210606194322 extends AbstractMigration
 {
-    public function getDescription() : string
+    public function getDescription(): string
     {
-        return 'Add default role user';
+        return 'Default values for tables role, character_class and message_type';
     }
 
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         $this->addSql("
             INSERT INTO role VALUES 
@@ -51,7 +49,7 @@ final class Version20210522172437 extends AbstractMigration
         ");
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // no down
     }
