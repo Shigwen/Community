@@ -5,6 +5,8 @@ namespace App\Repository;
 use DateTime;
 use App\Entity\Raid;
 use App\Entity\User;
+use App\Entity\Character;
+use App\Entity\RaidCharacter;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -125,6 +127,29 @@ class RaidRepository extends ServiceEntityRepository
     /************************
      *        Player        *
      ************************/
+
+    /**
+     * @return Raid[]
+     */
+    public function getPendingOrWaintingConfirmationRaidsOfCharacter(Character $character)
+    {
+        $now = new DateTime();
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.raidCharacters', 'rc')
+            ->where('rc.userCharacter = :character')
+            ->andWhere('r.templateName IS NULL')
+            ->andWhere('r.startAt > :now')
+            ->andWhere('rc.status IN (:status)')
+            ->andWhere('r.isArchived = false')
+            ->setParameters([
+                'now' => $now,
+                'character' => $character->getId(),
+                'status' => [RaidCharacter::ACCEPT, RaidCharacter::WAITING_CONFIRMATION],
+            ])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
     /**
      * @return Raid[]

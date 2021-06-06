@@ -57,8 +57,12 @@ class AccountController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
         }
 
+        $subscribedRaid = !$idCharacter ? [] : $this->getDoctrine()->getRepository(Raid::class)
+            ->getPendingOrWaintingConfirmationRaidsOfCharacter($character);
+
         $formCharacter = $this->createForm(CharacterType::class, $character, [
             'isEdit' => $idCharacter ? true : false,
+            'isSubscribeInARaid' => count($subscribedRaid),
         ]);
 
         $formCharacter->handleRequest($request);

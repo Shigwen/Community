@@ -23,18 +23,22 @@ class CharacterType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                 ]
-            ])
+            ]);
 
-            ->add('server', null, [
-                'label' => 'Server',
-                'label_attr' => [
-                    'class' => 'h5',
-                ],
-                'attr' => [
-                    'class' => 'custom-select',
-                ]
-            ])
+        if (!$options['isSubscribeInARaid']) {
+            $builder
+                ->add('server', null, [
+                    'label' => 'Server',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ]
+                ]);
+        }
 
+        $builder
             ->add('characterClass', null, [
                 'label' => 'Class',
                 'label_attr' => [
@@ -86,6 +90,7 @@ class CharacterType extends AbstractType
         $resolver->setDefaults([
             'isEdit' => false,
             'data_class' => Character::class,
+            'isSubscribeInARaid' => false,
         ]);
     }
 }
