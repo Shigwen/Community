@@ -67,6 +67,7 @@ class RaidController extends AbstractController
 
         $form = $this->createForm(RaidType::class, $raid, [
             'user' => $this->getUser(),
+            'server' => $raid->getServer(),
             'isEdit' => true,
         ]);
         $form->get('raidCharacter')->setData($raidCharacter);

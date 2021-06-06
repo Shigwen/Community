@@ -52,6 +52,7 @@ class EventController extends AbstractController
             $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
                 'user' => $this->getUser(),
                 'action' => $this->generateUrl('user_raid_register', ['id' => $raid->getId()]),
+                'server' => $raid->getServer(),
             ]);
         }
 

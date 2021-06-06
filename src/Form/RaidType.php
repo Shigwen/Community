@@ -50,6 +50,7 @@ class RaidType extends AbstractType
 
             ->add('raidCharacter', RaidCharacterType::class, [
                 'user' => $options['user'],
+                'server' => $options['server'],
                 'label' => false,
                 'mapped' => false,
             ])
@@ -199,8 +200,9 @@ class RaidType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Raid::class,
-            'raidInformation' => null,
             'user' => null,
+            'server' => null,
+            'raidInformation' => null,
             'isEdit' => false,
             'isRaidTemplate' => false,
         ]);
