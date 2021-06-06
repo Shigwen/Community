@@ -39,6 +39,14 @@ class User implements UserInterface
      * @Assert\NotBlank(
      *     message = "You must specify a username"
      * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "Your username cannot be longer than 250 characters"
+     * ) 
+     * @Assert\Regex(
+     *     pattern = "/^\w{1,}$/",
+     *     message = "Your username cannot contain space or special character (except underscore)"
+     * )
      * 
      * @ORM\Column(type="string", length=100, unique=true)
      */
@@ -51,7 +59,6 @@ class User implements UserInterface
      * @Assert\Email(
      *     message = "This email is not valid"
      * )
-     * @AssertCustom\UniqueEmail()
      * 
      * @ORM\Column(type="string", length=180, unique=true)
      */

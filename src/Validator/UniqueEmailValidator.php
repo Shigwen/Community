@@ -22,7 +22,7 @@ class UniqueEmailValidator extends ConstraintValidator
 
         if ($user) {
             $this->context
-                ->buildViolation('The Email already used.')
+                ->buildViolation('Email already used.')
                 ->addViolation();
         }
     }

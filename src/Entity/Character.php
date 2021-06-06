@@ -28,8 +28,12 @@ class Character
      * )
      * @Assert\Length(
      *     max = 250,
-     *     maxMessage = "Your username cannot be longer than 250 characters"
+     *     maxMessage = "Your character name cannot be longer than 250 characters"
      * ) 
+     * @Assert\Regex(
+     *     pattern = "/^\w{1,}$/",
+     *     message = "Your character name cannot contain space or special character (except underscore)"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $name;

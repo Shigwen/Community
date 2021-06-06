@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Service\Raid\Identifier;
+use App\Form\UserRecoveryPasswordType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,21 +57,21 @@ class HomeController extends AbstractController
                 ->setPassword($pwdEncoded)
                 ->setToken($token);
 
-            // $message = (new \Swift_Message('Validez votre inscription à Community'))
-            //     ->setFrom('akmennra@gmail.com')
-            //     ->setTo($user->getEmail())
-            //     ->setBody(
-            //         $this->renderView(
-            //             'email/registration.html.twig',
-            //             [
-            //                 'user' => $user->getName(),
-            //                 'url' => $url
-            //             ]
-            //         ),
-            //         'text/html'
-            //     );
+            $message = (new \Swift_Message('Validez votre inscription à Community'))
+                ->setFrom('akmennra@gmail.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'email/registration.html.twig',
+                        [
+                            'user' => $user->getName(),
+                            'url' => $url
+                        ]
+                    ),
+                    'text/html'
+                );
 
-            // $mailer->send($message);
+            $mailer->send($message);
 
             $this->addFlash(
                 'success',
@@ -163,19 +164,19 @@ class HomeController extends AbstractController
      */
     public function recoverPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        $pass = $request->get('password');
-        $passConfirm = $request->get('password_confirm');
-
         if (!$user = $this->getDoctrine()->getRepository(User::class)->findOneByToken($token)) {
             $this->addFlash('danger', 'Le lien servant à modifier ce mot de passe a déjà été utilisé');
 
             return $this->redirectToRoute('home');
         }
 
-        if (!empty($pass) && !empty($passConfirm) && $pass === $passConfirm) {
+        $form = $this->createForm(UserRecoveryPasswordType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $user
                 ->setToken(null)
-                ->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
+                ->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
 
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'Le mot de passe a bien été modifié');
@@ -183,7 +184,9 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('home/password_recovery.html.twig');
+        return $this->render('home/password_recovery.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

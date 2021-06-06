@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\User;
-use App\Validator\UniqueEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,45 +11,21 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
-class UserType extends AbstractType
+class UserRecoveryPasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (!$options['isEdit']) {
-            $builder
-                ->add('name', null, [
-                    'label' => 'Nickname',
-                    'attr' => [
-                        'placeholder' => 'Diana384',
-                        'class' => 'form-control',
-                    ],
-                ]);
-        }
-
         $builder
-            ->add('email', null, [
-                'label' => $options['isEdit'] ? 'New email' : 'Email',
-                'label_attr' => [
-                    'class' => 'h5',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'constraints' => [
-                    new UniqueEmail(),
-                ]
-            ])
             ->add('password', RepeatedType::class, [
-                'required' => $options['isEdit'] ? false : true,
                 'type' => PasswordType::class,
                 'invalid_message' => 'Passwords do not match.',
                 'first_options'  => [
                     'label' => 'New password',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Password',
+                        'placeholder' => 'Password',
                     ],
-                    'constraints' => $options['isEdit'] ? [] : [
+                    'constraints' => [
                         new NotBlank(['message' => 'The password cannot be blank']),
                         new Regex([
                             "pattern" => "/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",
@@ -62,7 +37,7 @@ class UserType extends AbstractType
                     'label' => 'Confirm new password',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' =>  $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Confirm password',
+                        'placeholder' => 'Confirm password',
                     ],
                 ],
             ]);
@@ -72,7 +47,6 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'isEdit' => false,
         ]);
     }
 }

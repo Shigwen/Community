@@ -78,7 +78,6 @@ class RaidType extends AbstractType
                 'attr' => [
                     'class' => 'col-2 form-control text-center',
                 ],
-                'required' => false,
             ])
 
             ->add('minTank', null, [
@@ -90,7 +89,6 @@ class RaidType extends AbstractType
                     'class' => 'col-2 form-control text-center',
                 ],
                 'empty_data' => '1',
-                'required' => false,
             ])
 
             ->add('maxTank', null, [
@@ -101,7 +99,6 @@ class RaidType extends AbstractType
                 'attr' => [
                     'class' => 'col-2 form-control text-center',
                 ],
-                'required' => false,
             ])
 
             ->add('minHeal', null, [
@@ -112,7 +109,6 @@ class RaidType extends AbstractType
                 'attr' => [
                     'class' => 'col-2 form-control text-center',
                 ],
-                'required' => false,
                 'empty_data' => '1',
             ])
 
@@ -124,7 +120,6 @@ class RaidType extends AbstractType
                 'attr' => [
                     'class' => 'col-2 form-control text-center',
                 ],
-                'required' => false,
             ])
 
             ->add('autoAccept', null, [
@@ -148,56 +143,56 @@ class RaidType extends AbstractType
             ])
 
             ->add('information', TextareaType::class, [
-				'label' => 'Raid Leader notes',
-				'label_attr' => [
-					'class' => 'h5',
-				],
-				'attr' => [
-					'class' => 'form-control',
-					'rows' => '14',
-				],
-				'data' => $options['raidInformation'] ? $options['raidInformation'] : "Discord link : ",
-			]);
+                'label' => 'Raid Leader notes',
+                'label_attr' => [
+                    'class' => 'h5',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => '14',
+                ],
+                'data' => $options['raidInformation'] ? $options['raidInformation'] : "Discord link : ",
+            ]);
 
-			if (!$options['isEdit']) {
-				$builder
-				->add('templateName', TextType::class, [
-					'label' => 'Give it a template name :',
-					'label_attr' => [
-						'class' => 'h5',
-					],
-					'attr' => [
-						'class' => 'form-control',
-						'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
-					],
-					'required' => false,
-				]);
-			}
+        if (!$options['isEdit']) {
+            $builder
+                ->add('templateName', TextType::class, [
+                    'label' => 'Give it a template name :',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'attr' => [
+                        'class' => 'form-control',
+                        'placeholder' => 'ex: Taverns of Time - Wednesday Pug - Karazhan',
+                    ],
+                    'required' => false,
+                ]);
+        }
 
-			if (!$options['isEdit'] && !$options['isRaidTemplate']) {
-				$builder
-				->add('saveTemplate', SubmitType::class, [
-					'label' => 'Save template',
-					'attr' => [
-						'class' => 'btn btn-lg btn-primary',
-					],
-				]);
-			}
+        if (!$options['isEdit'] && !$options['isRaidTemplate']) {
+            $builder
+                ->add('saveTemplate', SubmitType::class, [
+                    'label' => 'Save template',
+                    'attr' => [
+                        'class' => 'btn btn-lg btn-primary',
+                    ],
+                ]);
+        }
 
-			if ($options['isRaidTemplate']) {
-				$builder
-				->add('saveAsNewTemplate', SubmitType::class, [
-					'label' => 'Save as new template',
-					'attr' => [
-						'class' => 'btn btn-lg btn-primary',
-					],
-				])->add('editTemplate', SubmitType::class, [
-					'label' => 'Edit template',
-					'attr' => [
-						'class' => 'btn btn-lg btn-primary',
-					],
-				]);
-			}
+        if ($options['isRaidTemplate']) {
+            $builder
+                ->add('saveAsNewTemplate', SubmitType::class, [
+                    'label' => 'Save as new template',
+                    'attr' => [
+                        'class' => 'btn btn-lg btn-primary',
+                    ],
+                ])->add('editTemplate', SubmitType::class, [
+                    'label' => 'Edit template',
+                    'attr' => [
+                        'class' => 'btn btn-lg btn-primary',
+                    ],
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
