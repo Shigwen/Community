@@ -16,18 +16,25 @@
                 {{ form_errors(formCharacter.name) }}
             </div>
 
-            <div class="col-lg-5 col-md-11 text-center">
-                {% if formCharacter.server is defined %}
-                    {{ form_label(formCharacter.server) }}
-                    {{ form_widget(formCharacter.server) }}
-                    {{ form_errors(formCharacter.server) }}
-                {% else %}
-                    <div class="mt-2 p-2 border border-primary rounded"> 
-                        You cannot change the server of character who's subscribe 
-                        a raid or is in waiting confirmation
+            {% if formCharacter.server is defined %}
+                <div class="col-lg-5 col-md-11 row m-0"> 
+                    <div class="col-lg-6 col-md-12 p-0 text-center">
+                        {{ form_label(formCharacter.server) }}
+                        {{ form_widget(formCharacter.server) }}
+                        {{ form_errors(formCharacter.server) }}
                     </div>
-                {% endif %}
-            </div>
+                    <div class="col-lg-6 col-md-12 p-0 text-center">
+                        {{ form_label(formCharacter.faction) }}
+                        {{ form_widget(formCharacter.faction) }}
+                        {{ form_errors(formCharacter.faction) }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="mt-2 p-2 border border-primary rounded"> 
+                    You cannot change the server of character who's subscribe 
+                    a raid or is in waiting confirmation
+                </div>
+            {% endif %}
 
             <div class="col-lg-5 col-md-11 text-center">
                 {{ form_label(formCharacter.characterClass) }}

@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CharacterType extends AbstractType
@@ -35,6 +36,21 @@ class CharacterType extends AbstractType
                     'attr' => [
                         'class' => 'custom-select',
                     ]
+                ])
+                ->add('faction', ChoiceType::class, [
+                    'choices'  => [
+                        Character::FACTION_ALLIANCE => Character::FACTION_ALLIANCE,
+                        Character::FACTION_HORDE => Character::FACTION_HORDE,
+                    ],
+                    'label' => 'Faction',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'expanded' => false,
+                    'multiple' => false,
                 ]);
         }
 

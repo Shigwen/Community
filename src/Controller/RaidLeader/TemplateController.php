@@ -23,6 +23,7 @@ class TemplateController extends AbstractController
      */
     public function events(Request $request, Template $templateService): Response
     {
+        // TODO : ajouter les factions dans le form en fonction du personnage choisi
         $newRaidTemplate = new Raid();
         $newRaidCharacter = new RaidCharacter();
 

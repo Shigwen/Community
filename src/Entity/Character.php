@@ -15,6 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Character
 {
+    const FACTION_HORDE = 'Horde';
+    const FACTION_ALLIANCE = 'Alliance';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -39,6 +42,10 @@ class Character
     private $name;
 
     /**
+     * @Assert\Choice(
+     *     choices = {"Alliance", "Horde"}
+     * )
+     * 
      * @ORM\Column(type="string", length=8)
      */
     private $faction;
@@ -137,6 +144,11 @@ class Character
     {
         return $this->faction;
     }
+
+    // public function isAlliance(): ?bool
+    // {
+    //     return $this->faction === self::FACTION_ALLIANCE;
+    // }
 
     public function setFaction(string $faction): self
     {
