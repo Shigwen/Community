@@ -18,22 +18,22 @@ final class Version20210606194322 extends AbstractMigration
     {
         $this->addSql("
             INSERT INTO role VALUES 
-                (1, 'Tank', NOW(), null),
-                (2, 'Heal', NOW(), null),
-                (3, 'DPS', NOW(), null)
+                (1, 'Tank'),
+                (2, 'Heal'),
+                (3, 'DPS')
         ");
 
         $this->addSql("
             INSERT INTO character_class VALUES 
-                (1, 'Druid', NOW(), null),
-                (2, 'Hunter', NOW(), null),
-                (3, 'Mage', NOW(), null),
-                (4, 'Paladin', NOW(), null),
-                (5, 'Priest', NOW(), null),
-                (6, 'Rogue', NOW(), null),
-                (7, 'Shaman', NOW(), null),
-                (8, 'Warlock', NOW(), null),
-                (9, 'Warrior', NOW(), null)
+                (1, 'Druid'),
+                (2, 'Hunter'),
+                (3, 'Mage'),
+                (4, 'Paladin'),
+                (5, 'Priest'),
+                (6, 'Rogue'),
+                (7, 'Shaman'),
+                (8, 'Warlock'),
+                (9, 'Warrior')
         ");
 
         $this->addSql("
