@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Raid;
+use App\Entity\Role;
 use App\Service\Calendar;
 use App\Entity\RaidCharacter;
 use App\Form\RaidCharacterType;
@@ -41,23 +42,26 @@ class EventController extends AbstractController
     {
         if ($this->getUser()) {
             $isEdit = true;
-            if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
-                $this->getUser(),
-                $raid
+            if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
+                $raid,
+                $this->getUser()
             )) {
                 $isEdit = false;
                 $raidCharacter = new RaidCharacter();
             }
 
+            // todo ajouter un filtre avec le server + la faction (pour le user qui s'inscrit à un raid)
             $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
                 'user' => $this->getUser(),
                 'action' => $this->generateUrl('user_raid_register', ['id' => $raid->getId()]),
-                'server' => $raid->getServer(),
             ]);
         }
 
         return $this->render('event/show_event.html.twig', [
             'raid' => $raid,
+            'tanks' => $this->getDoctrine()->getRepository(RaidCharacter::class)->getAllWithRole($raid, Role::TANK),
+            'healers' => $this->getDoctrine()->getRepository(RaidCharacter::class)->getAllWithRole($raid, Role::HEAL),
+            'dps' => $this->getDoctrine()->getRepository(RaidCharacter::class)->getAllWithRole($raid, Role::DPS),
             'user' => $this->getUser() ? $this->getUser() : null,
             'form' => $this->getUser() ? $form->createView() : null,
             'isEdit' => $this->getUser() ? $isEdit : false,

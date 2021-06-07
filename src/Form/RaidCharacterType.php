@@ -19,19 +19,11 @@ class RaidCharacterType extends AbstractType
             ->add('userCharacter', EntityType::class, [
                 'class' => Character::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
-                    $query = $er->createQueryBuilder('uc')
+                    return $er->createQueryBuilder('uc')
                         ->where('uc.user = :user')
                         ->andWhere('uc.isArchived = 0')
                         ->orderBy('uc.name', 'ASC')
                         ->setParameter('user', $options['user']);
-
-                    if ($options['server']) {
-                        $query
-                            ->andWhere('uc.server = :server')
-                            ->setParameter('server', $options['server']);
-                    }
-
-                    return $query;
                 },
 
                 'label' => 'Raid leading character',
@@ -42,7 +34,7 @@ class RaidCharacterType extends AbstractType
                     'class' => 'custom-select',
                 ],
                 'group_by' => function ($character) {
-                    return $character->getServer()->getVerboseVersionAndName();
+                    return $character->getServer()->getVerboseVersionAndName() . ' - ' . $character->getFaction()->getName();
                 },
             ])
 
@@ -65,7 +57,6 @@ class RaidCharacterType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RaidCharacter::class,
             'user' => null,
-            'server' => null,
         ]);
     }
 }

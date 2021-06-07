@@ -137,30 +137,27 @@
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Class</th>
-                                                {# <th>Role</th> #}
-                                                <th>!</th>
+                                                <th>Role</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
 
                                         <tbody class="text-center">
-                                            {% for raidCharacter in raid.raidCharacters %}
-                                                {% if raidCharacter.isAccept %}
-                                                    <tr>
-                                                        <td>{{ raidCharacter.userCharacter.name }}</td>
-                                                        <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                                        {# <td>{{ raidCharacter.role.name }}</td>
-                                                        {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
-                                                            <td>
-                                                                {% if and raidCharacter.isRaidLeaderCharacter(user) == false %}
-                                                                    <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
-                                                                {% else %}
-                                                                    <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
-                                                                {% endif %}
-                                                            </td>
-                                                        {% endif %} #}
-                                                        <td>Button!</td>
-                                                    </tr>
-                                                {% endif %}
+                                            {% for raidCharacter in tanks %}
+                                                <tr>
+                                                    <td>{{ raidCharacter.userCharacter.name }}</td>
+                                                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+                                                    <td>{{ raidCharacter.role.name }}</td>
+                                                    {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
+                                                        <td>
+                                                            {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
+                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
+                                                            {% else %}
+                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
+                                                            {% endif %}
+                                                        </td>
+                                                    {% endif %}
+                                                </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -176,30 +173,27 @@
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Class</th>
-                                                {# <th>Role</th> #}
-                                                <th>!</th>
+                                                <th>Role</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
 
                                         <tbody class="text-center">
-                                            {% for raidCharacter in raid.raidCharacters %}
-                                                {% if raidCharacter.isAccept %}
-                                                    <tr>
-                                                        <td>{{ raidCharacter.userCharacter.name }}</td>
-                                                        <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                                        {# <td>{{ raidCharacter.role.name }}</td>
-                                                        {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
-                                                            <td>
-                                                                {% if and raidCharacter.isRaidLeaderCharacter(user) == false %}
-                                                                    <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
-                                                                {% else %}
-                                                                    <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
-                                                                {% endif %}
-                                                            </td>
-                                                        {% endif %} #}
-                                                        <td>Button!</td>
-                                                    </tr>
-                                                {% endif %}
+                                            {% for raidCharacter in healers %}
+                                                <tr>
+                                                    <td>{{ raidCharacter.userCharacter.name }}</td>
+                                                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+                                                    <td>{{ raidCharacter.role.name }}</td>
+                                                    {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
+                                                        <td>
+                                                            {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
+                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
+                                                            {% else %}
+                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
+                                                            {% endif %}
+                                                        </td>
+                                                    {% endif %}
+                                                </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -215,31 +209,28 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Class</th>
-                                            {# <th>Role</th> #}
-                                            <th>!</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
 
                                     <tbody class="text-center">
-                                        {% for raidCharacter in raid.raidCharacters %}
-                                            {% if raidCharacter.isAccept %}
+                                        {% for raidCharacter in dps %}
                                                 <tr>
                                                     <td>{{ raidCharacter.userCharacter.name }}</td>
                                                     <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                                    {# <td>{{ raidCharacter.role.name }}</td>
+                                                    <td>{{ raidCharacter.role.name }}</td>
                                                     {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
                                                         <td>
-                                                                {% if and raidCharacter.isRaidLeaderCharacter(user) == false %}
+                                                            {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
                                                             {% endif %}
                                                         </td>
-                                                    {% endif %} #}
-                                                    <td>Button!</td>
+                                                    {% endif %}
                                                 </tr>
-                                            {% endif %}
-                                        {% endfor %}
+                                            {% endfor %}
                                     </tbody>
                                 </table>
 
@@ -279,15 +270,16 @@
                             <span class="h5 mt-0">
                                 {{ raid.startAt|date("d/m/Y") }}
                                 <br>from
-                                {{ raid.startAt|date("h:i") }}
+                                {{ raid.startAt|date("H:i") }}
                                 to
-                                {{ raid.endAt|date("h:i") }}
+                                {{ raid.endAt|date("H:i") }}
                             </span>
                         </div>
 
                         <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
+                            {% set raidCharacter = get_raid_character_from_user(raid) %}
                             <span class="h5">Server :</span>
-                            <span class="h4 m-0">TBC Hydraxian Waterlord</span>
+                            <span class="h4 m-0">{{ raidCharacter.userCharacter.server.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -353,23 +345,14 @@
                             </div>
                         </div>
 
-                        <div class="form-row justify-content-between mb-2">
-                            {% if (raid.autoAccept == 1) %}
-                                <div class="col-12 col-md-6 h5 mb-2 d-flex align-items-center justify-content-center">
+                        <div class="form-row mb-2">
+                            {% if raid.autoAccept %}
+                                <div class="col-12 h5">
                                     Raid auto-accepts subscriptions.
                                 </div>
                             {% else %}
-                                <div class="col-12 col-md-6 h5 mb-2 d-flex align-items-center justify-content-center">
+                                <div class="col-12 h5">
                                     Subscriptions will be confirmed manually by the Raid Leader.
-                                </div>
-                            {% endif %}
-                            {% if (raid.isPrivate == 1) %}
-                                <div class="col-12 col-md-6 h5 mb-2 d-flex align-items-center justify-content-center">
-                                    The raid is set to be private, and won't be displayed in the calendar.
-                                </div>
-                            {% else %}
-                                <div class="col-12 col-md-6 h5 mb-2 d-flex align-items-center justify-content-center">
-                                    The raid is not set to be private, and as such is normally displayed in the Calendar.
                                 </div>
                             {% endif %}
                         </div>

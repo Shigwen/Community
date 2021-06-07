@@ -91,7 +91,7 @@ class RaidRepository extends ServiceEntityRepository
         $now = new DateTime();
         return $this->createQueryBuilder('r')
             ->where('r.templateName IS NULL')
-            ->andWhere('r.startAt > :now')
+            ->andWhere('r.startAt < :now')
             ->andWhere('r.endAt > :now')
             ->andWhere('r.user = :raidLeader')
             ->andWhere('r.isArchived = false')

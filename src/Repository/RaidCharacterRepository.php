@@ -53,4 +53,40 @@ class RaidCharacterRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @return RaidCharacter[]
+     */
+    public function getAllNotRefusedFromRaid(Raid $raid)
+    {
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->where('rc.raid = :raid')
+            ->andWhere('rc.status != :refused')
+            ->setParameters([
+                'raid' => $raid,
+                'refused' => RaidCharacter::REFUSED,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return RaidCharacter[]
+     */
+    public function getAllWithRole(Raid $raid, int $role)
+    {
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->where('rc.raid = :raid')
+            ->andWhere('rc.status = :accept')
+            ->andWhere('rc.role = :role')
+            ->setParameters([
+                'raid' => $raid,
+                'accept' => RaidCharacter::ACCEPT,
+                'role' => $role,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
 }

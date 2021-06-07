@@ -16,7 +16,16 @@
         </div>
     {% endif %}
 
-    {{ include('raid_leader/_raid_form.html.twig') }}
+    {% if form %}
+        {{ include('raid_leader/_raid_form.html.twig') }}
+    {% else %}
+        <div class="row d-flex justify-content-around">
+            <div class="col-12 col-md-11 m-md-4 p-md-4 p-xs-1 border border-primary rounded h5 text-center"> 
+                Formulaire innaccessible <br>
+                Vous ne pouvez pas modifier un raid possédant déjà des joueurs inscrit ou en attente 
+            </div>
+        </div>
+    {% endif %}
 
     <h4> Validated players </h4>
     <table>
@@ -37,7 +46,7 @@
                         <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
                         <td>{{ raidCharacter.role.name }}</td>
                         <td>{{ raidCharacter.userCharacter.information }}</td>
-                        {% if is_raid_leader_character(user, raidCharacter.userCharacter, raidCharacter.raid) == false %}
+                        {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
                             <td>
                                 <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
                                 <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
