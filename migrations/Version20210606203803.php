@@ -11,56 +11,61 @@ final class Version20210606203803 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Server list';
+        return 'Europe server list for Burning crusade classic with timezone Europe/Berlin';
     }
 
     public function up(Schema $schema): void
     {
+        // VALUES (id, GameVersion, Region, Timezone, ServerName)
+        // GameVersion id 3 => Burning crusade classic 
+        // Region id 2 => Europe
+        // Timezone id 1 => Europe/Berlin
+
         $this->addSql("
             INSERT INTO server VALUES 
-                (1, 'Amnennar', 'Europe/Berlin', NOW(), null),
-                (2, 'Ashbringer', 'Europe/Berlin', NOW(), null),
-                (3, 'Auberdine', 'Europe/Berlin', NOW(), null),
-                (4, 'Bloodfang', 'Europe/Berlin', NOW(), null),
-                (5, 'Celebras', 'Europe/Berlin', NOW(), null),
-                (6, 'Chromie', 'Europe/Berlin', NOW(), null),
-                (7, 'Dragon\'s Call', 'Europe/Berlin', NOW(), null),
-                (8, 'Dragonfang', 'Europe/Berlin', NOW(), null),
-                (9, 'Dreadmist', 'Europe/Berlin', NOW(), null),
-                (10, 'Earthshaker', 'Europe/Berlin', NOW(), null),
-                (11, 'Everlook', 'Europe/Berlin', NOW(), null),
-                (12, 'Finkle', 'Europe/Berlin', NOW(), null),
-                (13, 'Firemaw', 'Europe/Berlin', NOW(), null),
-                (14, 'Flamegor', 'Europe/Berlin', NOW(), null),
-                (15, 'Flamelash', 'Europe/Berlin', NOW(), null),
-                (16, 'Gandling', 'Europe/Berlin', NOW(), null),
-                (17, 'Gehennas', 'Europe/Berlin', NOW(), null),
-                (18, 'Golemagg', 'Europe/Berlin', NOW(), null),
-                (19, 'Harbinger of Doom', 'Europe/Berlin', NOW(), null),
-                (20, 'Heartstriker', 'Europe/Berlin', NOW(), null),
-                (21, 'Hydraxian Waterlords', 'Europe/Berlin', NOW(), null),
-                (22, 'Judgement', 'Europe/Berlin', NOW(), null),
-                (23, 'Lakeshire', 'Europe/Berlin', NOW(), null),
-                (24, 'Lucifron', 'Europe/Berlin', NOW(), null),
-                (25, 'Mandokir', 'Europe/Berlin', NOW(), null),
-                (26, 'Mirage Raceway', 'Europe/Berlin', NOW(), null),
-                (27, 'Mograine', 'Europe/Berlin', NOW(), null),
-                (28, 'Nethergarde Keep', 'Europe/Berlin', NOW(), null),
-                (29, 'Noggenfogger', 'Europe/Berlin', NOW(), null),
-                (30, 'Patchwerk', 'Europe/Berlin', NOW(), null),
-                (31, 'Pyrewood Village', 'Europe/Berlin', NOW(), null),
-                (32, 'Razorfen', 'Europe/Berlin', NOW(), null),
-                (33, 'Razorgore', 'Europe/Berlin', NOW(), null),
-                (34, 'Rhok\'delar', 'Europe/Berlin', NOW(), null),
-                (35, 'Shazzrah', 'Europe/Berlin', NOW(), null),
-                (36, 'Skullflame', 'Europe/Berlin', NOW(), null),
-                (37, 'Stonespine', 'Europe/Berlin', NOW(), null),
-                (38, 'Sulfuron', 'Europe/Berlin', NOW(), null),
-                (39, 'Ten Storms', 'Europe/Berlin', NOW(), null),
-                (40, 'Transcendence', 'Europe/Berlin', NOW(), null),
-                (41, 'Venoxis', 'Europe/Berlin', NOW(), null),
-                (42, 'Wyrmthalak', 'Europe/Berlin', NOW(), null),
-                (43, 'Zandalar Tribe', 'Europe/Berlin', NOW(), null)
+                (1,  3, 2 , 1, 'Amnennar'),
+                (2,  3, 2 , 1, 'Ashbringer'),
+                (3,  3, 2 , 1, 'Auberdine'),
+                (4,  3, 2 , 1, 'Bloodfang'),
+                (5,  3, 2 , 1, 'Celebras'),
+                (6,  3, 2 , 1, 'Chromie'),
+                (7,  3, 2 , 1, 'Dragon\'s Call'),
+                (8,  3, 2 , 1, 'Dragonfang'),
+                (9,  3, 2 , 1, 'Dreadmist'),
+                (10, 3, 2 , 1, 'Earthshaker'),
+                (11, 3, 2 , 1, 'Everlook'),
+                (12, 3, 2 , 1, 'Finkle'),
+                (13, 3, 2 , 1, 'Firemaw'),
+                (14, 3, 2 , 1, 'Flamegor'),
+                (15, 3, 2 , 1, 'Flamelash'),
+                (16, 3, 2 , 1, 'Gandling'),
+                (17, 3, 2 , 1, 'Gehennas'),
+                (18, 3, 2 , 1, 'Golemagg'),
+                (19, 3, 2 , 1, 'Harbinger of Doom'),
+                (20, 3, 2 , 1, 'Heartstriker'),
+                (21, 3, 2 , 1, 'Hydraxian Waterlords'),
+                (22, 3, 2 , 1, 'Judgement'),
+                (23, 3, 2 , 1, 'Lakeshire'),
+                (24, 3, 2 , 1, 'Lucifron'),
+                (25, 3, 2 , 1, 'Mandokir'),
+                (26, 3, 2 , 1, 'Mirage Raceway'),
+                (27, 3, 2 , 1, 'Mograine'),
+                (28, 3, 2 , 1, 'Nethergarde Keep'),
+                (29, 3, 2 , 1, 'Noggenfogger'),
+                (30, 3, 2 , 1, 'Patchwerk'),
+                (31, 3, 2 , 1, 'Pyrewood Village'),
+                (32, 3, 2 , 1, 'Razorfen'),
+                (33, 3, 2 , 1, 'Razorgore'),
+                (34, 3, 2 , 1, 'Rhok\'delar'),
+                (35, 3, 2 , 1, 'Shazzrah'),
+                (36, 3, 2 , 1, 'Skullflame'),
+                (37, 3, 2 , 1, 'Stonespine'),
+                (38, 3, 2 , 1, 'Sulfuron'),
+                (39, 3, 2 , 1, 'Ten Storms'),
+                (40, 3, 2 , 1, 'Transcendence'),
+                (41, 3, 2 , 1, 'Venoxis'),
+                (42, 3, 2 , 1, 'Wyrmthalak'),
+                (43, 3, 2 , 1, 'Zandalar Tribe')
         ");
     }
 

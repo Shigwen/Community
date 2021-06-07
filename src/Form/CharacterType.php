@@ -35,7 +35,10 @@ class CharacterType extends AbstractType
                     ],
                     'attr' => [
                         'class' => 'custom-select',
-                    ]
+                    ],
+                    'group_by' => function ($server) {
+                        return $server->getVerboseVersionAndRegion();
+                    },
                 ])
                 ->add('faction', ChoiceType::class, [
                     'choices'  => [

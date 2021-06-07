@@ -11,7 +11,7 @@ final class Version20210606194322 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Default values for tables role, character_class and message_type';
+        return 'Default values for tables role, character_class, message_type, game_version, region and timezone';
     }
 
     public function up(Schema $schema): void
@@ -46,6 +46,24 @@ final class Version20210606194322 extends AbstractMigration
                 (6, 'I was banned from the website'),
                 (7, 'Others')
         ");
+
+        $this->addSql("
+            INSERT INTO game_version VALUES 
+                (1, 'World of Warcraft'),
+                (2, 'World of Warcraft Classic'),
+                (3, 'Burning Crusade Classic')
+        ");
+
+        $this->addSql("
+            INSERT INTO region VALUES 
+                (1, 'Americas & Oceania'),
+                (2, 'Europe'),
+                (3, 'Korea'),
+                (4, 'Taiwan')
+        ");
+
+        $this->addSql("
+            INSERT INTO timezone VALUES (1, 'Europe/Berlin')");
     }
 
     public function down(Schema $schema): void

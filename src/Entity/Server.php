@@ -26,19 +26,22 @@ class Server
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity=GameVersion::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $gameVersion;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Region::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $region;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Timezone::class)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $timezone;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $updatedAt;
 
     /**
      * @ORM\OneToMany(targetEntity=Character::class, mappedBy="server", orphanRemoval=true)
@@ -67,45 +70,29 @@ class Server
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getGameVersion(): ?GameVersion
     {
-        return $this->name;
+        return $this->gameVersion;
     }
 
-    public function setName(string $name): self
+    public function getRegion(): ?Region
     {
-        $this->name = $name;
-
-        return $this;
+        return $this->region;
     }
 
-    public function getTimezone(): ?string
+    public function getVerboseVersionAndRegion()
+    {
+        return $this->gameVersion->getName() . ' - ' . $this->getRegion()->getName();
+    }
+
+    public function getTimezone(): ?Timezone
     {
         return $this->timezone;
     }
 
-    public function setTimezone(string $timezone): self
+    public function getName(): ?string
     {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
+        return $this->name;
     }
 
     /**
