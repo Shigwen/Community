@@ -5,6 +5,7 @@ namespace App\Controller\RaidLeader;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
+use App\Service\Raid\RaidCharacterFromUserAndRaid;
 use App\Service\Raid\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +22,8 @@ class TemplateController extends AbstractController
     /**
      * @Route("/events", name="events")
      */
-    public function events(Request $request, Template $templateService): Response
+    public function events(Request $request, Template $templateService, RaidCharacterFromUserAndRaid $raidCharacterService): Response
     {
-        // TODO : ajouter les factions dans le form en fonction du personnage choisi
         $newRaidTemplate = new Raid();
         $newRaidCharacter = new RaidCharacter();
 
@@ -50,7 +50,7 @@ class TemplateController extends AbstractController
         ]);
 
         if ($raidTemplateInUse) {
-            $raidCharacter = $raidTemplateInUse->getRaidCharacterFromUser($this->getUser());
+            $raidCharacter = $raidCharacterService->getFromRaid($raidTemplateInUse);
             $form->get('raidCharacter')->get('userCharacter')->setData($raidCharacter->getUserCharacter());
             $form->get('raidCharacter')->get('role')->setData($raidCharacter->getRole());
         }
@@ -63,11 +63,11 @@ class TemplateController extends AbstractController
             if ($form->get('saveTemplate')->isClicked()) {
                 $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
 
-            // Edit chosen raid template
+                // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {
                 $templateService->editChosenTemplate($this->getUser(), $raidTemplateInUse, $newRaidTemplate);
 
-            // Create raid
+                // Create raid
             } else {
                 $templateService->createRaid($newRaidTemplate, $newRaidCharacter);
             }

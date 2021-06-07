@@ -1,14 +1,23 @@
 <?php
+
 namespace App\Twig;
 
 use App\Entity\Raid;
 use App\Entity\User;
-use App\Entity\Character;
-use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use App\Entity\Character;
+use App\Service\Raid\RaidCharacterFromUserAndRaid;
+use Twig\Extension\AbstractExtension;
 
 class RaidLeaderCharacterExtension extends AbstractExtension
 {
+    private $raidCharacterService;
+
+    public function __construct(RaidCharacterFromUserAndRaid $raidCharacterService)
+    {
+        $this->raidCharacterService = $raidCharacterService;
+    }
+
     public function getFunctions()
     {
         return [
@@ -16,18 +25,14 @@ class RaidLeaderCharacterExtension extends AbstractExtension
         ];
     }
 
-    public function isRaidLeaderCharacter(User $user, Character $character, Raid $raid)
+    public function isRaidLeaderCharacter(Raid $raid, User $user, Character $character)
     {
         if ($raid->getUser() !== $user) {
             return false;
         }
 
-        foreach ($user->getCharacters() as $userCharacter) {
-            if ($character === $userCharacter) {
-                return true;
-            }
-        }
+        $raidCharacter = $this->raidCharacterService->getFromRaid($raid);
 
-        return false;
+        return $raidCharacter->getUserCharacter() === $character;
     }
 }

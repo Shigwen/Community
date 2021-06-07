@@ -170,7 +170,7 @@ class RaidType extends AbstractType
                 ]);
         }
 
-        if (!$options['isEdit'] && !$options['isRaidTemplate']) {
+        if (!$options['isEdit']) {
             $builder
                 ->add('saveTemplate', SubmitType::class, [
                     'label' => 'Save template',
@@ -182,12 +182,7 @@ class RaidType extends AbstractType
 
         if ($options['isRaidTemplate']) {
             $builder
-                ->add('saveAsNewTemplate', SubmitType::class, [
-                    'label' => 'Save as new template',
-                    'attr' => [
-                        'class' => 'btn btn-lg btn-primary',
-                    ],
-                ])->add('editTemplate', SubmitType::class, [
+                ->add('editTemplate', SubmitType::class, [
                     'label' => 'Edit template',
                     'attr' => [
                         'class' => 'btn btn-lg btn-primary',

@@ -82,7 +82,7 @@ class Template
             $newRaidTemplate->setTemplateName($newRaidTemplate->getName());
         }
 
-        $this->addCharacterAndServerToRaid($newRaidTemplate, $newRaidCharacter, $request->request->get('raid'));
+        $this->addCharacterToRaid($newRaidTemplate, $newRaidCharacter, $request->request->get('raid'));
 
         $this->em->persist($newRaidTemplate);
         $this->em->flush();
@@ -141,7 +141,7 @@ class Template
             ->setTemplateName(null)
             ->setIdentifier($newRaid->isPrivate() ? $this->identifier->generate(Raid::IDENTIFIER_SIZE) : null);
 
-        $this->addCharacterAndServerToRaid($newRaid, $newRaidCharacter, $request->request->get('raid'));
+        $this->addCharacterToRaid($newRaid, $newRaidCharacter, $request->request->get('raid'));
 
         $this->em->persist($newRaid);
         $this->em->flush();
@@ -172,7 +172,7 @@ class Template
             ->setUpdatedAt(new DateTime());
 
         $raidCharacter = $raidTemplateInUse->getRaidCharacterFromUser($user);
-        $this->addCharacterAndServerToRaid($raidTemplateInUse, $raidCharacter, $request->request->get('raid'));
+        $this->addCharacterToRaid($raidTemplateInUse, $raidCharacter, $request->request->get('raid'));
 
         $this->em->flush();
     }
@@ -181,7 +181,7 @@ class Template
      * Checking if a character role and a character are properly input in the raid creation form,
      * before linking them to an actual raid.
      */
-    public function addCharacterAndServerToRaid(Raid $raid, RaidCharacter $raidCharacter, array $datas)
+    public function addCharacterToRaid(Raid $raid, RaidCharacter $raidCharacter, array $datas)
     {
         $character = $this->em->getRepository(Character::class)->findOneBy([
             'id' => $datas['raidCharacter']['userCharacter'],
@@ -199,8 +199,6 @@ class Template
         $raidCharacter
             ->setUserCharacter($character)
             ->setRole($role);
-
-        $raid->setServer($character->getServer());
 
         if (!$raidCharacter->getId()) {
             $raid->addRaidCharacter($raidCharacter);

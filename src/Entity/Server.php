@@ -48,16 +48,10 @@ class Server
      */
     private $characters;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Raid::class, mappedBy="server", orphanRemoval=true)
-     */
-    private $raids;
-
     public function __construct()
     {
         $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
-        $this->raids = new ArrayCollection();
     }
 
     public function __toString()
@@ -83,6 +77,11 @@ class Server
     public function getVerboseVersionAndRegion()
     {
         return $this->gameVersion->getName() . ' - ' . $this->getRegion()->getName();
+    }
+    
+    public function getVerboseVersionAndName()
+    {
+        return $this->gameVersion->getName() . ' - ' . $this->name;
     }
 
     public function getTimezone(): ?Timezone
@@ -120,24 +119,6 @@ class Server
             if ($character->getServer() === $this) {
                 $character->setServer(null);
             }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Raid[]
-     */
-    public function getRaids(): Collection
-    {
-        return $this->raids;
-    }
-
-    public function addRaid(Raid $raid): self
-    {
-        if (!$this->raids->contains($raid)) {
-            $this->raids[] = $raid;
-            $raid->setServer($this);
         }
 
         return $this;

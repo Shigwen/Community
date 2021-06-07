@@ -22,20 +22,34 @@ class RaidCharacterRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return RaidCharacter[] Returns an array of RaidCharacter objects
+     * @return RaidCharacter
      */
-    public function userAlreadyRegisterInRaid(User $user, Raid $raid)
+    public function getOfRaidLeaderFromRaid(Raid $raid)
     {
         return $this->createQueryBuilder('rc')
-            ->join('rc.userCharacter', 'uc')
             ->join('rc.raid', 'r')
-            ->andWhere('rc.raid = :raid')
+            ->join('rc.userCharacter', 'uc')
+            ->where('rc.raid = :raid')
+            ->andWhere('uc.user = r.user')
+            ->setParameter('raid', $raid)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @return RaidCharacter
+     */
+    public function getOfUserFromRaid(Raid $raid, User $user)
+    {
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->join('rc.userCharacter', 'uc')
+            ->where('rc.raid = :raid')
             ->andWhere('uc.user = :user')
             ->setParameters([
                 'raid' => $raid,
                 'user' => $user,
             ])
-            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }

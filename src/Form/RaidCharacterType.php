@@ -41,6 +41,9 @@ class RaidCharacterType extends AbstractType
                 'attr' => [
                     'class' => 'custom-select',
                 ],
+                'group_by' => function ($character) {
+                    return $character->getServer()->getVerboseVersionAndName();
+                },
             ])
 
             ->add('role', null, [

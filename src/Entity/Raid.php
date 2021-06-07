@@ -147,11 +147,6 @@ class Raid
     private $maxHeal;
 
     /**
-     * @ORM\Column(type="string", length=8)
-     */
-    private $faction;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $autoAccept;
@@ -186,12 +181,6 @@ class Raid
      * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="raid", cascade={"persist"}, orphanRemoval=true)
      */
     private $raidCharacters;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="raids")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $server;
 
     public function __construct()
     {
@@ -367,18 +356,6 @@ class Raid
         return $this;
     }
 
-    public function getFaction(): ?string
-    {
-        return $this->faction;
-    }
-
-    public function setFaction(string $faction): self
-    {
-        $this->faction = $faction;
-
-        return $this;
-    }
-
     public function isAutoAccept(): ?bool
     {
         return $this->autoAccept;
@@ -444,31 +421,6 @@ class Raid
         return $this;
     }
 
-    public function getRaidCharacters(): Collection
-    {
-        return $this->raidCharacters;
-    }
-
-    public function getRaidCharacterFromUser(User $user): RaidCharacter
-    {
-        foreach ($this->raidCharacters as $raidCharacter) {
-            if ($raidCharacter->getUser() === $user) {
-                return $raidCharacter;
-            }
-        }
-        return null;
-    }
-
-    public function getCharacterFromUser(User $user): Character
-    {
-        foreach ($this->raidCharacters as $raidCharacter) {
-            if ($raidCharacter->getUser() === $user) {
-                return $raidCharacter->getUserCharacter();
-            }
-        }
-        return null;
-    }
-
     public function hasCharacter(Character $character)
     {
         foreach ($this->raidCharacters as $raidCharacter) {
@@ -477,6 +429,11 @@ class Raid
             }
         }
         return false;
+    }
+
+    public function getRaidCharacters(): Collection
+    {
+        return $this->raidCharacters;
     }
 
     public function addRaidCharacter(RaidCharacter $raidCharacter): self
@@ -497,18 +454,6 @@ class Raid
                 $raidCharacter->setRaid(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getServer(): ?Server
-    {
-        return $this->server;
-    }
-
-    public function setServer(?Server $server): self
-    {
-        $this->server = $server;
 
         return $this;
     }
