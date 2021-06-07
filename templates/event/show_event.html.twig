@@ -9,6 +9,10 @@
 
 {% block body %}
     <main class="container bg-dark">
+        <div class="row col-12">
+            <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('events')}}">Back to Calendar</a>
+        </div>
+
         <div class="row d-flex justify-content-around">
             <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
                 <h4>
@@ -74,8 +78,8 @@
                         <div></div>
                     </div>
 
-                    {% if form %}
-                        <div class="col-lg-5 col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded my-3">
+                    <div class="col-lg-5 col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded my-3">
+                        {% if form is defined %}
 
                             {% if isEdit %}
                                 <h3 class="text-center mb-4">Change character ?</h3>
@@ -83,7 +87,7 @@
                                 <h3 class="text-center mb-4">Subscription</h3>
                             {% endif %}
 
-                            {% if user.characters|length > 0 %}
+                            {% if form != null %}
 
                                 {{ form_start(form) }}
 
@@ -115,10 +119,18 @@
                                     <button type="button" class="btn btn-primary rounded-pill btn-lg disabled mt-3">Subscribe</button>
                                 </div>
                             {% endif %}
-
-                        </div>
-                    {% endif %}
-
+                        {% else %}
+                            <h3 class="text-center mb-4">Subscription</h3>
+                            <p class="text-center">
+                                You must be registered and login on the site in order to be able to register for a raid. <br>
+                                You can create an account from the
+                                <a class="font-weight-bold" href="{{ path('home') }}">home page</a>.
+                            </p>
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-primary rounded-pill btn-lg disabled mt-3">Subscribe</button>
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <div class="col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded justify-content-around my-3">
 
@@ -148,15 +160,17 @@
                                                     <td>{{ raidCharacter.userCharacter.name }}</td>
                                                     <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
                                                     <td>{{ raidCharacter.role.name }}</td>
-                                                    {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
-                                                        <td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
+                                                        {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
                                                             {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
                                                             {% endif %}
-                                                        </td>
-                                                    {% endif %}
+                                                        {% endif %}
+                                                        {{ include('event/modal/_show_event_character_information.html.twig') }}
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -186,11 +200,13 @@
                                                     <td>{{ raidCharacter.role.name }}</td>
                                                     {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
                                                         <td>
+                                                            <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                             {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
                                                             {% endif %}
+                                                            {{ include('event/modal/_show_event_character_information.html.twig') }}
                                                         </td>
                                                     {% endif %}
                                                 </tr>
@@ -222,11 +238,13 @@
                                                     <td>{{ raidCharacter.role.name }}</td>
                                                     {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
                                                         <td>
+                                                            <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                             {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
                                                                 <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
                                                             {% endif %}
+                                                            {{ include('event/modal/_show_event_character_information.html.twig') }}
                                                         </td>
                                                     {% endif %}
                                                 </tr>

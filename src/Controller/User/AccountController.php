@@ -72,6 +72,7 @@ class AccountController extends AbstractController
                 $this->getDoctrine()->getManager()->persist($character);
             }
             $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('user_account');
         }
 
         return $this->render('user/profil_page.html.twig', [
