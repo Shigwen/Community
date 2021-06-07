@@ -8,7 +8,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CharacterType extends AbstractType
@@ -40,20 +39,14 @@ class CharacterType extends AbstractType
                         return $server->getVerboseVersionAndRegion();
                     },
                 ])
-                ->add('faction', ChoiceType::class, [
-                    'choices'  => [
-                        Character::FACTION_ALLIANCE => Character::FACTION_ALLIANCE,
-                        Character::FACTION_HORDE => Character::FACTION_HORDE,
-                    ],
+                ->add('faction', null, [
                     'label' => 'Faction',
                     'label_attr' => [
                         'class' => 'h5',
                     ],
                     'attr' => [
                         'class' => 'form-control'
-                    ],
-                    'expanded' => false,
-                    'multiple' => false,
+                    ]
                 ]);
         }
 

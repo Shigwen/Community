@@ -42,15 +42,6 @@ class Character
     private $name;
 
     /**
-     * @Assert\Choice(
-     *     choices = {"Alliance", "Horde"}
-     * )
-     * 
-     * @ORM\Column(type="string", length=8)
-     */
-    private $faction;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $information;
@@ -97,6 +88,12 @@ class Character
     private $server;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Faction::class, inversedBy="characters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $faction;
+
+    /**
      * @Assert\Count(
      *     min = 1,
      *     minMessage = "You must specify at least one role"
@@ -136,23 +133,6 @@ class Character
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getFaction(): ?string
-    {
-        return $this->faction;
-    }
-
-    // public function isAlliance(): ?bool
-    // {
-    //     return $this->faction === self::FACTION_ALLIANCE;
-    // }
-
-    public function setFaction(string $faction): self
-    {
-        $this->faction = $faction;
 
         return $this;
     }
@@ -230,6 +210,18 @@ class Character
     public function setServer(?Server $server): self
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getFaction(): ?Faction
+    {
+        return $this->faction;
+    }
+
+    public function setFaction(?Faction $faction): self
+    {
+        $this->faction = $faction;
 
         return $this;
     }

@@ -11,7 +11,7 @@ final class Version20210606194322 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Default values for tables role, character_class, message_type, game_version, region and timezone';
+        return 'Default values for tables role, character_class, message_type, game_version, region, timezone and faction';
     }
 
     public function up(Schema $schema): void
@@ -62,8 +62,13 @@ final class Version20210606194322 extends AbstractMigration
                 (4, 'Taiwan')
         ");
 
+        $this->addSql("INSERT INTO timezone VALUES (1, 'Europe/Berlin')");
+
         $this->addSql("
-            INSERT INTO timezone VALUES (1, 'Europe/Berlin')");
+            INSERT INTO faction VALUES 
+                (1, 'Alliance'),
+                (2, 'Horde')
+        ");
     }
 
     public function down(Schema $schema): void
