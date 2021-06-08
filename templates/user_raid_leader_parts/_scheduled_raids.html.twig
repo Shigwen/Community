@@ -21,7 +21,7 @@
 
                     {% for raid in inProgressRaids %}
                         <tr>
-                            {% set raidCharacter = get_raid_character_from_user(raid) %}
+                            {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
                             <td>{{ raid.name }}</td>
                             <td>{{ raidCharacter.userCharacter.faction.name }}</td>
                             <td>{{ raidCharacter.userCharacter.server.name }}</td>
@@ -60,7 +60,7 @@
 
                     {% for raid in pendingRaids %}
                         <tr>
-                            {% set raidCharacter = get_raid_character_from_user(raid) %}
+                            {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
                             <td>{{ raid.name }}</td>
                             <td>{{ raidCharacter.userCharacter.faction.name }}</td>
                             <td>{{ raidCharacter.userCharacter.server.name }}</td>
@@ -97,7 +97,7 @@
         {% endif %}
 
         <div class="d-flex justify-content-center">
-            {% if is_granted('ROLE_RAID_LEADER') and user == raid.user %}
+            {% if is_granted('ROLE_RAID_LEADER') %}
                 <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_past')}}">Show past raids</a>
             {% elseif is_granted('ROLE_USER') %}
                 <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('user_raid_past')}}">Show past raids</a>

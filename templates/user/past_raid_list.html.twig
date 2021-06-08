@@ -37,7 +37,7 @@
                     <tbody class="text-center">
                         {% for raid in raids %}
                             <tr>
-                                {% set raidCharacter = get_raid_character_from_user(raid) %}
+                                {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
                                 <td>{{ raid.name }}</td>
                                 <td>{{ raidCharacter.userCharacter.faction.name }}</td>
                                 <td>{{ raidCharacter.userCharacter.server.name }}</td>

@@ -87,6 +87,16 @@ class AccountController extends AbstractController
     }
 
     /**
+     * @Route("/past-raid", name="raid_past")
+     */
+    public function past(): Response
+    {
+        return $this->render('user/past_raid_list.html.twig', [
+            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
+        ]);
+    }
+
+    /**
      * @Route("/{id}/archive", name="archive_character")
      */
     public function archiveCharacter(Character $character): Response
@@ -99,15 +109,5 @@ class AccountController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('user_account');
-    }
-
-    /**
-     * @Route("/past-raid", name="raid_past")
-     */
-    public function past(): Response
-    {
-        return $this->render('user/past_raid_list.html.twig', [
-            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
-        ]);
     }
 }

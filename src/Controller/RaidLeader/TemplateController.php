@@ -5,7 +5,6 @@ namespace App\Controller\RaidLeader;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
-use App\Service\Raid\RaidCharacterFromUserAndRaid;
 use App\Service\Raid\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +21,7 @@ class TemplateController extends AbstractController
     /**
      * @Route("/events", name="events")
      */
-    public function events(Request $request, Template $templateService, RaidCharacterFromUserAndRaid $raidCharacterService): Response
+    public function events(Request $request, Template $templateService): Response
     {
         $newRaidTemplate = new Raid();
         $newRaidCharacter = new RaidCharacter();
@@ -50,7 +49,7 @@ class TemplateController extends AbstractController
         ]);
 
         if ($raidTemplateInUse) {
-            $raidCharacter = $raidCharacterService->getFromRaid($raidTemplateInUse);
+            $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raidTemplateInUse);
             $form->get('raidCharacter')->get('userCharacter')->setData($raidCharacter->getUserCharacter());
             $form->get('raidCharacter')->get('role')->setData($raidCharacter->getRole());
         }

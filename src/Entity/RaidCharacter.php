@@ -74,7 +74,7 @@ class RaidCharacter
         return $this;
     }
 
-    public function isRaidLeaderCharacter(User $user)
+    public function isCharacterFromUser(User $user)
     {
         if ($this->userCharacter->getUser() !== $user) {
             return false;

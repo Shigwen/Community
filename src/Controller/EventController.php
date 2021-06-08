@@ -42,7 +42,6 @@ class EventController extends AbstractController
      */
     public function event(Request $request, Raid $raid): Response
     {
-        // Todo : ne pas oublier d'afficher l'identifier du raid si le raid appartient au raid leader
         if (!$this->getUser()) {
             return $this->render('event/show_event.html.twig', [
                 'raid' => $raid,

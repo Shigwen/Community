@@ -9,7 +9,6 @@ use App\Entity\RaidCharacter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\Raid\RaidCharacterFromUserAndRaid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -31,7 +30,7 @@ class RaidController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit")
      */
-    public function edit(Request $request, Raid $raid, RaidCharacterFromUserAndRaid $raidCharacterService): Response
+    public function edit(Request $request, Raid $raid): Response
     {
         if (!$this->getUser()->hasRaid($raid)) {
             throw new AccessDeniedHttpException();
