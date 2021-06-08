@@ -23,24 +23,8 @@ class RaidController extends AbstractController
      */
     public function past(): Response
     {
-        // Todo : même page que les raid passé du user (supprimer celle-ci)
-        return $this->render('raid_leader/past_raid_list.html.twig', [
+        return $this->render('user/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="show")
-     */
-    public function show(Raid $raid): Response
-    {
-        // Todo : même page que le show event (supprimer celle-ci ET celle du user)
-        if (!$this->getUser()->hasRaid($raid)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $this->render('raid_leader/show_raid.html.twig', [
-            'raid' => $raid,
         ]);
     }
 

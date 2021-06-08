@@ -29,7 +29,7 @@
                         <td>
                             <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}">Show notes</button>
                             <a href="{{ path('user_account')}}?id={{ character.id }}" class="btn btn-primary rounded-pill">Modify</a>
-                            <a href="{{ path('user_character_archived', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
+                            <a href="{{ path('user_archive_character', {id: character.id})}}" class="btn btn-primary rounded-pill">Delete</a>
                             {{ include('user/modal/_character_show_notes.html.twig') }}
                         </td>
                     </tr>

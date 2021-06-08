@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Event
+{% block title %}
+    Event
 {% endblock %}
 
 {% block banner_title %}
@@ -35,7 +36,7 @@
                                     <td>{{ raidCharacter.userCharacter.name }}</td>
                                     <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
                                     <td>{{ raidCharacter.role.name }}</td>
-                                    {% if user and user.hasCharacter(raidCharacter.userCharacter) and raidCharacter.isRaidLeaderCharacter(user) == false %}
+                                    {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) and is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
                                         <td>
                                             <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
                                         </td>
@@ -164,9 +165,9 @@
                                                         <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                         {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
                                                             {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
-                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
+                                                                <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
-                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
+                                                                Vous ne pouvez pas vous désinscrire de votre propre raid
                                                             {% endif %}
                                                         {% endif %}
                                                         {{ include('event/modal/_show_event_character_information.html.twig') }}
@@ -202,9 +203,9 @@
                                                         <td>
                                                             <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                             {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
-                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
+                                                                <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
-                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
+                                                                Vous ne pouvez pas vous désinscrire de votre propre raid
                                                             {% endif %}
                                                             {{ include('event/modal/_show_event_character_information.html.twig') }}
                                                         </td>
@@ -240,9 +241,9 @@
                                                         <td>
                                                             <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                             {% if is_raid_leader_character(raidCharacter.raid, user, raidCharacter.userCharacter) == false %}
-                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}">Unregister</a>
+                                                                <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
-                                                                <a href="{{ path('user_raid_unregister', {id: raid.id})}}" class="disabled">Unregister</a>
+                                                                Vous ne pouvez pas vous désinscrire de votre propre raid
                                                             {% endif %}
                                                             {{ include('event/modal/_show_event_character_information.html.twig') }}
                                                         </td>

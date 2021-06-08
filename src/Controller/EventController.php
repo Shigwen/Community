@@ -100,4 +100,26 @@ class EventController extends AbstractController
             'isEdit' => $raidCharacter->getId(),
         ]);
     }
+
+    /**
+     * @Route("/{id}/unregister", name="unregister")
+     */
+    public function unregister(Request $request, Raid $raid): Response
+    {
+        $now = new DateTime();
+        if ($now > $raid->getStartAt()) {
+            $this->addFlash('danger', "You cannot unsubscribe from a raid that already begun");
+            return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+        }
+
+        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
+            $this->getUser(),
+            $raid
+        );
+
+        $this->getDoctrine()->getManager()->remove($raidCharacter);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+    }
 }

@@ -2,31 +2,34 @@
 
 {% block title %}Ban hammer{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block banner_title %}
+	<h1>Ban hammer</h1>
+{% endblock %}
 
-<div class="example-wrapper">
-    <h4> Ban of futures raid - Player list </h4>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in user.blockeds %}
+{% block body %}
+    <main class="container bg-dark">
+        <div class="row col-12">
+            <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">Back to RL HQ</a>
+        </div>
+
+        <h4> Ban of futures raid - Player list </h4>
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ user.name }}</td>
-                    <td>
-                        <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: user.id }) }}">Unban</a>
-                    </td>
+                    <th>Name</th>
+                    <th>Action</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                {% for user in user.blockeds %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>
+                            <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: user.id }) }}">Unban</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
 {% endblock %}

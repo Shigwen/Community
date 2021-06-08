@@ -2,6 +2,10 @@
 
 {% block title %}Raid{% endblock %}
 
+{% block banner_title %}
+	<h1>Raid</h1>
+{% endblock %}
+
 {% block body %}
 
 <main class="container bg-dark">
@@ -17,7 +21,7 @@
     {% endif %}
 
     {% if form %}
-        {{ include('raid_leader/_raid_form.html.twig') }}
+        {{ include('raid_leader/event_list_parts/_raid_form.html.twig') }}
     {% else %}
         <div class="row d-flex justify-content-around">
             <div class="col-12 col-md-11 m-md-4 p-md-4 p-xs-1 border border-primary rounded h5 text-center"> 

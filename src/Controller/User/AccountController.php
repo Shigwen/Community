@@ -22,7 +22,7 @@ class AccountController extends AbstractController
     /**
      * @Route("/my-account", name="account")
      */
-    public function index(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function account(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = $this->getUser();
         $oldPass = $user->getPassword();
@@ -75,7 +75,7 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
-        return $this->render('user/profil_page.html.twig', [
+        return $this->render('user/account.html.twig', [
             'formUser' => $formUser->createView(),
             'formCharacter' => $formCharacter->createView(),
             'user' => $user,
@@ -87,9 +87,9 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/archived", name="character_archived")
+     * @Route("/{id}/archive", name="archive_character")
      */
-    public function archived(Character $character): Response
+    public function archiveCharacter(Character $character): Response
     {
         if (!$this->getUser()->hasCharacter($character)) {
             throw new AccessDeniedHttpException();
@@ -99,5 +99,15 @@ class AccountController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('user_account');
+    }
+
+    /**
+     * @Route("/past-raid", name="raid_past")
+     */
+    public function past(): Response
+    {
+        return $this->render('user/past_raid_list.html.twig', [
+            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
+        ]);
     }
 }
