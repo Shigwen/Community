@@ -55,6 +55,10 @@ class AccountController extends AbstractController
             $user->setPassword($encodedPass);
             $user->setUpdatedAt(new \DateTime());
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Vos informations personnelles ont bien été modifiés');
+
+            return $this->redirectToRoute('user_account');
         }
 
         $subscribedRaid = !$idCharacter ? [] : $this->getDoctrine()->getRepository(Raid::class)
@@ -72,6 +76,9 @@ class AccountController extends AbstractController
                 $this->getDoctrine()->getManager()->persist($character);
             }
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Le personnage' . $character->getName() . ' a bien été créé');
+
             return $this->redirectToRoute('user_account');
         }
 
@@ -107,6 +114,8 @@ class AccountController extends AbstractController
 
         $character->setIsArchived(true);
         $this->getDoctrine()->getManager()->flush();
+
+        $this->addFlash('success', 'Le personnage' . $character->getName() . ' a bien été supprimé');
 
         return $this->redirectToRoute('user_account');
     }
