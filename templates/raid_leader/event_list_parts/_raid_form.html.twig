@@ -2,12 +2,13 @@
 
 <div class="row d-flex justify-content-around">
     <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+        <h2 class="text-center h3">Create An Event</h2>
+
     {% if user.characters|length > 0 %}
         {{ form_start(form) }}
             <fieldset class="form-group">
                 {% if raidTemplates is defined %}
                     <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
-                    <legend class="text-center h3 mb-5">Create An Event</legend>
                 {% endif %}
 
                 <div class="row d-flex justify-content-around">
@@ -265,7 +266,6 @@
 
         {{ form_end(form) }}
     {% else %}
-        <p class="text-center h3 mb-5">Create An Event (max. 5):</p>
         <p class="text-center">
             You need to register at least one raiding character in your <a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
                 in order to create raids.

@@ -8,7 +8,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                {{ character.information }}
+                {% if character.information is empty %}
+                    You didn't provide any additional information about your character.
+                {% else %}
+                    {{ raidCharacter.userCharacter.information }}
+                {% endif %}
             </div>
         </div>
     </div>

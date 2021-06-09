@@ -118,7 +118,9 @@
                                 <p class="text-center">
                                     You need to register at least one raiding character in your
                                     <a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
-                                    in order to subscribe.
+                                    in order to subscribe. <br>
+                                    If you see this message, it means that the characters you registered on the app do not belong
+                                    to the same server or the same faction as the raid you're trying to subscribe to.
                                 </p>
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-primary rounded-pill btn-lg disabled mt-3">Subscribe</button>
@@ -127,8 +129,8 @@
                         {% else %}
                             <h3 class="text-center mb-4">Subscription</h3>
                             <p class="text-center">
-                                You must be registered and login on the site in order to be able to register for a raid. <br>
-                                You can create an account from the
+                                You must be logged in to subscribe to a raid. <br>
+                                You can sign up / sign in from the
                                 <a class="font-weight-bold" href="{{ path('home') }}">home page</a>.
                             </p>
                             <div class="d-flex justify-content-center">
@@ -206,7 +208,7 @@
                                                     <td>
                                                         <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                         {{ include('event/modal/_show_event_character_information.html.twig') }}
-                                                        
+
                                                         {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
                                                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
                                                                 <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
@@ -246,7 +248,7 @@
                                                         <td>
                                                             <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
                                                             {{ include('event/modal/_show_event_character_information.html.twig') }}
-                                                            
+
                                                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
                                                                 <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}

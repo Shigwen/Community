@@ -79,10 +79,10 @@ class EventController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $raidCharacter = $form->getData();
                 if ($raidCharacter->getUserCharacter()->getServer() !== $raidCharacterFromRaidLeader->getUserCharacter()->getServer()) {
-                    $this->addFlash('danger', "Votre personnage n'appartient pas au même serveur que le raid");
+                    $this->addFlash('danger', "Your character does not belong to the same server as the raid");
                     return $this->redirectToRoute('event', ['id' => $raid->getId()]);
                 } else if ($raidCharacter->getUserCharacter()->getFaction() !== $raidCharacterFromRaidLeader->getUserCharacter()->getFaction()) {
-                    $this->addFlash('danger', "Votre personnage n'appartient pas à la même faction que le raid");
+                    $this->addFlash('danger', "Your character does not belong to the same faction as the raid");
                     return $this->redirectToRoute('event', ['id' => $raid->getId()]);
                 }
                 $this->getDoctrine()->getManager()->flush();
