@@ -41,12 +41,12 @@ class User implements UserInterface
      * @Assert\Length(
      *     max = 250,
      *     maxMessage = "Your username cannot be longer than 250 characters"
-     * ) 
+     * )
      * @Assert\Regex(
      *     pattern = "/^\w{1,}$/",
      *     message = "Your username cannot contain space or special character (except underscore)"
      * )
-     * 
+     *
      * @ORM\Column(type="string", length=100, unique=true)
      */
     private $name;
@@ -58,7 +58,7 @@ class User implements UserInterface
      * @Assert\Email(
      *     message = "This email is not valid"
      * )
-     * 
+     *
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -72,6 +72,12 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Timezone::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $timezone;
 
     /**
      * @ORM\Column(type="smallint")
@@ -244,6 +250,18 @@ class User implements UserInterface
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getTimezone(): ?Timezone
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?Timezone $timezone): self
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }
