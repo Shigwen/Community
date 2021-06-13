@@ -81,6 +81,7 @@ class HomeController extends AbstractController
 
             $this->getDoctrine()->getManager()->persist($user);
             $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('home/home.html.twig', [

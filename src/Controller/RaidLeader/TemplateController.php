@@ -2,6 +2,8 @@
 
 namespace App\Controller\RaidLeader;
 
+use DateTime;
+use DateTimeZone;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
@@ -61,14 +63,17 @@ class TemplateController extends AbstractController
             // Create new template
             if ($form->get('saveTemplate')->isClicked()) {
                 $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
+                $this->addFlash('success', 'Le template de raid ' . $newRaidTemplate->getTemplateName() . ' a bien été créé');
 
                 // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {
                 $templateService->editChosenTemplate($this->getUser(), $raidTemplateInUse, $newRaidTemplate);
+                $this->addFlash('success', 'Le template de raid ' . $newRaidTemplate->getTemplateName() . ' a bien été modifié');
 
                 // Create raid
             } else {
                 $templateService->createRaid($newRaidTemplate, $newRaidCharacter);
+                $this->addFlash('success', 'Le raid ' . $newRaidTemplate->getName() . ' a bien été créé et publié');
             }
 
             return $this->redirectToRoute('raidleader_events');

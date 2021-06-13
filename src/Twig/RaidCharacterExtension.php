@@ -4,8 +4,9 @@ namespace App\Twig;
 
 use App\Entity\Raid;
 use Twig\TwigFunction;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\RaidCharacter;
 use Twig\Extension\AbstractExtension;
+use Doctrine\ORM\EntityManagerInterface;
 
 class RaidCharacterExtension extends AbstractExtension
 {

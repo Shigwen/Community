@@ -42,6 +42,7 @@ class AccountController extends AbstractController
         $formUser = $this->createForm(UserType::class, $user, [
             'isEdit' => true,
         ]);
+        $formUser->get('country')->setData($user->getTimezone()->getCountry());
 
         $formUser->handleRequest($request);
         if ($formUser->isSubmitted() && $formUser->isValid()) {

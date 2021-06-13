@@ -37,7 +37,7 @@ class Raid
      *     max = 250,
      *     maxMessage = "The raid name cannot be longer than 250 characters"
      * )
-     * 
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -59,7 +59,7 @@ class Raid
      *     choices = {10, 25, 40},
      *     message = "Choose a valid raid type"
      * )
-     * 
+     *
      * @ORM\Column(type="smallint")
      */
     private $raidType;
@@ -76,7 +76,7 @@ class Raid
      *     message = "The number of people you are looking for must be inferior to the size of the raid"
      * )
      * @AssertCustom\GreaterThanMaxTankAndHeal()
-     * 
+     *
      * @ORM\Column(type="smallint")
      */
     private $expectedAttendee;
@@ -92,7 +92,7 @@ class Raid
 
     /**
      * @AssertCustom\GreaterThanStartAt()
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $endAt;
@@ -106,7 +106,7 @@ class Raid
      * @Assert\Positive(
      *     message = "Cannot use negative value"
      * )
-     *  
+     *
      * @ORM\Column(type="smallint")
      */
     private $minTank;
@@ -114,12 +114,12 @@ class Raid
     /**
      * @Assert\NotBlank(
      *     message = "The maximum number of tanks you are looking for cannot be blank"
-     * ) 
+     * )
      * @Assert\GreaterThan(
      *     propertyPath = "minTank",
      *     message = "The maximum number of tanks cannot be inferior to the minimum"
      * )
-     *  
+     *
      * @ORM\Column(type="smallint")
      */
     private $maxTank;
@@ -128,7 +128,7 @@ class Raid
      * @Assert\Positive(
      *     message = "Cannot use negative value"
      * )
-     *  
+     *
      * @ORM\Column(type="smallint")
      */
     private $minHeal;
@@ -136,12 +136,12 @@ class Raid
     /**
      * @Assert\NotBlank(
      *     message = "The maximum number of healers you are looking for cannot be blank"
-     * ) 
+     * )
      * @Assert\GreaterThan(
      *     propertyPath = "minHeal",
      *     message = "The maximum number of healers cannot be inferior to the minimum"
      * )
-     *  
+     *
      * @ORM\Column(type="smallint")
      */
     private $maxHeal;

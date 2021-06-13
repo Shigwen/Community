@@ -2,6 +2,10 @@
 
 {% form_theme form 'form_theme/form_errors.html.twig' %}
 
+{% block custom_scripts %}
+    <script defer src="{{asset('js/timezone.js')}}"></script>
+{% endblock %}
+
 {% block body %}
 
     {{ include('_ragnaros.html.twig') }}
@@ -58,6 +62,21 @@
                         {{ form_widget(form.email) }}
                         {{ form_errors(form.email) }}
                         <small id="emailHelp" class="form-text text-muted mb-4">We'll never share your email with anyone else.</small>
+
+                        <div class="col-12 p-0 m-0 row">
+                            <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
+                                {{ form_label(form.country) }}
+                                {{ form_widget(form.country) }}
+                                {{ form_errors(form.country) }}
+                            </div>
+                            <div id="timezoneContainer" class="col-12 col-md-6 p-0">
+                                {{ form_label(form.timezone) }}
+                                {{ form_widget(form.timezone) }}
+                                {{ form_errors(form.timezone) }}
+                            </div>
+                        </div>
+
+                        <small id="regionHelp" class="form-text text-muted mb-4">Important ! Nous permet de calculer les heures de raid en fonction de votre heure locale</small>
 
                         {{ form_label(form.password.first) }}
                         {{ form_widget(form.password.first) }}

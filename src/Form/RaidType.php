@@ -60,6 +60,7 @@ class RaidType extends AbstractType
                 'label_attr' => [
                     'class' => 'h5',
                 ],
+                'view_timezone' => 'Europe/Berlin'
             ])
 
             ->add('endAt', TimeType::class, [
@@ -68,6 +69,7 @@ class RaidType extends AbstractType
                 'label_attr' => [
                     'class' => 'h5',
                 ],
+                'view_timezone' => 'Europe/Berlin'
             ])
 
             ->add('expectedAttendee', null, [

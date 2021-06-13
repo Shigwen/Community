@@ -21,6 +21,11 @@ class Timezone
      */
     private $name;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,5 +34,11 @@ class Timezone
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function getCountry()
+    {
+        $country = explode('/', $this->name);
+        return $country[0];
     }
 }
