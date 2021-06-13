@@ -28,12 +28,20 @@ class EventController extends AbstractController
             ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser())
             : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid();
 
+        if ($user = $this->getUser()) {
+            $raidCharacter = new RaidCharacter();
+            $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
+                'user' => $user,
+            ]);
+        }
+
         return $this->render('event/event_list.html.twig', [
             'raids' => $raids,
             'title' => $month['title'],
             'emptyDaysPadding' => $month['empty_days_padding'],
             'days' => $month['days'],
             'date' => $date,
+            'form' => isset($form) ? $form->createView() : null
         ]);
     }
 

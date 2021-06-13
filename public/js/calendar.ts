@@ -1,271 +1,306 @@
 {
-	const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
-	const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
+    const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
+    const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
+    const SELECT_CHARACTER: HTMLSelectElement|null = document.querySelector("#raid_character_userCharacter");
 
-	if (CONTAINER === null)
-	{
-		throw new Error("Missing calendar wrapper");
-	}
+    if (CONTAINER === null)
+    {
+        throw new Error("Missing calendar wrapper");
+    }
 
-	const NOW: Date = new Date();
-	const STORED_MONTHS: Array<HTMLElement> = Array.from(CONTAINER.querySelectorAll("widget-calendar"));
+    const NOW: Date = new Date();
+    const STORED_MONTHS: Array<HTMLElement> = Array.from(CONTAINER.querySelectorAll("widget-calendar"));
 
-	if (STORED_MONTHS.length < 1)
-	{
-		throw new Error("Missing elements");
-	}
+    if (STORED_MONTHS.length < 1)
+    {
+        throw new Error("Missing elements");
+    }
 
-	let chosen_date: string = "";
-	let last_shown_month: number = STORED_MONTHS.length - 1;
-	let abort_handle: AbortController|null = null;
+    let chosen_date: string = "";
+    let chosen_character: string = "";
+    let chosen_role: string = "";
+    let last_shown_month: number = STORED_MONTHS.length - 1;
+    let abort_handle: AbortController|null = null;
 
-	function clear_process_queue(): void
-	{
-		if (abort_handle)
-		{
-			abort_handle.abort();
-			abort_handle = null;
-		}
-	}
+    function clear_process_queue(): void
+    {
+        if (abort_handle)
+        {
+            abort_handle.abort();
+            abort_handle = null;
+        }
+    }
 
-	async function select_date(target: HTMLLIElement): Promise<void>
-	{
-		try
-		{
-			clear_process_queue();
+    async function select_date(target: HTMLLIElement|null = null): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
 
-			const DATE_IDENTIFIER: string|undefined = target.dataset.date;
+            let DATE_IDENTIFIER: string|undefined;
+            const OLD_LI : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
 
-			if (!DATE_IDENTIFIER)
-			{
-				throw new Error("Missing attribute");
-			}
+            if (target) {
+                DATE_IDENTIFIER = target.dataset.date;
+            } else {
+                if (!OLD_LI)
+                {
+                    return;
+                }
+                DATE_IDENTIFIER = OLD_LI.dataset.date;
+            }
 
-			if (target.matches(".is-notavailable"))
-			{
-				return;
-			}
+            if (!DATE_IDENTIFIER)
+            {
+                throw new Error("Missing Attribute");
+            }
 
-			const ITEMS = CONTAINER.querySelectorAll("li.is-selected");
-			for (let i: number = 0; i < ITEMS.length; ++i)
-			{
-				ITEMS[i].classList.remove("is-selected");
-			}
+            if (target && target.matches(".is-notavailable"))
+            {
+                return;
+            }
 
-			target.classList.add("is-selected");
-			chosen_date = DATE_IDENTIFIER;
-			const BODY: FormData = new FormData();
-			BODY.set("date", chosen_date);
-			abort_handle = new AbortController();
-			const RESPONSE: Response = await fetch(
-				"/ajax/get-all-raid-of-the-day",
-				{
-					method: "POST",
-					body: BODY,
-					signal: abort_handle.signal
-				}
-			);
+            if (target) {
+                if (OLD_LI) {
+                    OLD_LI.removeAttribute("id");
+                }
+                target.id = 'is-selected';
+            }
 
-			if (!RESPONSE.ok)
-			{
-				throw new Error(RESPONSE.statusText);
-			}
+            chosen_date = DATE_IDENTIFIER;
 
-			const HTML: string = await RESPONSE.text();
-			const DIV: HTMLDivElement = document.createElement("div");
-			DIV.innerHTML = HTML;
-			const ITEM: HTMLElement|null = DIV.querySelector("raid-list");
+            const BODY: FormData = new FormData();
+            BODY.set("date", chosen_date);
 
-			if (!ITEM)
-			{
-				throw new Error("Invalid response");
-			}
+            if (SELECT_CHARACTER) {
+                chosen_character = SELECT_CHARACTER.value;
+                BODY.set("character", chosen_character);
+            }
 
-			const OLD_RAID_LIST: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list");
-			OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
-			OLD_RAID_LIST.remove();
-		}
-		catch (error)
-		{
-			console.log(error);
-		}
-		finally
-		{
-			clear_process_queue();
-		}
-	}
+            abort_handle = new AbortController();
+            const RESPONSE: Response = await fetch(
+                "/ajax/get-all-raid-of-the-day",
+                {
+                    method: "POST",
+                    body: BODY,
+                    signal: abort_handle.signal
+                }
+            );
 
-	async function update_calendar(go_forward: boolean): Promise<void>
-	{
-		try
-		{
-			clear_process_queue();
+            if (!RESPONSE.ok)
+            {
+                throw new Error(RESPONSE.statusText);
+            }
 
-			if (go_forward)
-			{
-				++last_shown_month;
-			}
-			else if (last_shown_month >= 1)
-			{
-				--last_shown_month;
-			}
-			else
-			{
-				return;
-			}
+            const HTML: string = await RESPONSE.text();
+            const DIV: HTMLDivElement = document.createElement("div");
+            DIV.innerHTML = HTML;
+            const ITEM: HTMLElement|null = DIV.querySelector("raid-list");
 
-			if (go_forward)
-			{
-				if (!STORED_MONTHS[last_shown_month])
-				{
-					const MONTH: Date = new Date(NOW.getFullYear(), NOW.getMonth() + last_shown_month, 27, 0, 0, 0, 0);
-					const BODY: FormData = new FormData();
-					BODY.set("date", MONTH.toISOString().substr(0, 10));
-					abort_handle = new AbortController();
-					const RESPONSE: Response = await fetch(
-						"/ajax/get-availability-calendar",
-						{
-							method: "POST",
-							body: BODY,
-							signal: abort_handle.signal
-						}
-					);
+            if (!ITEM)
+            {
+                throw new Error("Invalid response");
+            }
 
-					if (!RESPONSE.ok)
-					{
-						throw new Error(RESPONSE.statusText);
-					}
+            const OLD_RAID_LIST: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list");
+            OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
+            OLD_RAID_LIST.remove();
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+        finally
+        {
+            clear_process_queue();
+        }
+    }
 
-					const HTML: string = await RESPONSE.text();
-					const DIV: HTMLDivElement = document.createElement("div");
-					DIV.innerHTML = HTML;
-					const ITEM: HTMLElement|null = DIV.querySelector("widget-calendar");
+    async function update_calendar(go_forward: boolean): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
 
-					if (!ITEM)
-					{
-						throw new Error("Invalid response");
-					}
+            if (go_forward)
+            {
+                ++last_shown_month;
+            }
+            else if (last_shown_month >= 1)
+            {
+                --last_shown_month;
+            }
+            else
+            {
+                return;
+            }
 
-					STORED_MONTHS.push(ITEM);
-				}
+            if (go_forward)
+            {
+                if (!STORED_MONTHS[last_shown_month])
+                {
+                    const MONTH: Date = new Date(NOW.getFullYear(), NOW.getMonth() + last_shown_month, 27, 0, 0, 0, 0);
+                    const BODY: FormData = new FormData();
+                    BODY.set("date", MONTH.toISOString().substr(0, 10));
+                    abort_handle = new AbortController();
+                    const RESPONSE: Response = await fetch(
+                        "/ajax/get-availability-calendar",
+                        {
+                            method: "POST",
+                            body: BODY,
+                            signal: abort_handle.signal
+                        }
+                    );
 
-				STORED_MONTHS[last_shown_month - 1].insertAdjacentElement("afterend", STORED_MONTHS[last_shown_month]);
-				STORED_MONTHS[last_shown_month - 1].remove();
-			}
-			else
-			{
-				STORED_MONTHS[last_shown_month + 1].insertAdjacentElement("beforebegin", STORED_MONTHS[last_shown_month]);
-				STORED_MONTHS[last_shown_month + 1].remove();
-			}
-		}
-		catch (error)
-		{
-			console.log(error);
+                    if (!RESPONSE.ok)
+                    {
+                        throw new Error(RESPONSE.statusText);
+                    }
 
-			if (go_forward)
-			{
-				--last_shown_month;
-			}
-			else
-			{
-				++last_shown_month;
-			}
-		}
-		finally
-		{
-			clear_process_queue();
-		}
-	}
+                    const HTML: string = await RESPONSE.text();
+                    const DIV: HTMLDivElement = document.createElement("div");
+                    DIV.innerHTML = HTML;
+                    const ITEM: HTMLElement|null = DIV.querySelector("widget-calendar");
 
-	CONTAINER.addEventListener(
-		"click",
-		(event: MouseEvent): void =>
-		{
-			const TARGET: HTMLElement = event.target as HTMLElement;
-			const BUTTON: HTMLButtonElement|null = TARGET.closest("button.next, button.prev");
+                    if (!ITEM)
+                    {
+                        throw new Error("Invalid response");
+                    }
 
-			if (BUTTON)
-			{
-				update_calendar(BUTTON.classList.contains("next"));
-			}
+                    STORED_MONTHS.push(ITEM);
+                }
 
-			const CELL: HTMLLIElement|null = TARGET.closest("li[data-date]:not(.text-secondary):not(.is-selected)") as HTMLLIElement|null;
+                STORED_MONTHS[last_shown_month - 1].insertAdjacentElement("afterend", STORED_MONTHS[last_shown_month]);
+                STORED_MONTHS[last_shown_month - 1].remove();
+            }
+            else
+            {
+                STORED_MONTHS[last_shown_month + 1].insertAdjacentElement("beforebegin", STORED_MONTHS[last_shown_month]);
+                STORED_MONTHS[last_shown_month + 1].remove();
+            }
+        }
+        catch (error)
+        {
+            console.log(error);
 
-			if (CELL)
-			{
-				select_date(CELL);
-			}
-		}
-	);
+            if (go_forward)
+            {
+                --last_shown_month;
+            }
+            else
+            {
+                ++last_shown_month;
+            }
+        }
+        finally
+        {
+            clear_process_queue();
+        }
+    }
 
-	// Initialize from storage
-	{
-		const ITEM: string|null = localStorage.getItem("form-booking");
+    CONTAINER.addEventListener(
+        "click",
+        (event: MouseEvent): void =>
+        {
+            const TARGET: HTMLElement = event.target as HTMLElement;
+            const BUTTON: HTMLButtonElement|null = TARGET.closest("button.next, button.prev");
 
-		if (ITEM)
-		{
-			const DATES: Array<string> = JSON.parse(ITEM) as Array<string>;
+            if (BUTTON)
+            {
+                update_calendar(BUTTON.classList.contains("next"));
+            }
 
-			if (DATES.length === 2 && Date.parse(DATES[0]) > Date.now())
-			{
-				(async (): Promise<void> =>
-				{
-					let i: number = 0;
+            const CELL: HTMLLIElement|null = TARGET.closest("li[data-date]:not(.text-secondary):not(#is-selected)") as HTMLLIElement|null;
 
-					for (let j: number = 0; j < 2; ++j)
-					{
-						const ISO_DATE: string = DATES[j];
+            if (CELL)
+            {
+                select_date(CELL);
+            }
+        }
+    );
 
-						let done: boolean = false;
+    SELECT_CHARACTER ? SELECT_CHARACTER.addEventListener(
+        "change",
+        (event: Event): void =>
+        {
+            const TARGET: HTMLElement = event.target as HTMLElement;
+            const SELECT: HTMLSelectElement|null = TARGET.closest("select#raid_character_userCharacter, select#raid_character_role");
 
-						while (!done)
-						{
-							if (!STORED_MONTHS[i])
-							{
-								// Load new month
-								await update_calendar(true);
-							}
+            if (SELECT)
+            {
+                select_date();
+            }
+        }
+    ) : null;
 
-							const CELL: HTMLLIElement|null = STORED_MONTHS[i].querySelector(`li[data-date="${ISO_DATE}"]`);
+    // Initialize from storage
+    {
+        const ITEM: string|null = localStorage.getItem("form-booking");
 
-							if (CELL)
-							{
-								// Equivalent to a selecting click
-								await select_date(CELL);
-								done = true;
-							}
-							else
-							{
-								++i;
-							}
-						}
-					}
+        if (ITEM)
+        {
+            const DATES: Array<string> = JSON.parse(ITEM) as Array<string>;
 
-					// Reset if unavailable
-					if (!STORED_MONTHS[i].querySelector("li.is-selected"))
-					{
+            if (DATES.length === 2 && Date.parse(DATES[0]) > Date.now())
+            {
+                (async (): Promise<void> =>
+                {
+                    let i: number = 0;
 
-						if (i > 0)
-						{
-							const BASE: Element|null = STORED_MONTHS[i].nextElementSibling;
+                    for (let j: number = 0; j < 2; ++j)
+                    {
+                        const ISO_DATE: string = DATES[j];
 
-							STORED_MONTHS[i].remove();
-							STORED_MONTHS[i - 1].remove();
+                        let done: boolean = false;
 
-							if (BASE)
-							{
-								BASE.insertAdjacentElement("beforebegin", STORED_MONTHS[0]);
-								BASE.insertAdjacentElement("beforebegin", STORED_MONTHS[1]);
-							}
-						}
-					}
-				}
-				)();
-			}
-			else
-			{
-				localStorage.removeItem("form-booking");
-			}
-		}
-	}
+                        while (!done)
+                        {
+                            if (!STORED_MONTHS[i])
+                            {
+                                // Load new month
+                                await update_calendar(true);
+                            }
+
+                            const CELL: HTMLLIElement|null = STORED_MONTHS[i].querySelector(`li[data-date="${ISO_DATE}"]`);
+
+                            if (CELL)
+                            {
+                                // Equivalent to a selecting click
+                                await select_date(CELL);
+                                done = true;
+                            }
+                            else
+                            {
+                                ++i;
+                            }
+                        }
+                    }
+
+                    // Reset if unavailable
+                    if (!STORED_MONTHS[i].querySelector("li#is-selected"))
+                    {
+
+                        if (i > 0)
+                        {
+                            const BASE: Element|null = STORED_MONTHS[i].nextElementSibling;
+
+                            STORED_MONTHS[i].remove();
+                            STORED_MONTHS[i - 1].remove();
+
+                            if (BASE)
+                            {
+                                BASE.insertAdjacentElement("beforebegin", STORED_MONTHS[0]);
+                                BASE.insertAdjacentElement("beforebegin", STORED_MONTHS[1]);
+                            }
+                        }
+                    }
+                }
+                )();
+            }
+            else
+            {
+                localStorage.removeItem("form-booking");
+            }
+        }
+    }
 }

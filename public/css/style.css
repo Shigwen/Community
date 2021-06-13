@@ -789,7 +789,7 @@ calendar-body ul li {
   padding: 5px;
 }
 
-calendar-body ul li.is-selected {
+calendar-body ul li#is-selected {
   border: 2px solid #fd7e14;
 }
 /*# sourceMappingURL=style.css.map */

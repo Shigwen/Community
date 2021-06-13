@@ -1,5 +1,12 @@
+
 <div class="row d-flex justify-content-around">
     <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+        {% if form is defined and form is not null %}
+            <filters class="row d-flex mx-5 justify-content-end mb-4">
+                <p class="col-7 text-right">Choose a character you want to find a raid for</p>
+                <div class="col-3">{{ form_widget(form.userCharacter) }}</div>
+            </filters>
+        {% endif %}
         <widget-calendar class="mb-4">
 
             <month-selection>

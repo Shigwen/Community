@@ -52,7 +52,7 @@ calendar-body
 			margin: 0;
 			padding: 5px;
 
-			&.is-selected
+			&#is-selected
 			{
 				border: 2px solid #fd7e14;
 			}

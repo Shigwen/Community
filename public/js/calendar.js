@@ -38,6 +38,7 @@ var _this = this;
 {
     var CONTAINER_1 = document.querySelector("calendar-wrapper");
     var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
+    var SELECT_CHARACTER_1 = document.querySelector("#raid_character_userCharacter");
     if (CONTAINER_1 === null) {
         throw new Error("Missing calendar wrapper");
     }
@@ -47,6 +48,8 @@ var _this = this;
         throw new Error("Missing elements");
     }
     var chosen_date_1 = "";
+    var chosen_character_1 = "";
+    var chosen_role = "";
     var last_shown_month_1 = STORED_MONTHS_1.length - 1;
     var abort_handle_1 = null;
     function clear_process_queue() {
@@ -56,28 +59,44 @@ var _this = this;
         }
     }
     function select_date(target) {
+        if (target === void 0) { target = null; }
         return __awaiter(this, void 0, Promise, function () {
-            var DATE_IDENTIFIER, ITEMS, i, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
+            var DATE_IDENTIFIER, OLD_LI, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, 4, 5]);
                         clear_process_queue();
-                        DATE_IDENTIFIER = target.dataset.date;
-                        if (!DATE_IDENTIFIER) {
-                            throw new Error("Missing attribute");
+                        DATE_IDENTIFIER = void 0;
+                        OLD_LI = CONTAINER_1.querySelector('li#is-selected');
+                        if (target) {
+                            DATE_IDENTIFIER = target.dataset.date;
                         }
-                        if (target.matches(".is-notavailable")) {
+                        else {
+                            if (!OLD_LI) {
+                                return [2 /*return*/];
+                            }
+                            DATE_IDENTIFIER = OLD_LI.dataset.date;
+                        }
+                        if (!DATE_IDENTIFIER) {
+                            throw new Error("Missing Attribute");
+                        }
+                        if (target && target.matches(".is-notavailable")) {
                             return [2 /*return*/];
                         }
-                        ITEMS = CONTAINER_1.querySelectorAll("li.is-selected");
-                        for (i = 0; i < ITEMS.length; ++i) {
-                            ITEMS[i].classList.remove("is-selected");
+                        if (target) {
+                            if (OLD_LI) {
+                                OLD_LI.removeAttribute("id");
+                            }
+                            target.id = 'is-selected';
                         }
-                        target.classList.add("is-selected");
                         chosen_date_1 = DATE_IDENTIFIER;
                         BODY = new FormData();
                         BODY.set("date", chosen_date_1);
+                        if (SELECT_CHARACTER_1) {
+                            chosen_character_1 = SELECT_CHARACTER_1.value;
+                            BODY.set("character", chosen_character_1);
+                        }
                         abort_handle_1 = new AbortController();
                         return [4 /*yield*/, fetch("/ajax/get-all-raid-of-the-day", {
                                 method: "POST",
@@ -191,11 +210,18 @@ var _this = this;
         if (BUTTON) {
             update_calendar(BUTTON.classList.contains("next"));
         }
-        var CELL = TARGET.closest("li[data-date]:not(.text-secondary):not(.is-selected)");
+        var CELL = TARGET.closest("li[data-date]:not(.text-secondary):not(#is-selected)");
         if (CELL) {
             select_date(CELL);
         }
     });
+    SELECT_CHARACTER_1 ? SELECT_CHARACTER_1.addEventListener("change", function (event) {
+        var TARGET = event.target;
+        var SELECT = TARGET.closest("select#raid_character_userCharacter, select#raid_character_role");
+        if (SELECT) {
+            select_date();
+        }
+    }) : null;
     // Initialize from storage
     {
         var ITEM = localStorage.getItem("form-booking");
@@ -243,7 +269,7 @@ var _this = this;
                                 return [3 /*break*/, 1];
                             case 9:
                                 // Reset if unavailable
-                                if (!STORED_MONTHS_1[i].querySelector("li.is-selected")) {
+                                if (!STORED_MONTHS_1[i].querySelector("li#is-selected")) {
                                     if (i > 0) {
                                         BASE = STORED_MONTHS_1[i].nextElementSibling;
                                         STORED_MONTHS_1[i].remove();

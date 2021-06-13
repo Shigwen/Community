@@ -5,7 +5,7 @@
         {% if chosenDate is defined %}
             <h2 class="text-center">Raid list for the {{ chosenDate|date('d/m/Y') }}</h2>
         {% else %}
-            <h2 class="text-center">Raid list</h2>
+            <h2 class="text-center">All raid</h2>
         {% endif %}
 
         <a class="btn btn-primary rounded-pill reset-form-button" href="{{ path('events')}}">Reset filters</a>

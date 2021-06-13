@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Character;
 use DateTime;
 use App\Entity\Raid;
+use App\Entity\Role;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Service\Calendar;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,13 +62,21 @@ class ApiController extends AbstractController
     /**
      * @Route("/get-all-raid-of-the-day")
      */
-    public function raidOfDay(Request $request, Calendar $calendar): Response
+    public function raidOfDay(Request $request): Response
     {
         $date = new DateTime($request->request->get('date'));
+        $character = $this->getDoctrine()->getRepository(Character::class)->findOneBy(['id' => $request->request->get('character')]);
 
-        $raids = $this->getUser()
-            ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAcceptedFromDate($this->getUser(), $date)
-            : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date);
+        try {
+            if ($character) {
+                $raids = $this->getDoctrine()->getRepository(Raid::class)
+                    ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date);
+            } else {
+                $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date);
+            }
+        } catch (Exception $e) {
+            throw new Error($e->getMessage());
+        }
 
         $html =  $this->renderView('event/_raid_list.html.twig', [
             'chosenDate' => $date,

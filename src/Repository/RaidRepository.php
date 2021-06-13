@@ -7,6 +7,7 @@ use App\Entity\Raid;
 use App\Entity\User;
 use App\Entity\Character;
 use App\Entity\RaidCharacter;
+use App\Entity\Role;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -254,24 +255,34 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllRaidWhereUserIsAcceptedFromDate(User $player, DateTime $start)
+    public function getAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start)
     {
         $end = clone $start;
+        $now = new DateTime();
 
-        return $this->createQueryBuilder('r')
-            ->join('r.user', 'u')
-            ->leftJoin('u.blockeds', 'ub')
-            ->where('ub.id IS NULL OR ub.id != :player')
-            ->andWhere('r.templateName IS NULL')
-            ->andWhere('r.startAt BETWEEN :start AND :end')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
+        return $this->createQueryBuilder('raid')
+            ->join('raid.user', 'raidUser')
+            ->leftJoin('raidUser.blockeds', 'userBlocked')
+            ->where('userBlocked.id IS NULL OR userBlocked.id != :player')
+            ->join('raid.raidCharacters', 'raidCharacter')
+            ->join('raidCharacter.userCharacter', 'character')
+            ->andWhere('character.user = raidUser.id')
+            ->andWhere('character.server = :server')
+            ->andWhere('character.faction = :faction')
+            ->andWhere('raid.templateName IS NULL')
+            ->andWhere('raid.startAt > :now')
+            ->andWhere('raid.startAt BETWEEN :start AND :end')
+            ->andWhere('raid.isPrivate = false')
+            ->andWhere('raid.isArchived = false')
             ->setParameters([
+                'now' => $now,
                 'start' => $start->setTime(0, 0, 0),
                 'end' => $end->setTime(23, 59, 59),
-                'player' => $player->getId(),
+                'player' => $player,
+                'server' => $character->getServer(),
+                'faction' => $character->getFaction(),
             ])
-            ->orderBy('r.startAt', 'ASC')
+            ->orderBy('raid.startAt', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -302,25 +313,16 @@ class RaidRepository extends ServiceEntityRepository
      */
     public function getAllPendingRaidFromDate(DateTime $start)
     {
-        $now = new DateTime();
-        $start->setTime(
-            $now->format('H'),
-            $now->format('i'),
-            $now->format('s')
-        );
-
         $end = clone $start;
-        $end->modify('+1 day')->setTime(23, 59);
 
         return $this->createQueryBuilder('r')
             ->where('r.templateName IS NULL')
-            ->andWhere('r.startAt > :start')
-            ->andWhere('r.endAt < :end')
+            ->andWhere('r.startAt BETWEEN :start AND :end')
             ->andWhere('r.isPrivate = false')
             ->andWhere('r.isArchived = false')
             ->setParameters([
-                'start' => $start,
-                'end' => $end,
+                'start' => $start->setTime(0, 0, 0),
+                'end' => $end->setTime(23, 59, 59),
             ])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()
