@@ -2,12 +2,13 @@
 
 namespace App\Validator;
 
+use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class GreaterThanStartAtValidator extends ConstraintValidator
+class GreaterThanNowValidator extends ConstraintValidator
 {
     protected $em;
 
@@ -16,25 +17,22 @@ class GreaterThanStartAtValidator extends ConstraintValidator
         $this->em = $entityManager;
     }
 
-    public function validate($formEndAt, Constraint $constraint)
+    public function validate($formStartAt, Constraint $constraint)
     {
-        if (!$formEndAt) {
+        if (!$formStartAt) {
             return;
         }
 
         $raidForm = $this->context->getObject();
         $timezone = new DateTimeZone($raidForm->getUser()->getTimezone()->getName());
 
-        $startAt = clone $raidForm->getStartAt();
-        $endAt = clone $formEndAt;
-
+        $now = new DateTime('now', $timezone);
+        $startAt = clone $formStartAt;
         $startAt->setTimezone($timezone);
-        $endAt->setTimezone($timezone);
 
-        $interval = $startAt->diff($endAt);
-        if ($startAt > $endAt || $interval->h === 0) {
+        if ($now > $startAt) {
             $this->context
-                ->buildViolation("The end of the raid must be minimum 1 hour after the start")
+                ->buildViolation("The start must be in the future")
                 ->addViolation();
         }
     }

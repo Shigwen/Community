@@ -11,7 +11,7 @@ final class Version20210606194322 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Default values for tables role, character_class, message_type, game_version, region, timezone and faction';
+        return 'Default values for tables role, character_class, message_type, game_version, region and faction';
     }
 
     public function up(Schema $schema): void

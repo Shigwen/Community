@@ -82,10 +82,7 @@ class Raid
     private $expectedAttendee;
 
     /**
-     * @Assert\GreaterThan(
-     *     value = "+ 1 hour",
-     *     message = "The date must be in the future"
-     * )
+     * @AssertCustom\GreaterThanNow()
      * @ORM\Column(type="datetime")
      */
     private $startAt;

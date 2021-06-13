@@ -8,7 +8,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -60,16 +59,16 @@ class RaidType extends AbstractType
                 'label_attr' => [
                     'class' => 'h5',
                 ],
-                'view_timezone' => 'Europe/Berlin'
+                'view_timezone' => $options['user']->getTimezone()->getName(),
             ])
 
-            ->add('endAt', TimeType::class, [
+            ->add('endAt', DateTimeType::class, [
                 'widget' => 'choice',
                 'label' => 'Raid ends at :',
                 'label_attr' => [
                     'class' => 'h5',
                 ],
-                'view_timezone' => 'Europe/Berlin'
+                'view_timezone' => $options['user']->getTimezone()->getName(),
             ])
 
             ->add('expectedAttendee', null, [

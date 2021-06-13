@@ -1,18 +1,21 @@
-
 <div class="row d-flex justify-content-around">
     <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
         <widget-calendar class="mb-4">
-            <calendar-head>
-                <h2 class="text-center mb-4">Calendar : {{ title }}</h2>
-            </calendar-head>
 
-            <month-selection class="mb-4">
-                {% if date|date('m/Y') != "now"|date('m/Y') %}
-                    <button class="prev btn btn-primary rounded-pill"> Previous month </button>
-                {% else %}
-                    <button class="btn btn-primary rounded-pill disabled"> Previous month </button>
-                {% endif %}
-                <button class="next btn btn-primary rounded-pill"> Next month </button>
+            <month-selection>
+                <month-selection-previous class="mb-4">
+                    {% if date|date('m/Y') != "now"|date('m/Y') %}
+                        <button class="prev btn btn-primary rounded-pill"> Previous month </button>
+                    {% else %}
+                        <button class="btn btn-primary rounded-pill disabled"> Previous month </button>
+                    {% endif %}
+                </month-selection-previous>
+
+                <h2 class="text-center mb-4">{{ title }}</h2>
+
+                <month-selection-next class="mb-4">
+                    <button class="next btn btn-primary rounded-pill"> Next month </button>
+                </month-selection-next>
             </month-selection>
 
             <div class="d-flex justify-content-center mb-4">
@@ -36,12 +39,12 @@
                         {% set style = '' %}
 
                         {% for item in days %}
-                            {% if item['past'] %}
-                                {% set style = 'is-notavailable' %}
+                            {% if item.past == true %}
+                                {% set style = 'text-secondary' %}
                             {% else %}
                                 {% set style = '' %}
                             {% endif %}
-                            <li data-date="{{ item['date'] }}" >{{ item['number'] }}</li>
+                            <li data-date="{{ item.date }}" class="{{style}}" >{{ item.number }}</li>
                         {% endfor %}
                     </ul>
                 </calendar-body>

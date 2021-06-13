@@ -71,10 +71,16 @@
                     <div class="col-lg-5 col-md-11 text-center">
                         {{ form_label(form.endAt) }}
                         <div class="row justify-content-center">
-                            {% for row in form.endAt %}
+                            {% for row in form.endAt.date %}
                                 {{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
                             {% endfor %}
-                            {{ form_errors(form.endAt) }}
+                                {{ form_errors(form.endAt) }}
+                        </div>
+                        <div class="row justify-content-center">
+                            <span class="col-lg-3"> from </span>
+                            {% for row in form.endAt.time %}
+                                {{ form_widget(row, {'attr': {'class': 'form-control col-lg-3 col-md-11'}}) }}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

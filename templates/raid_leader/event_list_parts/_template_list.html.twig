@@ -32,7 +32,7 @@
                         <td>{{ template.templateName }}</td>
                         <td>{{ raidCharacter.userCharacter.faction.name }}</td>
                         <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                        <td>{{ template.verboseStartDayOfWeek }} from {{ template.startAt|date("H:i", "Europe/Berlin") }} to {{ template.endAt|date("H:i", "Europe/Berlin") }}</td>
+                        <td>{{ template.verboseStartDayOfWeek }} from {{ template.startAt|date("H:i", user.timezone.name) }} to {{ template.endAt|date("H:i", user.timezone.name) }}</td>
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                         <td>

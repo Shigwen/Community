@@ -189,7 +189,7 @@
 				update_calendar(BUTTON.classList.contains("next"));
 			}
 
-			const CELL: HTMLLIElement|null = TARGET.closest("li[data-date]:not(.disabled-period):not(.is-notavailable)") as HTMLLIElement|null;
+			const CELL: HTMLLIElement|null = TARGET.closest("li[data-date]:not(.text-secondary):not(.is-selected)") as HTMLLIElement|null;
 
 			if (CELL)
 			{

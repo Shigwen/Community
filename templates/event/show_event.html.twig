@@ -14,8 +14,8 @@
             <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('events')}}">Back to Calendar</a>
         </div>
 
-        <div class="row d-flex justify-content-around">
-            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+        <div class="row d-flex justify-content-around mx-5">
+            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-info rounded col-margins">
                 <h4>
                     Waiting players :
                 </h4>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="row d-flex justify-content-around">
-            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+            <div class="col-12 col-md-11 p-md-4 p-xs-1 rounded col-margins">
 
                 <div class="row d-flex justify-content-around">
                     <div class="col-lg-5 col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded justify-content-around my-3">
@@ -169,7 +169,7 @@
                                                     <td>{{ raidCharacter.role.name }}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
-                                                        {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) and %}
+                                                        {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
                                                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
                                                                 <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
@@ -270,7 +270,7 @@
         </div>
 
         <div class="row d-flex justify-content-around">
-            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+            <div class="col-12 col-md-11 p-md-4 p-xs-1 col-margins">
                 <div class="row d-flex justify-content-around p-2 p-md-4 mt-2 mb-5 ml-md-5 mr-md-5 border border-info rounded flex-column">
                     <h3 class="text-center mb-4">General Informations</h3>
 
@@ -293,21 +293,28 @@
 
                     <div class="row d-flex justify-content-around d-flex align-items-center">
                         <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
+                            {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
                             <span class="h5">Date :</span>
                             <span class="h5 mt-0">
-                                {{ raid.startAt|date("d/m/Y") }}
-                                <br>from
-                                {{ raid.startAt|date("H:i") }}
-                                to
-                                {{ raid.endAt|date("H:i") }}
+                                {% if user is defined %}
+                                    {{ raid.startAt|date("d/m/Y") }} <br>
+                                    from
+                                    {{ raid.startAt|date("H:i", user.timezone.name) }}
+                                    to
+                                    {{ raid.endAt|date("H:i", user.timezone.name) }}
+                                {% else %}
+                                    {{ raid.startAt|date("d/m/Y") }} <br>
+                                    from
+                                    {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                                    to
+                                    {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                                {% endif %}
                             </span>
                         </div>
 
                         <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
-                            {# Todo : ajouter la faction #}
-                            {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
-                            <span class="h5">Server :</span>
-                            <span class="h4 m-0">{{ raidCharacter.userCharacter.server.name }}</span>
+                            <span class="h5">Server & Faction</span>
+                            <span class="h4 m-0">{{ raidCharacter.userCharacter.server.name }} - {{ raidCharacter.userCharacter.faction.name }}</span>
                         </div>
                     </div>
                 </div>

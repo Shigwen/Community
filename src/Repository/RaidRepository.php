@@ -256,28 +256,19 @@ class RaidRepository extends ServiceEntityRepository
      */
     public function getAllRaidWhereUserIsAcceptedFromDate(User $player, DateTime $start)
     {
-        $now = new DateTime();
-        $start->setTime(
-            $now->format('H'),
-            $now->format('i'),
-            $now->format('s')
-        );
-
         $end = clone $start;
-        $end->modify('+1 day')->setTime(23, 59);
 
         return $this->createQueryBuilder('r')
             ->join('r.user', 'u')
             ->leftJoin('u.blockeds', 'ub')
             ->where('ub.id IS NULL OR ub.id != :player')
             ->andWhere('r.templateName IS NULL')
-            ->andWhere('r.startAt > :start')
-            ->andWhere('r.endAt < :end')
+            ->andWhere('r.startAt BETWEEN :start AND :end')
             ->andWhere('r.isPrivate = false')
             ->andWhere('r.isArchived = false')
             ->setParameters([
-                'start' => $start,
-                'end' => $end,
+                'start' => $start->setTime(0, 0, 0),
+                'end' => $end->setTime(23, 59, 59),
                 'player' => $player->getId(),
             ])
             ->orderBy('r.startAt', 'ASC')

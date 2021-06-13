@@ -3,7 +3,6 @@
 namespace App\Service\Raid;
 
 use DateTime;
-use DateTimeZone;
 use App\Entity\Raid;
 use App\Entity\Role;
 use App\Entity\User;
@@ -142,11 +141,6 @@ class Template
             ->setTemplateName(null)
             ->setIdentifier($newRaid->isPrivate() ? $this->identifier->generate(Raid::IDENTIFIER_SIZE) : null);
 
-        // todo enregistrer l'heure à l'heure du SERVEUR et pas UTC-0
-        // $startAt = $newRaid->getStartAt();
-        // $endAt = $newRaid->getEndAt();
-        // $startAt->setTimezone(new DateTimeZone('Europe/Berlin'));
-
         $this->addCharacterToRaid($newRaid, $newRaidCharacter, $request->request->get('raid'));
 
         $this->em->persist($newRaid);
@@ -156,7 +150,7 @@ class Template
     /**
      * Modification of a template from the raid creation form (update the template using form data)
      */
-    public function editChosenTemplate(User $user, Raid $raidTemplateInUse, Raid $raidForm)
+    public function editChosenTemplate(Raid $raidTemplateInUse, Raid $raidForm)
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -175,9 +169,10 @@ class Template
             ->setMinHeal($raidForm->getMinHeal())
             ->setMaxHeal($raidForm->getMaxHeal())
             ->setStartAt($raidForm->getStartAt())
+            ->setEndAt($raidForm->getEndAt())
             ->setUpdatedAt(new DateTime());
 
-        $raidCharacter = $raidTemplateInUse->getRaidCharacterFromUser($user);
+        $raidCharacter = $this->em->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raidTemplateInUse);
         $this->addCharacterToRaid($raidTemplateInUse, $raidCharacter, $request->request->get('raid'));
 
         $this->em->flush();

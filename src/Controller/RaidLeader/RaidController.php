@@ -22,7 +22,7 @@ class RaidController extends AbstractController
      */
     public function past(): Response
     {
-        return $this->render('user/past_raid_list.html.twig', [
+        return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
         ]);
     }

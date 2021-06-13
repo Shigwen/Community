@@ -191,7 +191,7 @@ var _this = this;
         if (BUTTON) {
             update_calendar(BUTTON.classList.contains("next"));
         }
-        var CELL = TARGET.closest("li[data-date]:not(.disabled-period):not(.is-notavailable)");
+        var CELL = TARGET.closest("li[data-date]:not(.text-secondary):not(.is-selected)");
         if (CELL) {
             select_date(CELL);
         }

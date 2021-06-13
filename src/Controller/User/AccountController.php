@@ -78,7 +78,7 @@ class AccountController extends AbstractController
             }
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'Le personnage' . $character->getName() . ' a bien été créé');
+            $this->addFlash('success', 'Le personnage ' . $character->getName() . ' a bien été créé');
 
             return $this->redirectToRoute('user_account');
         }
@@ -99,7 +99,7 @@ class AccountController extends AbstractController
      */
     public function past(): Response
     {
-        return $this->render('user/past_raid_list.html.twig', [
+        return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
         ]);
     }
@@ -116,7 +116,7 @@ class AccountController extends AbstractController
         $character->setIsArchived(true);
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', 'Le personnage' . $character->getName() . ' a bien été supprimé');
+        $this->addFlash('success', 'Le personnage ' . $character->getName() . ' a bien été supprimé');
 
         return $this->redirectToRoute('user_account');
     }

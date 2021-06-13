@@ -41,7 +41,7 @@
                                 <td>{{ raid.name }}</td>
                                 <td>{{ raidCharacter.userCharacter.faction.name }}</td>
                                 <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                                <td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}</td>
+                                <td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}</td>
                                 <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                                 <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                                 <td>
@@ -55,7 +55,7 @@
                 </table>
             {% endif %}
 
-            
+
         </div>
     </main>
 {% endblock %}

@@ -3,10 +3,9 @@
     <raid-list class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 
         {% if chosenDate is defined %}
-            <h2 class="text-center">Raid list</h2>
-            <h3 class="text-center">for the {{ chosenDate|date('d/m/Y') }}</h3>
+            <h2 class="text-center">Raid list for the {{ chosenDate|date('d/m/Y') }}</h2>
         {% else %}
-            <h2 class="text-center">Raid list (unfiltered)</h2>
+            <h2 class="text-center">Raid list</h2>
         {% endif %}
 
         <a class="btn btn-primary rounded-pill reset-form-button" href="{{ path('events')}}">Reset filters</a>
@@ -32,8 +31,14 @@
                     <td>{{ raidCharacter.userCharacter.server.name }}</td>
                     <td>{{ raidCharacter.userCharacter.faction.name }}</td>
                     <td>{{ raid.name }}</td>
-                    <td>{{ raid.startAt|date("d/m/Y") }}
-                        <br> from {{ raid.startAt|date("H:i") }} to {{ raid.endAt|date("H:i") }}
+                    <td>
+                        {% if user is defined %}
+                                {{ raid.startAt|date("d/m/Y") }} <br>
+                                from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}
+                        {% else %}
+                            {{ raid.startAt|date("d/m/Y") }} <br>
+                            from {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }} to {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                        {% endif %}
                     </td>
                     <td>
                         <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
