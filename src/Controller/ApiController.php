@@ -108,7 +108,7 @@ class ApiController extends AbstractController
                 $nbrOfPages = intdiv($nbrOfRaid, $nbrOfResultPerPage);
                 $nbrOfPages = ($nbrOfRaid % $nbrOfResultPerPage) ? $nbrOfPages : $nbrOfPages - 1;
             } else {
-                $nbrOfPages = 1;
+                $nbrOfPages = 0;
             }
 
             $html =  $this->renderView('event/_raid_list.html.twig', [
