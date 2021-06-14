@@ -169,8 +169,11 @@
             target.id = 'is-selected';
 
             chosen_date = DATE_IDENTIFIER;
-            chosen_character = SELECT_CHARACTER.value;
             chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
+
+            if (SELECT_CHARACTER) {
+                chosen_character = SELECT_CHARACTER.value;
+            }
 
             const BODY: FormData = new FormData();
             BODY.set("date", chosen_date);
@@ -198,7 +201,9 @@
             clear_process_queue();
 
             const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
-            chosen_character = SELECT_CHARACTER.value;
+            if (SELECT_CHARACTER) {
+                chosen_character = SELECT_CHARACTER.value;
+            }
             chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
 
             const BODY: FormData = new FormData();

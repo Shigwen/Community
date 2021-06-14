@@ -183,8 +183,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         }
                         target.id = 'is-selected';
                         chosen_date_1 = DATE_IDENTIFIER;
-                        chosen_character_1 = SELECT_CHARACTER_1.value;
                         chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
+                        if (SELECT_CHARACTER_1) {
+                            chosen_character_1 = SELECT_CHARACTER_1.value;
+                        }
                         BODY = new FormData();
                         BODY.set("date", chosen_date_1);
                         BODY.set("character", chosen_character_1);
@@ -216,7 +218,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         _a.trys.push([0, 2, 3, 4]);
                         clear_process_queue();
                         OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
-                        chosen_character_1 = SELECT_CHARACTER_1.value;
+                        if (SELECT_CHARACTER_1) {
+                            chosen_character_1 = SELECT_CHARACTER_1.value;
+                        }
                         chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
                         BODY = new FormData();
                         if (OLD_DATE) {

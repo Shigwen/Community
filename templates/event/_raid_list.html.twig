@@ -19,6 +19,8 @@
                     {% if chosenDate is defined %}
                         {% if character is not null %}
                             Raid list for {{ character.name }} the {{ chosenDate|date('d/m/Y') }}
+                        {% elseif chosenDate is not null %}
+                            Raid list for the {{ chosenDate|date('d/m/Y') }}
                         {% else %}
                             All raid
                         {% endif %}
