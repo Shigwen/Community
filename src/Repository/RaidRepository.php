@@ -7,7 +7,6 @@ use App\Entity\Raid;
 use App\Entity\User;
 use App\Entity\Character;
 use App\Entity\RaidCharacter;
-use App\Entity\Role;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -273,37 +272,6 @@ class RaidRepository extends ServiceEntityRepository
             ])
             ->orderBy('r.startAt', 'ASC')
             ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @return Raid[]
-     */
-    public function getAllRaidWhereUserIsAcceptedFromCharacter(User $player, Character $character)
-    {
-        $now = new DateTime();
-
-        return $this->createQueryBuilder('raid')
-            ->join('raid.user', 'raidUser')
-            ->leftJoin('raidUser.blockeds', 'userBlocked')
-            ->where('userBlocked.id IS NULL OR userBlocked.id != :player')
-            ->join('raid.raidCharacters', 'raidCharacter')
-            ->join('raidCharacter.userCharacter', 'character')
-            ->andWhere('character.user = raidUser.id')
-            ->andWhere('character.server = :server')
-            ->andWhere('character.faction = :faction')
-            ->andWhere('raid.templateName IS NULL')
-            ->andWhere('raid.startAt > :now')
-            ->andWhere('raid.isPrivate = false')
-            ->andWhere('raid.isArchived = false')
-            ->setParameters([
-                'now' => $now,
-                'player' => $player,
-                'server' => $character->getServer(),
-                'faction' => $character->getFaction(),
-            ])
-            ->orderBy('raid.startAt', 'ASC')
             ->getQuery()
             ->getResult();
     }

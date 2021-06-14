@@ -99,8 +99,8 @@ var _this = this;
                 try {
                     clear_process_queue();
                     OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
-                    if (OLD_DATE) {
-                        chosen_date_1 = OLD_DATE.dataset.date;
+                    if (!OLD_DATE) {
+                        return [2 /*return*/];
                     }
                     chosen_character_1 = SELECT_CHARACTER_1.value;
                     if (!chosen_character_1) {
@@ -108,9 +108,7 @@ var _this = this;
                     }
                     BODY = new FormData();
                     BODY.set("character", chosen_character_1);
-                    if (chosen_date_1) {
-                        BODY.set("date", chosen_date_1);
-                    }
+                    BODY.set("date", chosen_date_1);
                     send_request(BODY);
                 }
                 catch (error) {

@@ -79,8 +79,8 @@
             clear_process_queue();
 
             const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
-            if (OLD_DATE) {
-                chosen_date = OLD_DATE.dataset.date;
+            if (!OLD_DATE) {
+                return;
             }
 
             chosen_character = SELECT_CHARACTER.value;
@@ -92,10 +92,7 @@
 
             const BODY: FormData = new FormData();
             BODY.set("character", chosen_character);
-
-            if (chosen_date) {
-                BODY.set("date", chosen_date);
-            }
+            BODY.set("date", chosen_date);
 
             send_request(BODY);
         }

@@ -68,9 +68,7 @@ class ApiController extends AbstractController
         $character = $this->getDoctrine()->getRepository(Character::class)->findOneBy(['id' => $request->request->get('character')]);
 
         try {
-            if (!$date && $character) {
-                $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAcceptedFromCharacter($this->getUser(), $character);
-            } elseif ($date && $character) {
+            if ($date && $character) {
                 $raids = $this->getDoctrine()->getRepository(Raid::class)
                     ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date);
             } else {
