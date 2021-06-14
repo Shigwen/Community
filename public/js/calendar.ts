@@ -2,6 +2,7 @@
     const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
     const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
     const SELECT_CHARACTER: HTMLSelectElement|null = document.querySelector("#raid_character_userCharacter");
+    const SELECT_NUMBER_RESULT: HTMLSelectElement|null = document.querySelector("#nbrResults");
 
     if (CONTAINER === null)
     {
@@ -18,7 +19,6 @@
 
     let chosen_date: string = "";
     let chosen_character: string = "";
-    let chosen_role: string = "";
     let last_shown_month: number = STORED_MONTHS.length - 1;
     let abort_handle: AbortController|null = null;
 
@@ -38,44 +38,77 @@
             clear_process_queue();
 
             let DATE_IDENTIFIER: string|undefined;
-            const OLD_LI : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
-
-            if (target) {
-                DATE_IDENTIFIER = target.dataset.date;
-            } else {
-                if (!OLD_LI)
-                {
-                    return;
-                }
-                DATE_IDENTIFIER = OLD_LI.dataset.date;
-            }
+            DATE_IDENTIFIER = target.dataset.date;
 
             if (!DATE_IDENTIFIER)
             {
                 throw new Error("Missing Attribute");
             }
 
-            if (target && target.matches(".is-notavailable"))
+            if (target.matches(".is-notavailable"))
             {
                 return;
             }
 
-            if (target) {
-                if (OLD_LI) {
-                    OLD_LI.removeAttribute("id");
-                }
-                target.id = 'is-selected';
+            const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
+            if (OLD_DATE) {
+                OLD_DATE.removeAttribute('id');
             }
+            target.id = 'is-selected';
 
             chosen_date = DATE_IDENTIFIER;
+            chosen_character = SELECT_CHARACTER.value;
 
             const BODY: FormData = new FormData();
             BODY.set("date", chosen_date);
+            BODY.set("character", chosen_character)
 
-            if (SELECT_CHARACTER) {
-                chosen_character = SELECT_CHARACTER.value;
-                BODY.set("character", chosen_character);
+            send_request(BODY);
+
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    }
+
+    async function change_character(): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
+
+            const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
+            if (OLD_DATE) {
+                chosen_date = OLD_DATE.dataset.date;
             }
+
+            chosen_character = SELECT_CHARACTER.value;
+
+            if (!chosen_character)
+            {
+                throw new Error("Missing Attribute");
+            }
+
+            const BODY: FormData = new FormData();
+            BODY.set("character", chosen_character);
+
+            if (chosen_date) {
+                BODY.set("date", chosen_date);
+            }
+
+            send_request(BODY);
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    }
+
+    async function send_request(BODY: FormData)
+    {
+        try {
+            clear_process_queue();
 
             abort_handle = new AbortController();
             const RESPONSE: Response = await fetch(
@@ -110,8 +143,7 @@
         {
             console.log(error);
         }
-        finally
-        {
+        finally {
             clear_process_queue();
         }
     }
@@ -219,17 +251,19 @@
         }
     );
 
+    // SELECT_NUMBER_RESULT.addEventListener(
+    //     "change",
+    //     (event: Event): void =>
+    //     {
+    //         select_date();
+    //     }
+    // );
+
     SELECT_CHARACTER ? SELECT_CHARACTER.addEventListener(
         "change",
-        (event: Event): void =>
+        (): void =>
         {
-            const TARGET: HTMLElement = event.target as HTMLElement;
-            const SELECT: HTMLSelectElement|null = TARGET.closest("select#raid_character_userCharacter, select#raid_character_role");
-
-            if (SELECT)
-            {
-                select_date();
-            }
+            change_character()
         }
     ) : null;
 

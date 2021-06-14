@@ -23,10 +23,18 @@ class EventController extends AbstractController
     {
         $date = new DateTime();
         $month = $calendar::Process($date->format('Y-m-d'));
+        $nbrResultsPerPage = 2;
+
+        $nbrRaids = $this->getUser()
+            ? $this->getDoctrine()->getRepository(Raid::class)->countAllRaidWhereUserIsAccepted($this->getUser())
+            : $this->getDoctrine()->getRepository(Raid::class)->countAllPendingRaid();
 
         $raids = $this->getUser()
-            ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser())
-            : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid();
+            ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser(), $nbrResultsPerPage)
+            : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid($nbrResultsPerPage);
+
+        $nbrPages = intdiv($nbrRaids, $nbrResultsPerPage);
+        $nbrPages = ($nbrRaids % $nbrResultsPerPage) ? $nbrPages + 1 : $nbrPages;
 
         if ($user = $this->getUser()) {
             $raidCharacter = new RaidCharacter();
@@ -41,6 +49,7 @@ class EventController extends AbstractController
             'emptyDaysPadding' => $month['empty_days_padding'],
             'days' => $month['days'],
             'date' => $date,
+            'nbrPages' => $nbrPages,
             'form' => isset($form) ? $form->createView() : null
         ]);
     }

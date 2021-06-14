@@ -39,6 +39,7 @@ var _this = this;
     var CONTAINER_1 = document.querySelector("calendar-wrapper");
     var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
     var SELECT_CHARACTER_1 = document.querySelector("#raid_character_userCharacter");
+    var SELECT_NUMBER_RESULT = document.querySelector("#nbrResults");
     if (CONTAINER_1 === null) {
         throw new Error("Missing calendar wrapper");
     }
@@ -49,7 +50,6 @@ var _this = this;
     }
     var chosen_date_1 = "";
     var chosen_character_1 = "";
-    var chosen_role = "";
     var last_shown_month_1 = STORED_MONTHS_1.length - 1;
     var abort_handle_1 = null;
     function clear_process_queue() {
@@ -61,42 +61,73 @@ var _this = this;
     function select_date(target) {
         if (target === void 0) { target = null; }
         return __awaiter(this, void 0, Promise, function () {
-            var DATE_IDENTIFIER, OLD_LI, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
+            var DATE_IDENTIFIER, OLD_DATE, BODY;
+            return __generator(this, function (_a) {
+                try {
+                    clear_process_queue();
+                    DATE_IDENTIFIER = void 0;
+                    DATE_IDENTIFIER = target.dataset.date;
+                    if (!DATE_IDENTIFIER) {
+                        throw new Error("Missing Attribute");
+                    }
+                    if (target.matches(".is-notavailable")) {
+                        return [2 /*return*/];
+                    }
+                    OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
+                    if (OLD_DATE) {
+                        OLD_DATE.removeAttribute('id');
+                    }
+                    target.id = 'is-selected';
+                    chosen_date_1 = DATE_IDENTIFIER;
+                    chosen_character_1 = SELECT_CHARACTER_1.value;
+                    BODY = new FormData();
+                    BODY.set("date", chosen_date_1);
+                    BODY.set("character", chosen_character_1);
+                    send_request(BODY);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+                return [2 /*return*/];
+            });
+        });
+    }
+    function change_character() {
+        return __awaiter(this, void 0, Promise, function () {
+            var OLD_DATE, BODY;
+            return __generator(this, function (_a) {
+                try {
+                    clear_process_queue();
+                    OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
+                    if (OLD_DATE) {
+                        chosen_date_1 = OLD_DATE.dataset.date;
+                    }
+                    chosen_character_1 = SELECT_CHARACTER_1.value;
+                    if (!chosen_character_1) {
+                        throw new Error("Missing Attribute");
+                    }
+                    BODY = new FormData();
+                    BODY.set("character", chosen_character_1);
+                    if (chosen_date_1) {
+                        BODY.set("date", chosen_date_1);
+                    }
+                    send_request(BODY);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+                return [2 /*return*/];
+            });
+        });
+    }
+    function send_request(BODY) {
+        return __awaiter(this, void 0, void 0, function () {
+            var RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, 4, 5]);
                         clear_process_queue();
-                        DATE_IDENTIFIER = void 0;
-                        OLD_LI = CONTAINER_1.querySelector('li#is-selected');
-                        if (target) {
-                            DATE_IDENTIFIER = target.dataset.date;
-                        }
-                        else {
-                            if (!OLD_LI) {
-                                return [2 /*return*/];
-                            }
-                            DATE_IDENTIFIER = OLD_LI.dataset.date;
-                        }
-                        if (!DATE_IDENTIFIER) {
-                            throw new Error("Missing Attribute");
-                        }
-                        if (target && target.matches(".is-notavailable")) {
-                            return [2 /*return*/];
-                        }
-                        if (target) {
-                            if (OLD_LI) {
-                                OLD_LI.removeAttribute("id");
-                            }
-                            target.id = 'is-selected';
-                        }
-                        chosen_date_1 = DATE_IDENTIFIER;
-                        BODY = new FormData();
-                        BODY.set("date", chosen_date_1);
-                        if (SELECT_CHARACTER_1) {
-                            chosen_character_1 = SELECT_CHARACTER_1.value;
-                            BODY.set("character", chosen_character_1);
-                        }
                         abort_handle_1 = new AbortController();
                         return [4 /*yield*/, fetch("/ajax/get-all-raid-of-the-day", {
                                 method: "POST",
@@ -215,12 +246,15 @@ var _this = this;
             select_date(CELL);
         }
     });
-    SELECT_CHARACTER_1 ? SELECT_CHARACTER_1.addEventListener("change", function (event) {
-        var TARGET = event.target;
-        var SELECT = TARGET.closest("select#raid_character_userCharacter, select#raid_character_role");
-        if (SELECT) {
-            select_date();
-        }
+    // SELECT_NUMBER_RESULT.addEventListener(
+    //     "change",
+    //     (event: Event): void =>
+    //     {
+    //         select_date();
+    //     }
+    // );
+    SELECT_CHARACTER_1 ? SELECT_CHARACTER_1.addEventListener("change", function () {
+        change_character();
     }) : null;
     // Initialize from storage
     {

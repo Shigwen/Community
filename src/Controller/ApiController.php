@@ -64,11 +64,13 @@ class ApiController extends AbstractController
      */
     public function raidOfDay(Request $request): Response
     {
-        $date = new DateTime($request->request->get('date'));
+        $date = $request->request->get('date') ? new DateTime($request->request->get('date')) : null;
         $character = $this->getDoctrine()->getRepository(Character::class)->findOneBy(['id' => $request->request->get('character')]);
 
         try {
-            if ($character) {
+            if (!$date && $character) {
+                $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAcceptedFromCharacter($this->getUser(), $character);
+            } elseif ($date && $character) {
                 $raids = $this->getDoctrine()->getRepository(Raid::class)
                     ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date);
             } else {
@@ -80,6 +82,7 @@ class ApiController extends AbstractController
 
         $html =  $this->renderView('event/_raid_list.html.twig', [
             'chosenDate' => $date,
+            'character' => $character,
             'raids' => $raids,
         ]);
 

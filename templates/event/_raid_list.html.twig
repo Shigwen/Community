@@ -2,13 +2,36 @@
 <div class="row d-flex justify-content-around">
     <raid-list class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 
-        {% if chosenDate is defined %}
-            <h2 class="text-center">Raid list for the {{ chosenDate|date('d/m/Y') }}</h2>
-        {% else %}
-            <h2 class="text-center">All raid</h2>
-        {% endif %}
+        <div class="row d-flex justify-content-around">
 
-        <a class="btn btn-primary rounded-pill reset-form-button" href="{{ path('events')}}">Reset filters</a>
+            <div class="col-2">
+                <select class="form-control" name="nbrResultsPerPage" id="nbrResults">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div class="col-7">
+                <h2 class="text-center">
+                    {% if chosenDate is defined %}
+                        {% if chosenDate is null %}
+                            Raid list for {{ character.name }}
+                        {% else  %}
+                            Raid list for {{ character.name }} the {{ chosenDate|date('d/m/Y') }}
+                        {% endif %}
+                    {% else %}
+                        All raid
+                    {% endif %}
+                </h2>
+            </div>
+
+            <div class="col-2">
+                <a class="btn btn-primary rounded-pill" href="{{ path('events')}}">Reset filters</a>
+            </div>
+        </div>
 
         <table class="table table-striped table-bordered table-hover table-dark">
             <thead class="text-center">
