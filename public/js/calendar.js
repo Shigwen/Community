@@ -39,7 +39,7 @@ var _this = this;
     var CONTAINER_1 = document.querySelector("calendar-wrapper");
     var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
     var SELECT_CHARACTER_1 = document.querySelector("#raid_character_userCharacter");
-    var SELECT_NUMBER_RESULT = document.querySelector("#nbrResults");
+    var SELECT_NUMBER_OF_RESULT_PER_PAGE_1 = document.querySelector("#nbrOfResultPerPage");
     if (CONTAINER_1 === null) {
         throw new Error("Missing calendar wrapper");
     }
@@ -50,6 +50,7 @@ var _this = this;
     }
     var chosen_date_1 = "";
     var chosen_character_1 = "";
+    var chosen_number_of_result_per_page_1 = "";
     var last_shown_month_1 = STORED_MONTHS_1.length - 1;
     var abort_handle_1 = null;
     function clear_process_queue() {
@@ -80,9 +81,11 @@ var _this = this;
                     target.id = 'is-selected';
                     chosen_date_1 = DATE_IDENTIFIER;
                     chosen_character_1 = SELECT_CHARACTER_1.value;
+                    chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
                     BODY = new FormData();
                     BODY.set("date", chosen_date_1);
                     BODY.set("character", chosen_character_1);
+                    BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
                     send_request(BODY);
                 }
                 catch (error) {
@@ -106,9 +109,35 @@ var _this = this;
                     if (!chosen_character_1) {
                         throw new Error("Missing Attribute");
                     }
+                    chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
                     BODY = new FormData();
                     BODY.set("character", chosen_character_1);
                     BODY.set("date", chosen_date_1);
+                    BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
+                    send_request(BODY);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+                return [2 /*return*/];
+            });
+        });
+    }
+    function change_number_of_result_per_page() {
+        return __awaiter(this, void 0, Promise, function () {
+            var OLD_DATE, BODY;
+            return __generator(this, function (_a) {
+                try {
+                    clear_process_queue();
+                    OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
+                    chosen_character_1 = SELECT_CHARACTER_1.value;
+                    chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
+                    BODY = new FormData();
+                    if (OLD_DATE) {
+                        BODY.set("date", chosen_date_1);
+                        BODY.set("character", chosen_character_1);
+                    }
+                    BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
                     send_request(BODY);
                 }
                 catch (error) {
@@ -120,7 +149,7 @@ var _this = this;
     }
     function send_request(BODY) {
         return __awaiter(this, void 0, void 0, function () {
-            var RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
+            var RESPONSE, HTML, DIV, ITEM, TITLE, OLD_RAID_LIST, OLD_RAID_LIST_TITLE, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -143,12 +172,16 @@ var _this = this;
                         DIV = document.createElement("div");
                         DIV.innerHTML = HTML;
                         ITEM = DIV.querySelector("raid-list");
+                        TITLE = DIV.querySelector("raid-list-title");
                         if (!ITEM) {
                             throw new Error("Invalid response");
                         }
                         OLD_RAID_LIST = RAID_CONTAINER_1.querySelector("raid-list");
                         OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
                         OLD_RAID_LIST.remove();
+                        OLD_RAID_LIST_TITLE = RAID_CONTAINER_1.querySelector("raid-list-title");
+                        OLD_RAID_LIST_TITLE.insertAdjacentElement("beforebegin", TITLE);
+                        OLD_RAID_LIST_TITLE.remove();
                         return [3 /*break*/, 5];
                     case 3:
                         error_1 = _a.sent();
@@ -244,13 +277,9 @@ var _this = this;
             select_date(CELL);
         }
     });
-    // SELECT_NUMBER_RESULT.addEventListener(
-    //     "change",
-    //     (event: Event): void =>
-    //     {
-    //         select_date();
-    //     }
-    // );
+    SELECT_NUMBER_OF_RESULT_PER_PAGE_1.addEventListener("change", function (event) {
+        change_number_of_result_per_page();
+    });
     SELECT_CHARACTER_1 ? SELECT_CHARACTER_1.addEventListener("change", function () {
         change_character();
     }) : null;

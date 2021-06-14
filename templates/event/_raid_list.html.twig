@@ -1,84 +1,86 @@
 
 <div class="row d-flex justify-content-around">
-    <raid-list class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+    <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
 
         <div class="row d-flex justify-content-around">
 
             <div class="col-2">
-                <select class="form-control" name="nbrResultsPerPage" id="nbrResults">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+                <select class="form-control" name="nbrOfResultPerPage" id="nbrOfResultPerPage">
+                    <option value="1" {% if nbrOfResultPerPage == 1 %} selected {% endif %}>1</option>
+                    <option value="2" {% if nbrOfResultPerPage == 2 %} selected {% endif %}>2</option>
+                    <option value="3" {% if nbrOfResultPerPage == 3 %} selected {% endif %}>3</option>
+                    <option value="4" {% if nbrOfResultPerPage == 4 %} selected {% endif %}>4</option>
+                    <option value="5" {% if nbrOfResultPerPage == 5 %} selected {% endif %}>5</option>
                 </select>
             </div>
 
-            <div class="col-7">
+            <raid-list-title class="col-7">
                 <h2 class="text-center">
                     {% if chosenDate is defined %}
-                        {% if chosenDate is null %}
-                            Raid list for {{ character.name }}
-                        {% else  %}
+                        {% if character is not null %}
                             Raid list for {{ character.name }} the {{ chosenDate|date('d/m/Y') }}
+                        {% else %}
+                            All raid
                         {% endif %}
                     {% else %}
                         All raid
                     {% endif %}
                 </h2>
-            </div>
+            </raid-list-title>
 
             <div class="col-2">
                 <a class="btn btn-primary rounded-pill" href="{{ path('events')}}">Reset filters</a>
             </div>
         </div>
 
-        <table class="table table-striped table-bordered table-hover table-dark">
-            <thead class="text-center">
-                <tr>
-                    <th scope="col">Server</th>
-                    <th scope="col">Faction</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Still looking for</th>
-                    <th scope="col" class="d-none d-md-table-cell">RL as</th>
-                    <th scope="col" class="d-none d-md-table-cell">Role</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
+        <raid-list>
+            <table class="table table-striped table-bordered table-hover table-dark">
+                <thead class="text-center">
+                    <tr>
+                        <th scope="col">Server</th>
+                        <th scope="col">Faction</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Still looking for</th>
+                        <th scope="col" class="d-none d-md-table-cell">RL as</th>
+                        <th scope="col" class="d-none d-md-table-cell">Role</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
 
-            <tbody class="text-center ">
-                {% for raid in raids %}
-                <tr>
-                    {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
-                    <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                    <td>{{ raidCharacter.userCharacter.faction.name }}</td>
-                    <td>{{ raid.name }}</td>
-                    <td>
-                        {% if user is defined %}
+                <tbody class="text-center ">
+                    {% for raid in raids %}
+                    <tr>
+                        {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
+                        <td>{{ raidCharacter.userCharacter.server.name }}</td>
+                        <td>{{ raidCharacter.userCharacter.faction.name }}</td>
+                        <td>{{ raid.name }}</td>
+                        <td>
+                            {% if user is defined %}
+                                    {{ raid.startAt|date("d/m/Y") }} <br>
+                                    from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}
+                            {% else %}
                                 {{ raid.startAt|date("d/m/Y") }} <br>
-                                from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}
-                        {% else %}
-                            {{ raid.startAt|date("d/m/Y") }} <br>
-                            from {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }} to {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
-                        <span class="text-success font-weight-bold">{{ raid.minHeal }}</span> to <span class="text-success font-weight-bold">{{ raid.maxHeal }}</span> Healers,
-                        <br>
-                        <span class="text-info font-weight-bold">X</span> to <span class="text-info font-weight-bold">X</span> DPS.
-                    </td>
-                    <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
-                    <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
-                    <td>
-                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
-                        <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id})}}">Show</a>
-                        {{ include('event/modal/_raid_list_show_breakdown.html.twig') }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </raid-list>
+                                from {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }} to {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
+                            <span class="text-success font-weight-bold">{{ raid.minHeal }}</span> to <span class="text-success font-weight-bold">{{ raid.maxHeal }}</span> Healers,
+                            <br>
+                            <span class="text-info font-weight-bold">X</span> to <span class="text-info font-weight-bold">X</span> DPS.
+                        </td>
+                        <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+                        <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
+                            <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id})}}">Show</a>
+                            {{ include('event/modal/_raid_list_show_breakdown.html.twig') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </raid-list>
+    </div>
 </div>

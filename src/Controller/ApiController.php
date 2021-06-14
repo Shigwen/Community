@@ -66,23 +66,30 @@ class ApiController extends AbstractController
     {
         $date = $request->request->get('date') ? new DateTime($request->request->get('date')) : null;
         $character = $this->getDoctrine()->getRepository(Character::class)->findOneBy(['id' => $request->request->get('character')]);
+        $nbrOfResultPerPage = intval($request->request->get('numberOfResultPerPage'));
 
         try {
-            if ($date && $character) {
+            if (!$date && !$character) {
+                $raids = $this->getUser()
+                    ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser(), $nbrOfResultPerPage)
+                    : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid($nbrOfResultPerPage);
+            } else if ($date && $character) {
                 $raids = $this->getDoctrine()->getRepository(Raid::class)
-                    ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date);
+                    ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date, $nbrOfResultPerPage);
             } else {
-                $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date);
+                // User not logged
+                $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date, $nbrOfResultPerPage);
             }
+
+            $html =  $this->renderView('event/_raid_list.html.twig', [
+                'nbrOfResultPerPage' => $nbrOfResultPerPage,
+                'chosenDate' => $date,
+                'character' => $character,
+                'raids' => $raids,
+            ]);
         } catch (Exception $e) {
             throw new Error($e->getMessage());
         }
-
-        $html =  $this->renderView('event/_raid_list.html.twig', [
-            'chosenDate' => $date,
-            'character' => $character,
-            'raids' => $raids,
-        ]);
 
         return new Response($html);
     }

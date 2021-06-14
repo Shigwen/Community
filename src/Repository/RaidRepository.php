@@ -279,7 +279,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start)
+    public function getAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start, int $nbrOfResultPerPage)
     {
         $end = clone $start;
         $now = new DateTime();
@@ -307,6 +307,7 @@ class RaidRepository extends ServiceEntityRepository
                 'faction' => $character->getFaction(),
             ])
             ->orderBy('raid.startAt', 'ASC')
+            ->setMaxResults($nbrOfResultPerPage)
             ->getQuery()
             ->getResult();
     }
@@ -354,7 +355,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllPendingRaidFromDate(DateTime $start)
+    public function getAllPendingRaidFromDate(DateTime $start, int $nbrOfResultPerPage)
     {
         $end = clone $start;
 
@@ -368,6 +369,7 @@ class RaidRepository extends ServiceEntityRepository
                 'end' => $end->setTime(23, 59, 59),
             ])
             ->orderBy('r.startAt', 'ASC')
+            ->setMaxResults($nbrOfResultPerPage)
             ->getQuery()
             ->getResult();
     }

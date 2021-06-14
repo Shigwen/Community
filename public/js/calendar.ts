@@ -2,7 +2,7 @@
     const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
     const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
     const SELECT_CHARACTER: HTMLSelectElement|null = document.querySelector("#raid_character_userCharacter");
-    const SELECT_NUMBER_RESULT: HTMLSelectElement|null = document.querySelector("#nbrResults");
+    const SELECT_NUMBER_OF_RESULT_PER_PAGE: HTMLSelectElement|null = document.querySelector("#nbrOfResultPerPage");
 
     if (CONTAINER === null)
     {
@@ -19,6 +19,7 @@
 
     let chosen_date: string = "";
     let chosen_character: string = "";
+    let chosen_number_of_result_per_page: string = "";
     let last_shown_month: number = STORED_MONTHS.length - 1;
     let abort_handle: AbortController|null = null;
 
@@ -58,10 +59,12 @@
 
             chosen_date = DATE_IDENTIFIER;
             chosen_character = SELECT_CHARACTER.value;
+            chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
 
             const BODY: FormData = new FormData();
             BODY.set("date", chosen_date);
             BODY.set("character", chosen_character)
+            BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
 
             send_request(BODY);
 
@@ -90,10 +93,39 @@
                 throw new Error("Missing Attribute");
             }
 
+            chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
+
             const BODY: FormData = new FormData();
             BODY.set("character", chosen_character);
             BODY.set("date", chosen_date);
+            BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
 
+            send_request(BODY);
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    }
+
+    async function change_number_of_result_per_page(): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
+
+            const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
+            chosen_character = SELECT_CHARACTER.value;
+            chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
+
+            const BODY: FormData = new FormData();
+
+            if (OLD_DATE) {
+                BODY.set("date", chosen_date);
+                BODY.set("character", chosen_character);
+            }
+
+            BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
             send_request(BODY);
         }
         catch (error)
@@ -126,6 +158,7 @@
             const DIV: HTMLDivElement = document.createElement("div");
             DIV.innerHTML = HTML;
             const ITEM: HTMLElement|null = DIV.querySelector("raid-list");
+            const TITLE: HTMLElement|null = DIV.querySelector("raid-list-title");
 
             if (!ITEM)
             {
@@ -135,6 +168,10 @@
             const OLD_RAID_LIST: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list");
             OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
             OLD_RAID_LIST.remove();
+
+            const OLD_RAID_LIST_TITLE: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list-title");
+            OLD_RAID_LIST_TITLE.insertAdjacentElement("beforebegin", TITLE);
+            OLD_RAID_LIST_TITLE.remove();
         }
         catch (error)
         {
@@ -248,13 +285,13 @@
         }
     );
 
-    // SELECT_NUMBER_RESULT.addEventListener(
-    //     "change",
-    //     (event: Event): void =>
-    //     {
-    //         select_date();
-    //     }
-    // );
+    SELECT_NUMBER_OF_RESULT_PER_PAGE.addEventListener(
+        "change",
+        (event: Event): void =>
+        {
+            change_number_of_result_per_page();
+        }
+    );
 
     SELECT_CHARACTER ? SELECT_CHARACTER.addEventListener(
         "change",
