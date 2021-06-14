@@ -415,5 +415,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             current_page_1 = BUTTON_FIRST_PAGE;
             change_page_of_result(BUTTON_FIRST_PAGE);
         }
+        else {
+            change_number_of_result_per_page();
+        }
     }
 }

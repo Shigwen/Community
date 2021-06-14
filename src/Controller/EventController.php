@@ -23,7 +23,7 @@ class EventController extends AbstractController
     {
         $date = new DateTime();
         $month = $calendar::Process($date->format('Y-m-d'));
-        $nbrOfResultPerPage = 2;
+        $nbrOfResultPerPage = 10;
 
         $nbrOfRaid = $this->getUser()
             ? $this->getDoctrine()->getRepository(Raid::class)->countAllRaidWhereUserIsAccepted($this->getUser())

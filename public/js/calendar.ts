@@ -428,6 +428,8 @@
         if (BUTTON_FIRST_PAGE) {
             current_page = BUTTON_FIRST_PAGE;
             change_page_of_result(BUTTON_FIRST_PAGE);
+        } else {
+            change_number_of_result_per_page();
         }
     }
 }
