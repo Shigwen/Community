@@ -82,5 +82,22 @@
                 </tbody>
             </table>
         </raid-list>
+        <buttons-page>
+            <button-list class="col-12 text-center">
+                {% if nbrOfPages > 0 %}
+                    {% for i in 0 .. nbrOfPages %}
+                        {% if i == currentPage %}
+                            {% set class = "btn-info current" %}
+                        {% else %}
+                            {% set class = "btn-primary" %}
+                        {% endif %}
+
+                        <button data-page="{{ i }}" class="btn btn-sm rounded-pill mx-1 page {{class}}">
+                            {{ i + 1 }}
+                        </button>
+                    {% endfor %}
+                {% endif %}
+            </button-list>
+        </buttons-page>
     </div>
 </div>

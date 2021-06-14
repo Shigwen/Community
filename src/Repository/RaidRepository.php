@@ -255,7 +255,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllRaidWhereUserIsAccepted(User $player, int $limit)
+    public function getAllRaidWhereUserIsAccepted(User $player, int $nbrOfResultPerPage, int $offset)
     {
         $now = new DateTime();
         return  $this->createQueryBuilder('r')
@@ -271,7 +271,8 @@ class RaidRepository extends ServiceEntityRepository
                 'player' => $player->getId(),
             ])
             ->orderBy('r.startAt', 'ASC')
-            ->setMaxResults($limit)
+            ->setMaxResults($nbrOfResultPerPage)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }
@@ -279,7 +280,43 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start, int $nbrOfResultPerPage)
+    public function countAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start)
+    {
+        $end = clone $start;
+        $now = new DateTime();
+
+        return $this->createQueryBuilder('raid')
+            ->select('count(raid.id)')
+            ->join('raid.user', 'raidUser')
+            ->leftJoin('raidUser.blockeds', 'userBlocked')
+            ->where('userBlocked.id IS NULL OR userBlocked.id != :player')
+            ->join('raid.raidCharacters', 'raidCharacter')
+            ->join('raidCharacter.userCharacter', 'character')
+            ->andWhere('character.user = raidUser.id')
+            ->andWhere('character.server = :server')
+            ->andWhere('character.faction = :faction')
+            ->andWhere('raid.templateName IS NULL')
+            ->andWhere('raid.startAt > :now')
+            ->andWhere('raid.startAt BETWEEN :start AND :end')
+            ->andWhere('raid.isPrivate = false')
+            ->andWhere('raid.isArchived = false')
+            ->setParameters([
+                'now' => $now,
+                'start' => $start->setTime(0, 0, 0),
+                'end' => $end->setTime(23, 59, 59),
+                'player' => $player,
+                'server' => $character->getServer(),
+                'faction' => $character->getFaction(),
+            ])
+            ->orderBy('raid.startAt', 'ASC')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return Raid[]
+     */
+    public function getAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start, int $nbrOfResultPerPage, int $offset)
     {
         $end = clone $start;
         $now = new DateTime();
@@ -308,6 +345,7 @@ class RaidRepository extends ServiceEntityRepository
             ])
             ->orderBy('raid.startAt', 'ASC')
             ->setMaxResults($nbrOfResultPerPage)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }
@@ -337,7 +375,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllPendingRaid(int $limit)
+    public function getAllPendingRaid(int $nbrOfResultPerPage, int $offset)
     {
         $now = new DateTime();
         return $this->createQueryBuilder('r')
@@ -347,7 +385,8 @@ class RaidRepository extends ServiceEntityRepository
             ->andWhere('r.isArchived = false')
             ->setParameter('now', $now)
             ->orderBy('r.startAt', 'ASC')
-            ->setMaxResults($limit)
+            ->setMaxResults($nbrOfResultPerPage)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }
@@ -355,7 +394,29 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getAllPendingRaidFromDate(DateTime $start, int $nbrOfResultPerPage)
+    public function countAllPendingRaidFromDate(DateTime $start)
+    {
+        $end = clone $start;
+
+        return $this->createQueryBuilder('r')
+            ->select('count(r.id)')
+            ->where('r.templateName IS NULL')
+            ->andWhere('r.startAt BETWEEN :start AND :end')
+            ->andWhere('r.isPrivate = false')
+            ->andWhere('r.isArchived = false')
+            ->setParameters([
+                'start' => $start->setTime(0, 0, 0),
+                'end' => $end->setTime(23, 59, 59),
+            ])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return Raid[]
+     */
+    public function getAllPendingRaidFromDate(DateTime $start, int $nbrOfResultPerPage, int $offset)
     {
         $end = clone $start;
 
@@ -370,6 +431,7 @@ class RaidRepository extends ServiceEntityRepository
             ])
             ->orderBy('r.startAt', 'ASC')
             ->setMaxResults($nbrOfResultPerPage)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }

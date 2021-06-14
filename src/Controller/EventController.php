@@ -25,16 +25,16 @@ class EventController extends AbstractController
         $month = $calendar::Process($date->format('Y-m-d'));
         $nbrOfResultPerPage = 2;
 
-        $nbrRaids = $this->getUser()
+        $nbrOfRaid = $this->getUser()
             ? $this->getDoctrine()->getRepository(Raid::class)->countAllRaidWhereUserIsAccepted($this->getUser())
             : $this->getDoctrine()->getRepository(Raid::class)->countAllPendingRaid();
 
-        $raids = $this->getUser()
-            ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser(), $nbrOfResultPerPage)
-            : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid($nbrOfResultPerPage);
-
-        $nbrPages = intdiv($nbrRaids, $nbrOfResultPerPage);
-        $nbrPages = ($nbrRaids % $nbrOfResultPerPage) ? $nbrPages + 1 : $nbrPages;
+        if ($nbrOfRaid) {
+            $nbrOfPages = intdiv($nbrOfRaid, $nbrOfResultPerPage);
+            $nbrOfPages = ($nbrOfRaid % $nbrOfResultPerPage) ? $nbrOfPages : $nbrOfPages - 1;
+        } else {
+            $nbrOfPages = 0;
+        }
 
         if ($user = $this->getUser()) {
             $raidCharacter = new RaidCharacter();
@@ -44,13 +44,14 @@ class EventController extends AbstractController
         }
 
         return $this->render('event/event_list.html.twig', [
-            'raids' => $raids,
-            'title' => $month['title'],
-            'emptyDaysPadding' => $month['empty_days_padding'],
-            'days' => $month['days'],
             'date' => $date,
-            'nbrPages' => $nbrPages,
+            'title' => $month['title'],
+            'days' => $month['days'],
+            'emptyDaysPadding' => $month['empty_days_padding'],
+            'raids' => [],
+            'nbrOfPages' => $nbrOfPages,
             'nbrOfResultPerPage' => $nbrOfResultPerPage,
+            'currentPage' => 0,
             'form' => isset($form) ? $form->createView() : null
         ]);
     }

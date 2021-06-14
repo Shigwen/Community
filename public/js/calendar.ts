@@ -1,27 +1,38 @@
 {
+    // Container
     const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
     const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
+    const BUTTON_PAGE_CONTAINER: HTMLElement|null = document.querySelector("buttons-page");
+
+    // Select list
     const SELECT_CHARACTER: HTMLSelectElement|null = document.querySelector("#raid_character_userCharacter");
     const SELECT_NUMBER_OF_RESULT_PER_PAGE: HTMLSelectElement|null = document.querySelector("#nbrOfResultPerPage");
+
+    // Calendar
+    const NOW: Date = new Date();
+    const STORED_MONTHS: Array<HTMLElement> = Array.from(CONTAINER.querySelectorAll("widget-calendar"));
+    let last_shown_month: number = STORED_MONTHS.length - 1;
+    let abort_handle: AbortController|null = null;
+
+    // Raid List
+    let stored_raid: Array<HTMLElement> = [];
+    let chosen_number_of_result_per_page: string = "";
+    let current_page : HTMLButtonElement;
+
+    // Filters for raid list
+    let chosen_date: string = "";
+    let chosen_character: string = "";
+    let chosen_number_of_page: string = "0";
 
     if (CONTAINER === null)
     {
         throw new Error("Missing calendar wrapper");
     }
 
-    const NOW: Date = new Date();
-    const STORED_MONTHS: Array<HTMLElement> = Array.from(CONTAINER.querySelectorAll("widget-calendar"));
-
     if (STORED_MONTHS.length < 1)
     {
         throw new Error("Missing elements");
     }
-
-    let chosen_date: string = "";
-    let chosen_character: string = "";
-    let chosen_number_of_result_per_page: string = "";
-    let last_shown_month: number = STORED_MONTHS.length - 1;
-    let abort_handle: AbortController|null = null;
 
     function clear_process_queue(): void
     {
@@ -29,6 +40,106 @@
         {
             abort_handle.abort();
             abort_handle = null;
+        }
+    }
+
+    async function change_character(): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
+
+            const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
+            if (!OLD_DATE) {
+                return;
+            }
+
+            chosen_character = SELECT_CHARACTER.value;
+
+            if (!chosen_character)
+            {
+                throw new Error("Missing Attribute");
+            }
+
+            chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
+
+            const BODY: FormData = new FormData();
+            BODY.set("character", chosen_character);
+            BODY.set("date", chosen_date);
+            BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
+
+            const RAID_LIST: HTMLElement = await update_raid_list(BODY);
+            stored_raid = [];
+            stored_raid[0] = RAID_LIST;
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+        finally
+        {
+            clear_process_queue();
+        }
+    }
+
+    async function change_month(go_forward: boolean): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
+
+            if (go_forward)
+            {
+                ++last_shown_month;
+            }
+            else if (last_shown_month >= 1)
+            {
+                --last_shown_month;
+            }
+            else
+            {
+                return;
+            }
+
+            if (go_forward)
+            {
+                if (!STORED_MONTHS[last_shown_month])
+                {
+                    const MONTH: Date = new Date(NOW.getFullYear(), NOW.getMonth() + last_shown_month, 27, 0, 0, 0, 0);
+
+                    const BODY: FormData = new FormData();
+                    BODY.set("date", MONTH.toISOString().substr(0, 10));
+
+                    const ITEM: HTMLElement|null = await update_calendar(BODY);
+
+                    STORED_MONTHS.push(ITEM);
+                }
+
+                STORED_MONTHS[last_shown_month - 1].insertAdjacentElement("afterend", STORED_MONTHS[last_shown_month]);
+                STORED_MONTHS[last_shown_month - 1].remove();
+            }
+            else
+            {
+                STORED_MONTHS[last_shown_month + 1].insertAdjacentElement("beforebegin", STORED_MONTHS[last_shown_month]);
+                STORED_MONTHS[last_shown_month + 1].remove();
+            }
+        }
+        catch (error)
+        {
+            console.log(error);
+
+            if (go_forward)
+            {
+                --last_shown_month;
+            }
+            else
+            {
+                ++last_shown_month;
+            }
+        }
+        finally
+        {
+            clear_process_queue();
         }
     }
 
@@ -63,48 +174,20 @@
 
             const BODY: FormData = new FormData();
             BODY.set("date", chosen_date);
-            BODY.set("character", chosen_character)
+            BODY.set("character", chosen_character);
             BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
 
-            send_request(BODY);
-
+            const RAID_LIST: HTMLElement = await update_raid_list(BODY);
+            stored_raid = [];
+            stored_raid[0] = RAID_LIST;
         }
         catch (error)
         {
             console.log(error);
         }
-    }
-
-    async function change_character(): Promise<void>
-    {
-        try
+        finally
         {
             clear_process_queue();
-
-            const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
-            if (!OLD_DATE) {
-                return;
-            }
-
-            chosen_character = SELECT_CHARACTER.value;
-
-            if (!chosen_character)
-            {
-                throw new Error("Missing Attribute");
-            }
-
-            chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
-
-            const BODY: FormData = new FormData();
-            BODY.set("character", chosen_character);
-            BODY.set("date", chosen_date);
-            BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
-
-            send_request(BODY);
-        }
-        catch (error)
-        {
-            console.log(error);
         }
     }
 
@@ -126,15 +209,72 @@
             }
 
             BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
-            send_request(BODY);
+
+            const RAID_LIST: HTMLElement = await update_raid_list(BODY);
+            stored_raid = [];
+            stored_raid[0] = RAID_LIST;
         }
         catch (error)
         {
             console.log(error);
         }
+        finally
+        {
+            clear_process_queue();
+        }
     }
 
-    async function send_request(BODY: FormData)
+    async function change_page_of_result(target: HTMLButtonElement|null): Promise<void>
+    {
+        try
+        {
+            clear_process_queue();
+
+            chosen_number_of_page = target.dataset.page;
+            chosen_number_of_result_per_page = SELECT_NUMBER_OF_RESULT_PER_PAGE.value;
+
+            if (typeof stored_raid[parseInt(chosen_number_of_page)] === 'undefined')
+            {
+                const BODY: FormData = new FormData();
+
+                if (chosen_date ) {
+                    BODY.set("date", chosen_date);
+                    if (chosen_character) {
+                        BODY.set("character", chosen_character);
+                    }
+                }
+
+                BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
+                BODY.set("currentPage", chosen_number_of_page);
+
+                const RAID_LIST: HTMLElement|null = await update_raid_list(BODY);
+                stored_raid[chosen_number_of_page] = RAID_LIST;
+
+            } else {
+                const OLD_RAID_LIST: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list");
+                OLD_RAID_LIST.insertAdjacentElement("beforebegin", stored_raid[parseInt(chosen_number_of_page)]);
+                OLD_RAID_LIST.remove();
+
+                current_page.classList.remove("btn-info", "current");
+                current_page.classList.add("btn-primary");
+
+                target.classList.remove("btn-primary");
+                target.classList.add("btn-info", "current");
+
+                current_page = target;
+            }
+        }
+        catch (error)
+        {
+            console.log(error.message);
+        }
+        finally
+        {
+            clear_process_queue();
+        }
+    }
+
+    async function update_raid_list(BODY: FormData)
     {
         try {
             clear_process_queue();
@@ -159,6 +299,7 @@
             DIV.innerHTML = HTML;
             const ITEM: HTMLElement|null = DIV.querySelector("raid-list");
             const TITLE: HTMLElement|null = DIV.querySelector("raid-list-title");
+            const BUTTONS: HTMLElement|null = DIV.querySelector("button-list");
 
             if (!ITEM)
             {
@@ -172,6 +313,14 @@
             const OLD_RAID_LIST_TITLE: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list-title");
             OLD_RAID_LIST_TITLE.insertAdjacentElement("beforebegin", TITLE);
             OLD_RAID_LIST_TITLE.remove();
+
+            const OLD_BUTTON_PAGE_LIST: HTMLElement|null = BUTTON_PAGE_CONTAINER.querySelector("button-list");
+            OLD_BUTTON_PAGE_LIST.insertAdjacentElement("beforebegin", BUTTONS);
+            OLD_BUTTON_PAGE_LIST.remove();
+
+            current_page = BUTTONS.querySelector("[data-page='"+ chosen_number_of_page +"']")
+
+            return ITEM;
         }
         catch (error)
         {
@@ -182,84 +331,42 @@
         }
     }
 
-    async function update_calendar(go_forward: boolean): Promise<void>
+    async function update_calendar(BODY: FormData)
     {
-        try
-        {
+        try {
             clear_process_queue();
-
-            if (go_forward)
-            {
-                ++last_shown_month;
-            }
-            else if (last_shown_month >= 1)
-            {
-                --last_shown_month;
-            }
-            else
-            {
-                return;
-            }
-
-            if (go_forward)
-            {
-                if (!STORED_MONTHS[last_shown_month])
+            abort_handle = new AbortController();
+            const RESPONSE: Response = await fetch(
+                "/ajax/get-availability-calendar",
                 {
-                    const MONTH: Date = new Date(NOW.getFullYear(), NOW.getMonth() + last_shown_month, 27, 0, 0, 0, 0);
-                    const BODY: FormData = new FormData();
-                    BODY.set("date", MONTH.toISOString().substr(0, 10));
-                    abort_handle = new AbortController();
-                    const RESPONSE: Response = await fetch(
-                        "/ajax/get-availability-calendar",
-                        {
-                            method: "POST",
-                            body: BODY,
-                            signal: abort_handle.signal
-                        }
-                    );
-
-                    if (!RESPONSE.ok)
-                    {
-                        throw new Error(RESPONSE.statusText);
-                    }
-
-                    const HTML: string = await RESPONSE.text();
-                    const DIV: HTMLDivElement = document.createElement("div");
-                    DIV.innerHTML = HTML;
-                    const ITEM: HTMLElement|null = DIV.querySelector("widget-calendar");
-
-                    if (!ITEM)
-                    {
-                        throw new Error("Invalid response");
-                    }
-
-                    STORED_MONTHS.push(ITEM);
+                    method: "POST",
+                    body: BODY,
+                    signal: abort_handle.signal
                 }
+            );
 
-                STORED_MONTHS[last_shown_month - 1].insertAdjacentElement("afterend", STORED_MONTHS[last_shown_month]);
-                STORED_MONTHS[last_shown_month - 1].remove();
-            }
-            else
+            if (!RESPONSE.ok)
             {
-                STORED_MONTHS[last_shown_month + 1].insertAdjacentElement("beforebegin", STORED_MONTHS[last_shown_month]);
-                STORED_MONTHS[last_shown_month + 1].remove();
+                throw new Error(RESPONSE.statusText);
             }
+
+            const HTML: string = await RESPONSE.text();
+            const DIV: HTMLDivElement = document.createElement("div");
+            DIV.innerHTML = HTML;
+            const ITEM: HTMLElement|null = DIV.querySelector("widget-calendar");
+
+            if (!ITEM)
+            {
+                throw new Error("Invalid response");
+            }
+
+            return ITEM;
         }
         catch (error)
         {
             console.log(error);
-
-            if (go_forward)
-            {
-                --last_shown_month;
-            }
-            else
-            {
-                ++last_shown_month;
-            }
         }
-        finally
-        {
+        finally {
             clear_process_queue();
         }
     }
@@ -273,7 +380,7 @@
 
             if (BUTTON)
             {
-                update_calendar(BUTTON.classList.contains("next"));
+                change_month(BUTTON.classList.contains("next"));
             }
 
             const CELL: HTMLLIElement|null = TARGET.closest("li[data-date]:not(.text-secondary):not(#is-selected)") as HTMLLIElement|null;
@@ -281,6 +388,20 @@
             if (CELL)
             {
                 select_date(CELL);
+            }
+        }
+    );
+
+    BUTTON_PAGE_CONTAINER.addEventListener(
+        "click",
+        (event: MouseEvent): void =>
+        {
+            const TARGET: HTMLElement = event.target as HTMLElement;
+            const BUTTON: HTMLButtonElement|null = TARGET.closest("button:not(.current)");
+
+            if (BUTTON)
+            {
+                change_page_of_result(BUTTON);
             }
         }
     );
@@ -301,74 +422,12 @@
         }
     ) : null;
 
-    // Initialize from storage
+    // Initialize the raid list
     {
-        const ITEM: string|null = localStorage.getItem("form-booking");
-
-        if (ITEM)
-        {
-            const DATES: Array<string> = JSON.parse(ITEM) as Array<string>;
-
-            if (DATES.length === 2 && Date.parse(DATES[0]) > Date.now())
-            {
-                (async (): Promise<void> =>
-                {
-                    let i: number = 0;
-
-                    for (let j: number = 0; j < 2; ++j)
-                    {
-                        const ISO_DATE: string = DATES[j];
-
-                        let done: boolean = false;
-
-                        while (!done)
-                        {
-                            if (!STORED_MONTHS[i])
-                            {
-                                // Load new month
-                                await update_calendar(true);
-                            }
-
-                            const CELL: HTMLLIElement|null = STORED_MONTHS[i].querySelector(`li[data-date="${ISO_DATE}"]`);
-
-                            if (CELL)
-                            {
-                                // Equivalent to a selecting click
-                                await select_date(CELL);
-                                done = true;
-                            }
-                            else
-                            {
-                                ++i;
-                            }
-                        }
-                    }
-
-                    // Reset if unavailable
-                    if (!STORED_MONTHS[i].querySelector("li#is-selected"))
-                    {
-
-                        if (i > 0)
-                        {
-                            const BASE: Element|null = STORED_MONTHS[i].nextElementSibling;
-
-                            STORED_MONTHS[i].remove();
-                            STORED_MONTHS[i - 1].remove();
-
-                            if (BASE)
-                            {
-                                BASE.insertAdjacentElement("beforebegin", STORED_MONTHS[0]);
-                                BASE.insertAdjacentElement("beforebegin", STORED_MONTHS[1]);
-                            }
-                        }
-                    }
-                }
-                )();
-            }
-            else
-            {
-                localStorage.removeItem("form-booking");
-            }
+        const BUTTON_FIRST_PAGE: HTMLButtonElement = BUTTON_PAGE_CONTAINER.querySelector("[data-page='0']");
+        if (BUTTON_FIRST_PAGE) {
+            current_page = BUTTON_FIRST_PAGE;
+            change_page_of_result(BUTTON_FIRST_PAGE);
         }
     }
 }
