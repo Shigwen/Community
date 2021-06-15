@@ -11,7 +11,7 @@
 {% block body %}
     <main class="container bg-dark">
         <div class="row col-12">
-            <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('events')}}">Back to Calendar</a>
+            <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">{{ nameOfPageToRefer }}</a>
         </div>
 
         <div class="row d-flex justify-content-around mx-5">
@@ -115,13 +115,19 @@
                                 {{ form_end(form) }}
 
                             {% else %}
-                                <p class="text-center">
-                                    You need to register at least one raiding character in your
-                                    <a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
-                                    in order to subscribe. <br>
-                                    If you see this message, it means that the characters you registered on the app do not belong
-                                    to the same server or the same faction as the raid you're trying to subscribe to.
-                                </p>
+                                {% if isPastRaid is defined and isPastRaid %}
+                                    <p class="text-center">
+                                        You cannot subscribe to or change your character in a raid that already happened
+                                    </p>
+                                {% else %}
+                                    <p class="text-center">
+                                        You need to register at least one raiding character in your
+                                        <a class="font-weight-bold" href="{{ path('user_account') }}">account page</a>
+                                        in order to subscribe. <br>
+                                        If you see this message, it means that the characters you registered on the app do not belong
+                                        to the same server or the same faction as the raid you're trying to subscribe to.
+                                    </p>
+                                {% endif %}
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-primary rounded-pill btn-lg disabled mt-3">Subscribe</button>
                                 </div>

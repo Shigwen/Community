@@ -11,51 +11,48 @@
 {% block body %}
     <main class="container bg-dark">
         <div class="row col-12">
-            <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('user_account')}}">Back to Account</a>
+            <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">{{ nameOfPageToRefer }}</a>
         </div>
 
         <div class="row d-flex justify-content-around">
-
-            {% if raids is empty %}
-                <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins text-center">
-                    Vous n'avez pas encore terminé de raid
-                </div>
-            {% else %}
-                <table class="table table-striped table-bordered table-hover table-dark">
-                    <thead class="text-center">
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Faction</th>
-                            <th scope="col">Server</th>
-                            <th scope="col">Date</th>
-                            <th scope="col" class="d-none d-md-table-cell">RL as</th>
-                            <th scope="col" class="d-none d-md-table-cell">Role</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="text-center">
-                        {% for raid in raids %}
+            <div class="col-12 col-md-11 p-md-4 p-xs-1">
+                {% if raids is empty %}
+                        Vous n'avez pas encore terminé de raid
+                {% else %}
+                    <table class="table table-striped table-bordered table-hover table-dark">
+                        <thead class="text-center">
                             <tr>
-                                {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
-                                <td>{{ raid.name }}</td>
-                                <td>{{ raidCharacter.userCharacter.faction.name }}</td>
-                                <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                                <td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}</td>
-                                <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
-                                <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
-                                    <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id }) }}">Show</a>
-                                    {{ include('user_raid_leader_parts/modal/_scheduled_raid_show_breakdown.html.twig') }}
-                                </td>
+                                <th scope="col">Name</th>
+                                <th scope="col">Faction</th>
+                                <th scope="col">Server</th>
+                                <th scope="col">Date</th>
+                                <th scope="col" class="d-none d-md-table-cell">RL as</th>
+                                <th scope="col" class="d-none d-md-table-cell">Role</th>
+                                <th scope="col">Actions</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
+                        </thead>
 
-
+                        <tbody class="text-center">
+                            {% for raid in raids %}
+                                <tr>
+                                    {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
+                                    <td>{{ raid.name }}</td>
+                                    <td>{{ raidCharacter.userCharacter.faction.name }}</td>
+                                    <td>{{ raidCharacter.userCharacter.server.name }}</td>
+                                    <td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}</td>
+                                    <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
+                                    <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
+                                        <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id }) }}">Show</a>
+                                        {{ include('user_raid_leader_parts/modal/_scheduled_raid_show_breakdown.html.twig') }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
         </div>
     </main>
 {% endblock %}

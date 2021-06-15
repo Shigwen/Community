@@ -2,7 +2,6 @@
 
 namespace App\Controller\RaidLeader;
 
-use DateTimeZone;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
@@ -24,6 +23,9 @@ class TemplateController extends AbstractController
      */
     public function events(Request $request, Template $templateService): Response
     {
+        $this->get('session')->set('pathToRefer', 'raidleader_events');
+        $this->get('session')->set('nameOfPageToRefer', 'Back to RL HQ');
+
         $newRaidTemplate = new Raid();
         $newRaidCharacter = new RaidCharacter();
 

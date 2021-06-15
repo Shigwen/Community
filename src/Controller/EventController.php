@@ -21,6 +21,9 @@ class EventController extends AbstractController
      */
     public function eventList(Request $request, Calendar $calendar): Response
     {
+        $this->get('session')->set('pathToRefer', 'events');
+        $this->get('session')->set('nameOfPageToRefer', 'Back to calendar');
+
         $date = new DateTime();
         $month = $calendar::Process($date->format('Y-m-d'));
         $nbrOfResultPerPage = 10;
@@ -98,7 +101,10 @@ class EventController extends AbstractController
             $raidCharacterFromRaidLeader->getUserCharacter()->getFaction()
         );
 
-        if (count($characters) >= 1) {
+        $now = new DateTime();
+        $isPastRaid = $raid->getStartAt() <= $now;
+
+        if (count($characters) >= 1 && !$isPastRaid) {
             $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
                 'user' => $this->getUser(),
                 'raidCharacter' => $raidCharacterFromRaidLeader,
@@ -126,6 +132,9 @@ class EventController extends AbstractController
             'user' => $this->getUser(),
             'form' => isset($form) ? $form->createView() : null,
             'isEdit' => $raidCharacter->getId(),
+            'isPastRaid' => $isPastRaid,
+            'pathToRefer' => $this->get('session')->get('pathToRefer'),
+            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
         ]);
     }
 

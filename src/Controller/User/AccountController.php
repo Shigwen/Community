@@ -24,6 +24,9 @@ class AccountController extends AbstractController
      */
     public function account(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
+        $this->get('session')->set('pathToRefer', 'user_account');
+        $this->get('session')->set('nameOfPageToRefer', 'Back to account');
+
         $user = $this->getUser();
         $oldPass = $user->getPassword();
         $idCharacter = $request->query->get('id');
@@ -101,6 +104,8 @@ class AccountController extends AbstractController
     {
         return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
+            'pathToRefer' => $this->get('session')->get('pathToRefer'),
+            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
         ]);
     }
 
