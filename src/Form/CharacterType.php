@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Role;
 use App\Entity\Character;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -77,7 +78,7 @@ class CharacterType extends AbstractType
                 'multiple' => true
             ])
 
-            ->add('information', null, [
+            ->add('information',CKEditorType::class, [
                 'label' => 'Character notes (anything relevant you\'d like to show to the raid leaders)',
                 'label_attr' => [
                     'class' => 'h5',

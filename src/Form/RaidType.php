@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Raid;
 use App\Form\RaidCharacterType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -143,7 +144,7 @@ class RaidType extends AbstractType
                 ],
             ])
 
-            ->add('information', TextareaType::class, [
+            ->add('information', CKEditorType::class, [
                 'label' => 'Raid Leader notes',
                 'label_attr' => [
                     'class' => 'h5',
@@ -152,7 +153,6 @@ class RaidType extends AbstractType
                     'class' => 'form-control',
                     'rows' => '14',
                 ],
-                'data' => $options['raidInformation'] ? $options['raidInformation'] : "Discord link : ",
             ]);
 
         if (!$options['isEdit']) {

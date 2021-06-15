@@ -11,7 +11,7 @@
                 {% if character.information is empty %}
                     You didn't provide any additional information about your character.
                 {% else %}
-                    {{ raidCharacter.userCharacter.information }}
+                    {{ character.information|raw }}
                 {% endif %}
             </div>
         </div>

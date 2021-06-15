@@ -61,15 +61,13 @@ class RaidController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $raid = $form->getData();
-                $raidLeaderCharacter = $raid->getCharacterFromUser($this->getUser());
+                $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
 
-                if (!$this->getUser()->hasCharacter($raidLeaderCharacter)) {
+                if (!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
                     throw $this->createNotFoundException('Une erreur est survenue');
                 }
 
-                $raid
-                    ->setUpdatedAt(new DateTime())
-                    ->setServer($raidLeaderCharacter->getServer());
+                $raid->setUpdatedAt(new DateTime());
 
                 $this->getDoctrine()->getManager()->flush();
 
