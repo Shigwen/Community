@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Character;
+use Error;
 use DateTime;
 use App\Entity\Raid;
-use App\Entity\Role;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Entity\Character;
 use App\Service\Calendar;
-use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -70,58 +69,58 @@ class ApiController extends AbstractController
         $currentPage = intval($request->request->get('currentPage'));
         $offset = $currentPage * $nbrOfResultPerPage;
 
-        try {
-            if (!$date && !$character) {
+        if (!in_array($nbrOfResultPerPage, [10, 20, 50, 70, 100])) {
+            throw new Error('Invalid request', 403);
+        }
 
-                $nbrOfRaid = $this->getUser()
-                    ? $this->getDoctrine()->getRepository(Raid::class)->countAllRaidWhereUserIsAccepted($this->getUser())
-                    : $this->getDoctrine()->getRepository(Raid::class)->countAllPendingRaid();
+        if (!$date && !$character) {
 
-                if ($nbrOfRaid) {
-                    $raids = $this->getUser()
-                        ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser(), $nbrOfResultPerPage, $offset)
-                        : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid($nbrOfResultPerPage, $offset);
-                } else {
-                    $raids = [];
-                }
-            } else if ($date && $character) {
-
-                $nbrOfRaid = $this->getDoctrine()->getRepository(Raid::class)
-                    ->countAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date);
-                if ($nbrOfRaid) {
-                    $raids = $this->getDoctrine()->getRepository(Raid::class)
-                        ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date, $nbrOfResultPerPage, $offset);
-                } else {
-                    $raids = [];
-                }
-            } else {
-
-                $nbrOfRaid = $this->getDoctrine()->getRepository(Raid::class)->countAllPendingRaidFromDate($date);
-                if ($nbrOfRaid) {
-                    $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date, $nbrOfResultPerPage, $offset);
-                } else {
-                    $raids = [];
-                }
-            }
+            $nbrOfRaid = $this->getUser()
+                ? $this->getDoctrine()->getRepository(Raid::class)->countAllRaidWhereUserIsAccepted($this->getUser())
+                : $this->getDoctrine()->getRepository(Raid::class)->countAllPendingRaid();
 
             if ($nbrOfRaid) {
-                $nbrOfPages = intdiv($nbrOfRaid, $nbrOfResultPerPage);
-                $nbrOfPages = ($nbrOfRaid % $nbrOfResultPerPage) ? $nbrOfPages : $nbrOfPages - 1;
+                $raids = $this->getUser()
+                    ? $this->getDoctrine()->getRepository(Raid::class)->getAllRaidWhereUserIsAccepted($this->getUser(), $nbrOfResultPerPage, $offset)
+                    : $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaid($nbrOfResultPerPage, $offset);
             } else {
-                $nbrOfPages = 0;
+                $raids = [];
             }
+        } else if ($date && $character) {
 
-            $html =  $this->renderView('event/_raid_list.html.twig', [
-                'nbrOfResultPerPage' => $nbrOfResultPerPage,
-                'nbrOfPages' => $nbrOfPages,
-                'currentPage' => $currentPage,
-                'chosenDate' => $date,
-                'character' => $character,
-                'raids' => $raids,
-            ]);
-        } catch (Exception $e) {
-            throw new Error($e->getMessage());
+            $nbrOfRaid = $this->getDoctrine()->getRepository(Raid::class)
+                ->countAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date);
+            if ($nbrOfRaid) {
+                $raids = $this->getDoctrine()->getRepository(Raid::class)
+                    ->getAllRaidWhereUserCharacterIsAcceptedFromDate($this->getUser(), $character, $date, $nbrOfResultPerPage, $offset);
+            } else {
+                $raids = [];
+            }
+        } else {
+
+            $nbrOfRaid = $this->getDoctrine()->getRepository(Raid::class)->countAllPendingRaidFromDate($date);
+            if ($nbrOfRaid) {
+                $raids = $this->getDoctrine()->getRepository(Raid::class)->getAllPendingRaidFromDate($date, $nbrOfResultPerPage, $offset);
+            } else {
+                $raids = [];
+            }
         }
+
+        if ($nbrOfRaid) {
+            $nbrOfPages = intdiv($nbrOfRaid, $nbrOfResultPerPage);
+            $nbrOfPages = ($nbrOfRaid % $nbrOfResultPerPage) ? $nbrOfPages : $nbrOfPages - 1;
+        } else {
+            $nbrOfPages = 0;
+        }
+
+        $html =  $this->renderView('event/_raid_list.html.twig', [
+            'nbrOfResultPerPage' => $nbrOfResultPerPage,
+            'nbrOfPages' => $nbrOfPages,
+            'currentPage' => $currentPage,
+            'chosenDate' => $date,
+            'character' => $character,
+            'raids' => $raids,
+        ]);
 
         return new Response($html);
     }

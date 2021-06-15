@@ -395,7 +395,12 @@
         "change",
         (event: Event): void =>
         {
-            change_number_of_result_per_page();
+            let resultPerPage = [10, 20, 50, 70, 100];
+            let resultPerPageSelected = parseInt(SELECT_NUMBER_OF_RESULT_PER_PAGE.value);
+
+            if (resultPerPage.includes(resultPerPageSelected)) {
+                change_number_of_result_per_page();
+            }
         }
     );
 

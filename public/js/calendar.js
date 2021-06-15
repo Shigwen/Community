@@ -394,7 +394,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         }
     });
     SELECT_NUMBER_OF_RESULT_PER_PAGE_1.addEventListener("change", function (event) {
-        change_number_of_result_per_page();
+        var resultPerPage = [10, 20, 50, 70, 100];
+        var resultPerPageSelected = parseInt(SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value);
+        if (resultPerPage.includes(resultPerPageSelected)) {
+            change_number_of_result_per_page();
+        }
     });
     SELECT_CHARACTER_1 ? SELECT_CHARACTER_1.addEventListener("change", function () {
         change_character();
