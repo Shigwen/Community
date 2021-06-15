@@ -16,4 +16,4 @@ fos_ck_editor:
             text_format: ['FontSize', 'Format', 'Bold', 'Italic', 'Underline', 'Strike']
             paragraphe:  ['-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
             text_color:  ['TextColor', 'BGColor']
-            formatage:   ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'HorizontalRule', 'Blockquote', 'Smiley']
+            formatage:   ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Smiley']
