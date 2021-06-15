@@ -2,7 +2,7 @@
     // Container
     const CONTAINER: HTMLElement|null = document.querySelector("calendar-wrapper");
     const RAID_CONTAINER: HTMLElement|null = document.querySelector("raid-wrapper");
-    const BUTTON_PAGE_CONTAINER: HTMLElement|null = document.querySelector("buttons-page");
+    const BUTTON_LIST_CONTAINER: HTMLElement|null = document.querySelector("button-list");
 
     // Select list
     const SELECT_CHARACTER: HTMLSelectElement|null = document.querySelector("#raid_character_userCharacter");
@@ -17,7 +17,6 @@
     // Raid List
     let stored_raid: Array<HTMLElement> = [];
     let chosen_number_of_result_per_page: string = "";
-    let current_page : HTMLButtonElement;
 
     // Filters for raid list
     let chosen_date: string = "";
@@ -111,8 +110,9 @@
                     BODY.set("date", MONTH.toISOString().substr(0, 10));
 
                     const ITEM: HTMLElement|null = await update_calendar(BODY);
-
-                    STORED_MONTHS.push(ITEM);
+                    if (ITEM) {
+                        STORED_MONTHS.push(ITEM);
+                    }
                 }
 
                 STORED_MONTHS[last_shown_month - 1].insertAdjacentElement("afterend", STORED_MONTHS[last_shown_month]);
@@ -242,7 +242,7 @@
             {
                 const BODY: FormData = new FormData();
 
-                if (chosen_date ) {
+                if (chosen_date) {
                     BODY.set("date", chosen_date);
                     if (chosen_character) {
                         BODY.set("character", chosen_character);
@@ -253,25 +253,19 @@
                 BODY.set("currentPage", chosen_number_of_page);
 
                 const RAID_LIST: HTMLElement|null = await update_raid_list(BODY);
-                stored_raid[chosen_number_of_page] = RAID_LIST;
+                if (RAID_LIST) {
+                    stored_raid[chosen_number_of_page] = RAID_LIST;
+                }
 
             } else {
                 const OLD_RAID_LIST: HTMLElement|null = RAID_CONTAINER.querySelector("raid-list");
                 OLD_RAID_LIST.insertAdjacentElement("beforebegin", stored_raid[parseInt(chosen_number_of_page)]);
                 OLD_RAID_LIST.remove();
-
-                current_page.classList.remove("btn-info", "current");
-                current_page.classList.add("btn-primary");
-
-                target.classList.remove("btn-primary");
-                target.classList.add("btn-info", "current");
-
-                current_page = target;
             }
         }
         catch (error)
         {
-            console.log(error.message);
+            console.log(error);
         }
         finally
         {
@@ -282,8 +276,6 @@
     async function update_raid_list(BODY: FormData)
     {
         try {
-            clear_process_queue();
-
             abort_handle = new AbortController();
             const RESPONSE: Response = await fetch(
                 "/ajax/get-all-raid-of-the-day",
@@ -319,27 +311,17 @@
             OLD_RAID_LIST_TITLE.insertAdjacentElement("beforebegin", TITLE);
             OLD_RAID_LIST_TITLE.remove();
 
-            const OLD_BUTTON_PAGE_LIST: HTMLElement|null = BUTTON_PAGE_CONTAINER.querySelector("button-list");
-            OLD_BUTTON_PAGE_LIST.insertAdjacentElement("beforebegin", BUTTONS);
-            OLD_BUTTON_PAGE_LIST.remove();
-
-            current_page = BUTTONS.querySelector("[data-page='"+ chosen_number_of_page +"']")
-
             return ITEM;
         }
         catch (error)
         {
             console.log(error);
         }
-        finally {
-            clear_process_queue();
-        }
     }
 
     async function update_calendar(BODY: FormData)
     {
         try {
-            clear_process_queue();
             abort_handle = new AbortController();
             const RESPONSE: Response = await fetch(
                 "/ajax/get-availability-calendar",
@@ -369,10 +351,8 @@
         }
         catch (error)
         {
+            console.log('coucou');
             console.log(error);
-        }
-        finally {
-            clear_process_queue();
         }
     }
 
@@ -397,12 +377,12 @@
         }
     );
 
-    BUTTON_PAGE_CONTAINER.addEventListener(
+    RAID_CONTAINER.addEventListener(
         "click",
         (event: MouseEvent): void =>
         {
             const TARGET: HTMLElement = event.target as HTMLElement;
-            const BUTTON: HTMLButtonElement|null = TARGET.closest("button:not(.current)");
+            const BUTTON: HTMLButtonElement|null = TARGET.closest("button-list button:not(.current)");
 
             if (BUTTON)
             {
@@ -429,9 +409,8 @@
 
     // Initialize the raid list
     {
-        const BUTTON_FIRST_PAGE: HTMLButtonElement = BUTTON_PAGE_CONTAINER.querySelector("[data-page='0']");
+        const BUTTON_FIRST_PAGE: HTMLButtonElement = BUTTON_LIST_CONTAINER.querySelector("[data-page='0']");
         if (BUTTON_FIRST_PAGE) {
-            current_page = BUTTON_FIRST_PAGE;
             change_page_of_result(BUTTON_FIRST_PAGE);
         } else {
             change_number_of_result_per_page();

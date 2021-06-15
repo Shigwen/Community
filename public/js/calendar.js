@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     // Container
     var CONTAINER_1 = document.querySelector("calendar-wrapper");
     var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
-    var BUTTON_PAGE_CONTAINER_1 = document.querySelector("buttons-page");
+    var BUTTON_LIST_CONTAINER = document.querySelector("button-list");
     // Select list
     var SELECT_CHARACTER_1 = document.querySelector("#raid_character_userCharacter");
     var SELECT_NUMBER_OF_RESULT_PER_PAGE_1 = document.querySelector("#nbrOfResultPerPage");
@@ -50,7 +50,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     // Raid List
     var stored_raid_1 = [];
     var chosen_number_of_result_per_page_1 = "";
-    var current_page_1;
     // Filters for raid list
     var chosen_date_1 = "";
     var chosen_character_1 = "";
@@ -131,7 +130,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         return [4 /*yield*/, update_calendar(BODY)];
                     case 1:
                         ITEM = _a.sent();
-                        STORED_MONTHS_1.push(ITEM);
+                        if (ITEM) {
+                            STORED_MONTHS_1.push(ITEM);
+                        }
                         _a.label = 2;
                     case 2:
                         STORED_MONTHS_1[last_shown_month_1 - 1].insertAdjacentElement("afterend", STORED_MONTHS_1[last_shown_month_1]);
@@ -269,22 +270,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         return [4 /*yield*/, update_raid_list(BODY)];
                     case 1:
                         RAID_LIST = _a.sent();
-                        stored_raid_1[chosen_number_of_page_1] = RAID_LIST;
+                        if (RAID_LIST) {
+                            stored_raid_1[chosen_number_of_page_1] = RAID_LIST;
+                        }
                         return [3 /*break*/, 3];
                     case 2:
                         OLD_RAID_LIST = RAID_CONTAINER_1.querySelector("raid-list");
                         OLD_RAID_LIST.insertAdjacentElement("beforebegin", stored_raid_1[parseInt(chosen_number_of_page_1)]);
                         OLD_RAID_LIST.remove();
-                        current_page_1.classList.remove("btn-info", "current");
-                        current_page_1.classList.add("btn-primary");
-                        target.classList.remove("btn-primary");
-                        target.classList.add("btn-info", "current");
-                        current_page_1 = target;
                         _a.label = 3;
                     case 3: return [3 /*break*/, 6];
                     case 4:
                         error_5 = _a.sent();
-                        console.log(error_5.message);
+                        console.log(error_5);
                         return [3 /*break*/, 6];
                     case 5:
                         clear_process_queue();
@@ -296,12 +294,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
     function update_raid_list(BODY) {
         return __awaiter(this, void 0, void 0, function () {
-            var RESPONSE, HTML, DIV, ITEM, TITLE, BUTTONS, OLD_RAID_LIST, OLD_RAID_LIST_TITLE, OLD_BUTTON_PAGE_LIST, error_6;
+            var RESPONSE, HTML, DIV, ITEM, TITLE, BUTTONS, OLD_RAID_LIST, OLD_RAID_LIST_TITLE, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, 4, 5]);
-                        clear_process_queue();
+                        _a.trys.push([0, 3, , 4]);
                         abort_handle_1 = new AbortController();
                         return [4 /*yield*/, fetch("/ajax/get-all-raid-of-the-day", {
                                 method: "POST",
@@ -330,19 +327,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         OLD_RAID_LIST_TITLE = RAID_CONTAINER_1.querySelector("raid-list-title");
                         OLD_RAID_LIST_TITLE.insertAdjacentElement("beforebegin", TITLE);
                         OLD_RAID_LIST_TITLE.remove();
-                        OLD_BUTTON_PAGE_LIST = BUTTON_PAGE_CONTAINER_1.querySelector("button-list");
-                        OLD_BUTTON_PAGE_LIST.insertAdjacentElement("beforebegin", BUTTONS);
-                        OLD_BUTTON_PAGE_LIST.remove();
-                        current_page_1 = BUTTONS.querySelector("[data-page='" + chosen_number_of_page_1 + "']");
                         return [2 /*return*/, ITEM];
                     case 3:
                         error_6 = _a.sent();
                         console.log(error_6);
-                        return [3 /*break*/, 5];
-                    case 4:
-                        clear_process_queue();
-                        return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -353,8 +343,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, 4, 5]);
-                        clear_process_queue();
+                        _a.trys.push([0, 3, , 4]);
                         abort_handle_1 = new AbortController();
                         return [4 /*yield*/, fetch("/ajax/get-availability-calendar", {
                                 method: "POST",
@@ -378,12 +367,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         return [2 /*return*/, ITEM];
                     case 3:
                         error_7 = _a.sent();
+                        console.log('coucou');
                         console.log(error_7);
-                        return [3 /*break*/, 5];
-                    case 4:
-                        clear_process_queue();
-                        return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -399,9 +386,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             select_date(CELL);
         }
     });
-    BUTTON_PAGE_CONTAINER_1.addEventListener("click", function (event) {
+    RAID_CONTAINER_1.addEventListener("click", function (event) {
         var TARGET = event.target;
-        var BUTTON = TARGET.closest("button:not(.current)");
+        var BUTTON = TARGET.closest("button-list button:not(.current)");
         if (BUTTON) {
             change_page_of_result(BUTTON);
         }
@@ -414,9 +401,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }) : null;
     // Initialize the raid list
     {
-        var BUTTON_FIRST_PAGE = BUTTON_PAGE_CONTAINER_1.querySelector("[data-page='0']");
+        var BUTTON_FIRST_PAGE = BUTTON_LIST_CONTAINER.querySelector("[data-page='0']");
         if (BUTTON_FIRST_PAGE) {
-            current_page_1 = BUTTON_FIRST_PAGE;
             change_page_of_result(BUTTON_FIRST_PAGE);
         }
         else {
