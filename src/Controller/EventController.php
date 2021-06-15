@@ -19,7 +19,7 @@ class EventController extends AbstractController
     /**
      * @Route("/events", name="events")
      */
-    public function eventList(Calendar $calendar): Response
+    public function eventList(Request $request, Calendar $calendar): Response
     {
         $date = new DateTime();
         $month = $calendar::Process($date->format('Y-m-d'));
@@ -41,6 +41,16 @@ class EventController extends AbstractController
             $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
                 'user' => $user,
             ]);
+        }
+
+        $identifier = $request->query->get('identifier');
+        if ($identifier) {
+            $raid = $this->getDoctrine()->getRepository(Raid::class)->findOneBy(['identifier' => $identifier]);
+            if ($raid) {
+                return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+            } else {
+                $this->addFlash("danger", "This code doesn't match any raid");
+            }
         }
 
         return $this->render('event/event_list.html.twig', [
