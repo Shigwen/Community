@@ -15,113 +15,17 @@
     </div>
 
     {% if raid.isPrivate %}
-        <div class="row d-flex justify-content-around">
-            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded h5"> Identifier : {{ raid.identifier }}</div>
-        </div>
-    {% endif %}
-
-    {% if form %}
-        {{ include('raid_leader/event_list_parts/_raid_form.html.twig') }}
-    {% else %}
-        <div class="row d-flex justify-content-around">
-            <div class="col-12 col-md-11 m-md-4 p-md-4 p-xs-1 border border-primary rounded h5 text-center">
-                Formulaire innaccessible <br>
-                Vous ne pouvez pas modifier un raid possédant déjà des joueurs inscrit ou en attente
+        <div class="row d-flex justify-content-around mt-5">
+            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded h5">
+                Code du raid : {{ raid.identifier }} <br><br>
+                Ce raid est privée, il n’apparaîtra pas dans les résultats public de la page calendar. <br>
+                Donnez le code aux joueurs afin qu'il puisse le renseigner dans la page calendar afin de trouver votre raid
             </div>
         </div>
     {% endif %}
 
-    <h4> Validated players </h4>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Class</th>
-                <th>Role</th>
-                <th>Information</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for raidCharacter in raid.raidCharacters %}
-                {% if raidCharacter.isAccept %}
-                    <tr>
-                        <td>{{ raidCharacter.userCharacter.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                        <td>{{ raidCharacter.role.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.information }}</td>
-                        {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                            <td>
-                                <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
-                                <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
+    {{ include('raid_leader/event_list_parts/_raid_form.html.twig') }}
+    {{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
 
-    <hr>
-    <h4> Players in waiting : </h4>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Class</th>
-                <th>Role</th>
-                <th>Information</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for raidCharacter in raid.raidCharacters %}
-                {% if raidCharacter.isWaitingConfirmation %}
-                    <tr>
-                        <td>{{ raidCharacter.userCharacter.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                        <td>{{ raidCharacter.role.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.information }}</td>
-                        <td>
-                            <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
-                            <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
-                            <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
-
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <hr>
-    <h4> Players refused : </h4>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Class</th>
-                <th>Role</th>
-                <th>Information</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for raidCharacter in raid.raidCharacters %}
-                {% if raidCharacter.isRefused and user.hasBlocked(raidCharacter.userCharacter.user) == false %}
-                    <tr>
-                        <td>{{ raidCharacter.userCharacter.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                        <td>{{ raidCharacter.role.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.information }}</td>
-                        <td>
-                            <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
-                            <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
 </main>
 {% endblock %}

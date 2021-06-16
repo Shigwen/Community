@@ -14,45 +14,6 @@
             <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">{{ nameOfPageToRefer }}</a>
         </div>
 
-        <div class="row d-flex justify-content-around mx-5">
-            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-info rounded col-margins">
-                <h4>
-                    Waiting players :
-                </h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Class</th>
-                            <th>Role</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for raidCharacter in raid.raidCharacters %}
-                            {% if raidCharacter.isWaitingConfirmation %}
-                                <tr>
-                                    <td>{{ raidCharacter.userCharacter.name }}</td>
-                                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                    <td>{{ raidCharacter.role.name }}</td>
-                                    <td>
-                                        {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
-                                            {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                                                <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
-                                            {% else %}
-                                                Vous ne pouvez pas vous désinscrire de votre propre raid
-                                            {% endif %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <div class="row d-flex justify-content-around">
             <div class="col-12 col-md-11 p-md-4 p-xs-1 rounded col-margins">
 

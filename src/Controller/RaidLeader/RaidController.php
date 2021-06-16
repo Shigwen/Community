@@ -6,6 +6,7 @@ use DateTime;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
+use App\Service\Raid\Identifier;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +34,7 @@ class RaidController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit")
      */
-    public function edit(Request $request, Raid $raid): Response
+    public function edit(Request $request, Raid $raid, Identifier $identifier): Response
     {
         if (!$this->getUser()->hasRaid($raid)) {
             throw new AccessDeniedHttpException();
@@ -45,40 +46,42 @@ class RaidController extends AbstractController
             return $this->redirectToRoute('raidleader_events');
         }
 
-        $raidCharacterNotRefused = $this->getDoctrine()->getRepository(RaidCharacter::class)->getAllNotRefusedFromRaid($raid);
+        $form = $this->createForm(RaidType::class, $raid, [
+            'user' => $this->getUser(),
+            'isEdit' => true,
+        ]);
 
-        // Show the form only if the raid haven't subscribe or in waiting players (except the raid leader himself)
-        if (
-            count($raidCharacterNotRefused) === 1 &&
-            $raidCharacterNotRefused[0]->getUserCharacter()->getUser() === $this->getUser()
-        ) {
-            $form = $this->createForm(RaidType::class, $raid, [
-                'user' => $this->getUser(),
-                'isEdit' => true,
-            ]);
-            $form->get('raidCharacter')->setData($raidCharacterNotRefused[0]);
-            $form->handleRequest($request);
+        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $raid = $form->getData();
-                $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
+        $form->get('raidCharacter')->setData($raidCharacter);
+        $form->handleRequest($request);
 
-                if (!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
-                    throw $this->createNotFoundException('Une erreur est survenue');
-                }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $raid = $form->getData();
+            $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
 
-                $raid->setUpdatedAt(new DateTime());
-
-                $this->getDoctrine()->getManager()->flush();
-
-                return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
+            if (!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
+                throw $this->createNotFoundException('Une erreur est survenue');
             }
+
+            if ($raid->isPrivate()) {
+            } else {
+                $raid->setIdentifier(null);
+            }
+
+            $raid
+                ->setIdentifier($raid->getIdentifier() ? $raid->getIdentifier() : $identifier->generate(Raid::IDENTIFIER_SIZE))
+                ->setUpdatedAt(new DateTime());
+
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
         }
 
         return $this->render('raid_leader/edit_raid.html.twig', [
             'user' => $this->getUser(),
             'raid' => $raid,
-            'form' => isset($form) ? $form->createView() : null,
+            'form' => $form->createView(),
         ]);
     }
 

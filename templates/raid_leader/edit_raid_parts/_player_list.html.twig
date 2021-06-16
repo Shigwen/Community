@@ -1,0 +1,93 @@
+
+<p class="h4 mb-3 mt-5"> Validated players </p>
+<table class="table table-striped table-bordered table-hover table-dark">
+    <thead class="text-center">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Class</th>
+            <th scope="col" class="d-none d-md-table-cell">Role</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody class="text-center">
+        {% for raidCharacter in raid.raidCharacters %}
+            {% if raidCharacter.isAccept %}
+                <tr>
+                    <td>{{ raidCharacter.userCharacter.name }}</td>
+                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+                    <td>{{ raidCharacter.role.name }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">Show notes</button>
+                        {{ include('raid_leader/modal/_character_information.html.twig') }}
+                        {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
+                            <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
+                            <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<p class="h4 mb-3 mt-5"> Players in waiting </p>
+<table class="table table-striped table-bordered table-hover table-dark">
+    <thead class="text-center">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Class</th>
+            <th scope="col" class="d-none d-md-table-cell">Role</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody class="text-center">
+        {% for raidCharacter in raid.raidCharacters %}
+            {% if raidCharacter.isWaitingConfirmation %}
+                <tr>
+                    <td>{{ raidCharacter.userCharacter.name }}</td>
+                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+                    <td>{{ raidCharacter.role.name }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">Show notes</button>
+                        {{ include('raid_leader/modal/_character_information.html.twig') }}
+                        <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
+                        <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
+                        <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<p class="h4 mb-3 mt-5"> Players refused </p>
+<table class="table table-striped table-bordered table-hover table-dark">
+    <thead class="text-center">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Class</th>
+            <th scope="col" class="d-none d-md-table-cell">Role</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody class="text-center">
+        {% for raidCharacter in raid.raidCharacters %}
+            {% if raidCharacter.isRefused and user.hasBlocked(raidCharacter.userCharacter.user) == false %}
+                <tr>
+                    <td>{{ raidCharacter.userCharacter.name }}</td>
+                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
+                    <td>{{ raidCharacter.role.name }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">Show notes</button>
+                        {{ include('raid_leader/modal/_character_information.html.twig') }}
+                        <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
+                        <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
