@@ -13,11 +13,12 @@
             <div class="col-lg-5 col-md-11 text-center">
                 {{ form_label(formCharacter.name) }}
                 {{ form_widget(formCharacter.name) }}
+                <small class="form-text text-muted mb-4">Your character name cannot contain space or special character</small>
                 {{ form_errors(formCharacter.name) }}
             </div>
 
             {% if formCharacter.server is defined %}
-                <div class="col-lg-5 col-md-11 row m-0"> 
+                <div class="col-lg-5 col-md-11 row m-0">
                     <div class="col-lg-6 col-md-12 p-0 text-center">
                         {{ form_label(formCharacter.server) }}
                         {{ form_widget(formCharacter.server) }}
@@ -30,8 +31,8 @@
                     </div>
                 </div>
             {% else %}
-                <div class="mt-2 p-2 border border-primary rounded"> 
-                    You cannot change the server of character who's subscribe 
+                <div class="mt-2 p-2 border border-primary rounded">
+                    You cannot change the server of character who's subscribe
                     a raid or is in waiting confirmation
                 </div>
             {% endif %}

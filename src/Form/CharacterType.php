@@ -22,7 +22,7 @@ class CharacterType extends AbstractType
                     'class' => 'h5',
                 ],
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-control mb-0',
                 ]
             ]);
 

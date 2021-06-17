@@ -12,12 +12,14 @@
 
 {% block body %}
 
+{{ include('event/event_list_parts/_information_message.html.twig') }}
+
 <calendar-wrapper>
-    {{ include('event/_calendar.html.twig') }}
+    {{ include('event/event_list_parts/_calendar.html.twig') }}
 </calendar-wrapper>
 
 <raid-wrapper>
-    {{ include('event/_raid_list.html.twig')}}
+    {{ include('event/event_list_parts/_raid_list.html.twig')}}
 </raid-wrapper>
 
 {% endblock %}

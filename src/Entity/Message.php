@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=MessageRepository::class)
@@ -25,6 +26,10 @@ class Message
     private $name;
 
     /**
+     * @Assert\Email(
+     *     message = "This email is not valid"
+     * )
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $email;
