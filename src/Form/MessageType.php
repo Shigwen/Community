@@ -13,13 +13,30 @@ class MessageType extends AbstractType
     {
         $builder
             ->add('name', null, [
-                'label' => 'Your name'
+                'label' => 'Your name',
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
-            ->add('email')
+            ->add('email', null, [
+                'label' => 'Your email',
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
             ->add('messageType', null, [
-                'label' => false,
+                'label' => 'Subject',
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
-            ->add('message');
+            ->add('message', null, [
+                'label' => 'Your message',
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 6,
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

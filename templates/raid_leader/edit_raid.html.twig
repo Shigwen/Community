@@ -8,24 +8,21 @@
 
 {% block body %}
 
-<main class="container bg-dark">
+<div class="row col-12">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">Back to HQ</a>
+</div>
 
-    <div class="row col-12">
-        <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">Back to RL HQ</a>
-    </div>
-
-    {% if raid.isPrivate %}
-        <div class="row d-flex justify-content-around mt-5">
-            <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded h5">
-                Code du raid : {{ raid.identifier }} <br><br>
-                Ce raid est privée, il n’apparaîtra pas dans les résultats public de la page calendar. <br>
-                Donnez le code aux joueurs afin qu'il puisse le renseigner dans la page calendar afin de trouver votre raid
-            </div>
+{% if raid.isPrivate %}
+    <div class="row d-flex justify-content-around mt-5">
+        <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded h5">
+            Private raid code : {{ raid.identifier }} <br><br>
+            This raid is private. It will not appear in the public results of the calendar page <br>
+            Give the code to your raiders so they can fill it in the calendar form to access the raid page
         </div>
-    {% endif %}
+    </div>
+{% endif %}
 
-    {{ include('raid_leader/event_list_parts/_raid_form.html.twig') }}
-    {{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
+{{ include('raid_leader/event_list_parts/_raid_form.html.twig') }}
+{{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
 
-</main>
 {% endblock %}

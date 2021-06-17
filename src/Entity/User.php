@@ -420,6 +420,16 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getStrCharacterList()
+    {
+        $str = '';
+        foreach ($this->characters as $character) {
+            $str .= $character->getName() . ' ';
+        }
+
+        return $str;
+    }
+
     public function getCharacters(): Collection
     {
         return $this->characters;

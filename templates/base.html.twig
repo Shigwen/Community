@@ -66,6 +66,30 @@
 
     {% endif %}
 
-    {% block body %}{% endblock %}
+    <main class="container bg-dark border-bottom border-secondary">
+        {% if app.request.attributes.get('_route') == 'home' %}
+            {{ include('_ragnaros.html.twig') }}
+        {% endif %}
+
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="d-flex justify-content-center ">
+            <div class="row col-7 d-flex justify-content-around">
+                <div class="my-3 {% if app.request.attributes.get('_route') == 'about_us' %}active{% endif %}">
+                    <a class="text-light text-decoration-none" href="{{ path('about_us') }}">About us</a>
+                </div>
+
+                <div class="my-3 {% if app.request.attributes.get('_route') == 'terms_of_use' %}active{% endif %}">
+                    <a class="text-light text-decoration-none" href="{{ path('terms_of_use') }}">Terms of use</a>
+                </div>
+
+                <div class="my-3 {% if app.request.attributes.get('_route') == 'contact' %}active{% endif %}">
+                    <a class="text-light text-decoration-none" href="{{ path('contact') }}">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

@@ -12,13 +12,12 @@
 
 {% block body %}
 
-<main class="container bg-dark">
-    <calendar-wrapper>
-        {{ include('event/_calendar.html.twig') }}
-    </calendar-wrapper>
+<calendar-wrapper>
+    {{ include('event/_calendar.html.twig') }}
+</calendar-wrapper>
 
-    <raid-wrapper>
-        {{ include('event/_raid_list.html.twig')}}
-    </raid-wrapper>
-</main>
+<raid-wrapper>
+    {{ include('event/_raid_list.html.twig')}}
+</raid-wrapper>
+
 {% endblock %}

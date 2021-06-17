@@ -1,7 +1,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
-    <a class="navbar-brand bg-primary rounded-pill pl-3 pr-3" href="#">Community Project</a>
+    <a class="navbar-brand bg-primary rounded-pill pl-3 pr-3" href="{{path('home')}}">Community Project</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -10,9 +10,11 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
 
-            <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'home' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('home') }}">Home</a>
-            </li>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') == false %}
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'home' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('home') }}">Home</a>
+                </li>
+            {% endif %}
 
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
@@ -29,7 +31,7 @@
             {% if is_granted('ROLE_RAID_LEADER') %}
 
                 <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'raidleader_events' %}active{% endif %}">
-                    <a class="nav-link" href="{{ path('raidleader_events') }}">RL HQ</a>
+                    <a class="nav-link" href="{{ path('raidleader_events') }}">HQ</a>
                 </li>
 
                 <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'raidleader_manage_participant_ban_players' %}active{% endif %}">
@@ -49,18 +51,6 @@
                 </li>
 
             {% endif %}
-
-            <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'about_us' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('about_us') }}">About us</a>
-            </li>
-
-            <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'terms_of_use' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('terms_of_use') }}">Terms of use</a>
-            </li>
-
-            <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'contact' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('contact') }}">Contact</a>
-            </li>
 
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 

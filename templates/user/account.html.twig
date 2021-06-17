@@ -12,14 +12,10 @@
 
 {% block body %}
 
-<main class="container bg-dark">
+{{ include('user/account_parts/_form_account.html.twig') }}
+{{ include('user/account_parts/_character_list.html.twig') }}
+{{ include('user/account_parts/_form_character.html.twig') }}
 
-    {{ include('user/account_parts/_form_account.html.twig') }}
-    {{ include('user/account_parts/_character_list.html.twig') }}
-    {{ include('user/account_parts/_form_character.html.twig') }}
-
-    {{ include('user_raid_leader_parts/_scheduled_raids.html.twig') }}
-
-</main>
+{{ include('user_raid_leader_parts/_scheduled_raids.html.twig') }}
 
 {% endblock %}
