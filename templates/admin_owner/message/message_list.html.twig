@@ -9,33 +9,32 @@
 </style>
 
 <div class="example-wrapper">
-	<table>
-		<thead>
-			<tr>
-				<th>Nom</th>
-				<th>Email</th>
-				<th>Type de message</th>
-				<th>Message</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for message in messages %}
-				<tr>
-					<td>{{ message.name }}</td>
-					<td>{{ message.email }}</td>
-					<td>{{ message.messageType.name }}</td>
-					<td>{{ message.message|slice(0, 150) }} {% if message.message|length > 150 %}...{% endif %}</td>
-					<td>
-						<a href="{{ path('admin_message', {id: message.id}) }}">Show</a>
-						<a href="{{ path('admin_archive_message', {id: message.id}) }}">Archived</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Type de message</th>
+                <th>Message</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in messages %}
+                <tr>
+                    <td>{{ message.name }}</td>
+                    <td>{{ message.email }}</td>
+                    <td>{{ message.messageType.name }}</td>
+                    <td>{{ message.message|slice(0, 150) }} {% if message.message|length > 150 %}...{% endif %}</td>
+                    <td>
+                        <a href="{{ path('admin_message', {id: message.id}) }}">Show</a>
+                        <a href="{{ path('admin_archive_message', {id: message.id}) }}">Archived</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-	<a href="{{ path('admin_archived_messages') }}">Archived messages</a>
-
+    <a href="{{ path('admin_archived_messages') }}">Archived messages</a>
 </div>
 {% endblock %}

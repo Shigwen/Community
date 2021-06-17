@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CharacterRepository::class)
@@ -14,6 +15,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Character
 {
+    const FACTION_HORDE = 'Horde';
+    const FACTION_ALLIANCE = 'Alliance';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -21,7 +25,18 @@ class Character
      */
     private $id;
 
-	/**
+    /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a character name"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "Your character name cannot be longer than 250 characters"
+     * ) 
+     * @Assert\Regex(
+     *     pattern = "/^\w{1,}$/",
+     *     message = "Your character name cannot contain space or special character (except underscore)"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -42,24 +57,48 @@ class Character
     private $updatedAt;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
+
+    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a character class"
+     * )
+     *  
      * @ORM\ManyToOne(targetEntity=CharacterClass::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $characterClass;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a server"
+     * )
+     *  
      * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $server;
 
-	/**
+    /**
+     * @ORM\ManyToOne(targetEntity=Faction::class, inversedBy="characters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $faction;
+
+    /**
+     * @Assert\Count(
+     *     min = 1,
+     *     minMessage = "You must specify at least one role"
+     * )
+     * 
      * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="characters")
      */
     private $roles;
@@ -71,15 +110,15 @@ class Character
 
     public function __construct()
     {
-		$this->createdAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->roles = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
     }
 
-	function __toString()
-	{
-		return $this->name;
-	}
+    function __toString()
+    {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {
@@ -127,6 +166,18 @@ class Character
         return $this;
     }
 
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -151,14 +202,26 @@ class Character
         return $this;
     }
 
-	public function getServer(): ?Server
-	{
-		return $this->server;
-	}
+    public function getServer(): ?Server
+    {
+        return $this->server;
+    }
 
     public function setServer(?Server $server): self
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getFaction(): ?Faction
+    {
+        return $this->faction;
+    }
+
+    public function setFaction(?Faction $faction): self
+    {
+        $this->faction = $faction;
 
         return $this;
     }
@@ -170,7 +233,7 @@ class Character
         return $this;
     }
 
-	/**
+    /**
      * @return Collection|Role[]
      */
     public function getRoles(): Collection
@@ -178,21 +241,21 @@ class Character
         return $this->roles;
     }
 
-	/**
-	 * List of role in the following format : Tank / Heal / DPS
+    /**
+     * List of role in the following format : Tank / Heal / DPS
      * @return string
      */
     public function getStrRoles(): string
     {
-		$string = '';
+        $string = '';
 
-		foreach ($this->roles as $index => $role) {
-			$string .= $role->getName();
+        foreach ($this->roles as $index => $role) {
+            $string .= $role->getName();
 
-			if($index + 1 < count($this->roles)) {
-				$string .= ' / ';
-			}
-		}
+            if ($index + 1 < count($this->roles)) {
+                $string .= ' / ';
+            }
+        }
 
         return $string;
     }

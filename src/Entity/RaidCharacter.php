@@ -2,17 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\RaidCharacterRepository;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RaidCharacterRepository;
 
 /**
  * @ORM\Entity(repositoryClass=RaidCharacterRepository::class)
  */
 class RaidCharacter
 {
-	const WAITING_CONFIRMATION = 0;
-	const ACCEPT = 1;
-	const REFUSED = 2;
+    const WAITING_CONFIRMATION = 0;
+    const ACCEPT = 1;
+    const REFUSED = 2;
 
     /**
      * @ORM\Id
@@ -20,11 +21,6 @@ class RaidCharacter
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="smallint")
-     */
-    private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity=Raid::class, inversedBy="raidCharacters")
@@ -38,37 +34,20 @@ class RaidCharacter
      */
     private $userCharacter;
 
-	/**
+    /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="raidCharacters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $role;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function isAccept(): ?int
-    {
-        return $this->status === $this::ACCEPT;
-    }
-
-    public function isWaitingConfirmation(): ?int
-    {
-        return $this->status === $this::WAITING_CONFIRMATION;
-    }
-
-    public function isRefused(): ?int
-    {
-        return $this->status === $this::REFUSED;
-    }
-
-    public function setStatus(int $status): self
-    {
-        $this->status = $status;
-
-        return $this;
     }
 
     public function getRaid(): ?Raid
@@ -95,7 +74,16 @@ class RaidCharacter
         return $this;
     }
 
-	public function getRole(): ?Role
+    public function isCharacterFromUser(User $user)
+    {
+        if ($this->userCharacter->getUser() !== $user) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getRole(): ?Role
     {
         return $this->role;
     }
@@ -107,21 +95,43 @@ class RaidCharacter
         return $this;
     }
 
-	public function getCharacterServer()
-	{
-		if (!$this->userCharacter) {
-			return null;
-		}
+    public function getCharacterServer()
+    {
+        if (!$this->userCharacter) {
+            return null;
+        }
 
-		return $this->userCharacter->getServer();
-	}
+        return $this->userCharacter->getServer();
+    }
 
-	public function getUser()
-	{
-		if (!$this->userCharacter) {
-			return null;
-		}
+    public function getUser()
+    {
+        if (!$this->userCharacter) {
+            return null;
+        }
 
-		return $this->userCharacter->getUser();
-	}
+        return $this->userCharacter->getUser();
+    }
+
+    public function isAccept(): ?int
+    {
+        return $this->status === $this::ACCEPT;
+    }
+
+    public function isWaitingConfirmation(): ?int
+    {
+        return $this->status === $this::WAITING_CONFIRMATION;
+    }
+
+    public function isRefused(): ?int
+    {
+        return $this->status === $this::REFUSED;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
 }

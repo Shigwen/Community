@@ -1,0 +1,19 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+fos_ck_editor:
+    configs:
+        config_base:
+            toolbar: "toolbar_base"
+            uiColor: "#FFFFFF"
+    toolbars:
+        configs:
+            toolbar_base: ["@general", "@text_format", "@paragraphe", "@text_color", "@formatage"]
+        items:
+            general:     ['Maximize', '-', 'Undo', 'Redo']
+            text_format: ['FontSize', 'Format', 'Bold', 'Italic', 'Underline', 'Strike']
+            paragraphe:  ['-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+            text_color:  ['TextColor', 'BGColor']
+            formatage:   ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Smiley']

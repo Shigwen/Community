@@ -1,0 +1,55 @@
+{% form_theme formUser 'form_theme/form_errors.html.twig' %}
+
+<div class="row d-flex justify-content-around">
+    <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+        <details>
+            <summary class="h5">
+                Welcome <span class="text-success">{{ user.name }}</span> !
+                <br> The mail adress you are currently using is <span class="text-success">{{ user.email }}</span>.
+            </summary>
+
+            <p>
+                <br>
+                Do you want to change your location or your password ? You can change either or both here.
+            </p>
+
+            {{ form_start(formUser) }}
+                <fieldset>
+                    <div class="col-12 p-0 m-0 row">
+                        <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
+                            {{ form_label(formUser.country) }}
+                            {{ form_widget(formUser.country) }}
+                            {{ form_errors(formUser.country) }}
+                        </div>
+                        <div id="timezoneContainer" class="col-12 col-md-6 p-0">
+                            {{ form_label(formUser.timezone) }}
+                            {{ form_widget(formUser.timezone) }}
+                            {{ form_errors(formUser.timezone) }}
+                        </div>
+                    </div>
+
+                    <small id="regionHelp" class="form-text text-muted mb-4"> Important ! It allows us to calculate the raid beginning and ending hours taking your time zone into account</small>
+
+                    <div class="col-12 p-0 m-0 row">
+                        <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
+                            {{ form_label(formUser.password.first) }}
+                            {{ form_widget(formUser.password.first) }}
+                            {{ form_errors(formUser.password.first) }}
+                            <small id="passwordHelp" class="form-text text-muted mb-4">Make it stronk.</small>
+                        </div>
+
+                        <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
+                            {{ form_label(formUser.password.second) }}
+                            {{ form_widget(formUser.password.second) }}
+                            {{ form_errors(formUser.password.second) }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
+                    </div>
+                </fieldset>
+            {{ form_end(formUser) }}
+        </details>
+    </div>
+</div>

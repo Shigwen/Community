@@ -19,7 +19,7 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
-	/**
+    /**
      * @return Message[]
      */
     public function findByArchivedMessages()
@@ -27,7 +27,7 @@ class MessageRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->andWhere('m.archivedAt is not null')
             ->orderBy('m.messageType', 'ASC')
-			->orderBy('m.email', 'ASC')
+            ->orderBy('m.email', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -40,7 +40,7 @@ class MessageRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->andWhere('m.archivedAt is null')
             ->orderBy('m.messageType', 'ASC')
-			->orderBy('m.email', 'ASC')
+            ->orderBy('m.email', 'ASC')
             ->getQuery()
             ->getResult();
     }

@@ -2,18 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\RaidRepository;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RaidRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AssertCustom;
 
 /**
  * @ORM\Entity(repositoryClass=RaidRepository::class)
  */
 class Raid
 {
-	const IDENTIFIER_SIZE = 20;
+    const IDENTIFIER_SIZE = 20;
 
     /**
      * @ORM\Id
@@ -22,37 +24,72 @@ class Raid
      */
     private $id;
 
-	/**
+    /**
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $identifier;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a raid name"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "The raid name cannot be longer than 250 characters"
+     * )
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "The template name cannot be longer than 250 characters"
+     * )
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $templateName;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a raid type"
+     * )
+     * @Assert\Choice(
+     *     choices = {10, 25, 40},
+     *     message = "Choose a valid raid type"
+     * )
+     *
      * @ORM\Column(type="smallint")
      */
     private $raidType;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "The number of people you are looking for cannot be blank"
+     * )
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     * @Assert\LessThan(
+     *     propertyPath = "raidType",
+     *     message = "The number of people you are looking for must be inferior to the size of the raid"
+     * )
+     * @AssertCustom\GreaterThanMaxTankAndHeal()
+     *
      * @ORM\Column(type="smallint")
      */
     private $expectedAttendee;
 
-	/**
+    /**
+     * @AssertCustom\GreaterThanNow()
      * @ORM\Column(type="datetime")
      */
     private $startAt;
 
     /**
+     * @AssertCustom\GreaterThanStartAt()
+     *
      * @ORM\Column(type="datetime")
      */
     private $endAt;
@@ -63,29 +100,58 @@ class Raid
     private $information;
 
     /**
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     *
      * @ORM\Column(type="smallint")
      */
     private $minTank;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @Assert\NotBlank(
+     *     message = "The maximum number of tanks you are looking for cannot be blank"
+     * )
+     * @Assert\GreaterThan(
+     *     propertyPath = "minTank",
+     *     message = "The maximum number of tanks cannot be inferior to the minimum"
+     * )
+     *
+     * @ORM\Column(type="smallint")
      */
     private $maxTank;
 
     /**
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     *
      * @ORM\Column(type="smallint")
      */
     private $minHeal;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @Assert\NotBlank(
+     *     message = "The maximum number of healers you are looking for cannot be blank"
+     * )
+     * @Assert\GreaterThan(
+     *     propertyPath = "minHeal",
+     *     message = "The maximum number of healers cannot be inferior to the minimum"
+     * )
+     *
+     * @ORM\Column(type="smallint")
      */
     private $maxHeal;
 
-	/**
+    /**
      * @ORM\Column(type="boolean")
      */
     private $autoAccept;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPrivate;
 
     /**
      * @ORM\Column(type="datetime")
@@ -98,6 +164,11 @@ class Raid
     private $updatedAt;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
+
+    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -108,20 +179,11 @@ class Raid
      */
     private $raidCharacters;
 
-	/**
-     * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="raids")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $server;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isPrivate;
-
     public function __construct()
     {
-		$this->createdAt = new DateTime();
+        $this->startAt = new DateTime();
+        $this->endAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->raidCharacters = new ArrayCollection();
     }
 
@@ -130,12 +192,12 @@ class Raid
         return $this->id;
     }
 
-	public function getIdentifier(): ?string
-	{
-		return $this->identifier;
-	}
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
 
-    public function setIdentifier(string $identifier): self
+    public function setIdentifier($identifier): self
     {
         $this->identifier = $identifier;
 
@@ -219,7 +281,7 @@ class Raid
         if (!$this->getStartAt()) {
             return null;
         }
-        
+
         return [
             1 => 'Monday',
             2 => 'Tuesday',
@@ -291,14 +353,26 @@ class Raid
         return $this;
     }
 
-	public function getAutoAccept(): ?bool
-	{
-		return $this->autoAccept;
-	}
+    public function isAutoAccept(): ?bool
+    {
+        return $this->autoAccept;
+    }
 
     public function setAutoAccept(bool $autoAccept): self
     {
         $this->autoAccept = $autoAccept;
+
+        return $this;
+    }
+
+    public function isPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setIsPrivate(bool $isPrivate): self
+    {
+        $this->isPrivate = $isPrivate;
 
         return $this;
     }
@@ -320,6 +394,18 @@ class Raid
         return $this;
     }
 
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -332,40 +418,20 @@ class Raid
         return $this;
     }
 
+    public function hasCharacter(Character $character)
+    {
+        foreach ($this->raidCharacters as $raidCharacter) {
+            if ($raidCharacter->getUserCharacter = $character) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getRaidCharacters(): Collection
     {
         return $this->raidCharacters;
     }
-
-    public function getRaidCharacterFromUser(User $user): RaidCharacter
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUser() === $user) {
-				return $raidCharacter;
-			}
-		}
-		return null;
-	}
-
-	public function getCharacterFromUser(User $user): Character
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUser() === $user) {
-				return $raidCharacter->getUserCharacter();
-			}
-		}
-		return null;
-	}
-
-	public function hasCharacter(Character $character)
-	{
-		foreach ($this->raidCharacters as $raidCharacter) {
-			if ($raidCharacter->getUserCharacter = $character) {
-				return true;
-			}
-		}
-		return false;
-	}
 
     public function addRaidCharacter(RaidCharacter $raidCharacter): self
     {
@@ -385,30 +451,6 @@ class Raid
                 $raidCharacter->setRaid(null);
             }
         }
-
-        return $this;
-    }
-
-	public function getServer(): ?Server
-    {
-        return $this->server;
-    }
-
-    public function setServer(?Server $server): self
-    {
-        $this->server = $server;
-
-        return $this;
-    }
-
-    public function getIsPrivate(): ?bool
-    {
-        return $this->isPrivate;
-    }
-
-    public function setIsPrivate(bool $isPrivate): self
-    {
-        $this->isPrivate = $isPrivate;
 
         return $this;
     }

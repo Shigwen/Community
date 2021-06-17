@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
+use App\Entity\Server;
+use App\Entity\Faction;
 use App\Entity\Character;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Character|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +22,23 @@ class CharacterRepository extends ServiceEntityRepository
         parent::__construct($registry, Character::class);
     }
 
-    // /**
-    //  * @return Character[] Returns an array of Character objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Character[]
+     */
+    public function getAllByUserAndServerAndFaction(User $user, Server $server, Faction $faction)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->where('c.user = :user')
+            ->andWhere('c.isArchived = 0')
+            ->andWhere('c.server = :server')
+            ->andWhere('c.faction = :faction')
+            ->orderBy('c.name', 'ASC')
+            ->setParameters([
+                'user' => $user,
+                'server' => $server,
+                'faction' => $faction
+            ])
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Character
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

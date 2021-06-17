@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\Character;
+use App\Entity\RaidCharacter;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RoleRepository;
 use Doctrine\Common\Collections\Collection;
@@ -13,6 +15,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Role
 {
+    const TANK = 1;
+    const HEAL = 2;
+    const DPS = 3;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -26,16 +32,6 @@ class Role
     private $name;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $updatedAt;
-
-    /**
      * @ORM\ManyToMany(targetEntity=Character::class, mappedBy="roles")
      */
     private $characters;
@@ -47,15 +43,15 @@ class Role
 
     public function __construct()
     {
-		$this->createdAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
     }
 
-	public function __toString()
-	{
-		return $this->name;
-	}
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {
@@ -70,23 +66,6 @@ class Role
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -146,5 +125,15 @@ class Role
         }
 
         return $this;
+    }
+
+    public function isTank()
+    {
+        return $this->id === self::TANK;
+    }
+
+    public function isHeal()
+    {
+        return $this->id === self::HEAL;
     }
 }

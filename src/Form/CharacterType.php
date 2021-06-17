@@ -2,11 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Character;
 use App\Entity\Role;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Character;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -16,77 +17,93 @@ class CharacterType extends AbstractType
     {
         $builder
             ->add('name', null, [
-				'label' => 'Name',
-				'label_attr' => [
-					'class' => 'h5',
-				],
-				'attr' => [
-					'class' => 'form-control',
-				]
-			])
+                'label' => 'Name',
+                'label_attr' => [
+                    'class' => 'h5',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                ]
+            ]);
 
-			->add('server', null, [
-				'label' => 'Server',
-				'label_attr' => [
-					'class' => 'h5',
-				],
-				'attr' => [
-					'class' => 'custom-select',
-				]
-			])
+        if (!$options['isSubscribeInARaid']) {
+            $builder
+                ->add('server', null, [
+                    'label' => 'Server',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
+                    'group_by' => function ($server) {
+                        return $server->getVerboseVersionAndRegion();
+                    },
+                ])
+                ->add('faction', null, [
+                    'label' => 'Faction',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
+                ]);
+        }
 
+        $builder
             ->add('characterClass', null, [
-				'label' => 'Class',
-				'label_attr' => [
-					'class' => 'h5',
-				],
-				'attr' => [
-					'class' => 'custom-select',
-				]
-			])
+                'label' => 'Class',
+                'label_attr' => [
+                    'class' => 'h5',
+                ],
+                'attr' => [
+                    'class' => 'custom-select',
+                ]
+            ])
 
             ->add('roles', EntityType::class, [
-				'label' => 'Roles (you can AND accept to play if asked to)',
-				'label_attr' => [
-					'class' => 'h5',
-				],
-				'attr' => [
-					'class' => 'form-check',
-				],
-				'class' => Role::class,
+                'label' => 'Roles (you can AND accept to play if asked to)',
+                'label_attr' => [
+                    'class' => 'h5',
+                ],
+                'attr' => [
+                    'class' => 'form-check',
+                ],
+                'class' => Role::class,
+                'choice_attr' => function () {
+                    return ['class' => 'btn-check'];
+                },
+                'expanded' => true,
+                'multiple' => true
+            ])
 
-				'choice_attr' => function(){
-					return ['class' => 'btn-check'];
-				},
+            ->add('information',CKEditorType::class, [
+                'label' => 'Character notes (anything relevant you\'d like to show to the raid leaders)',
+                'label_attr' => [
+                    'class' => 'h5',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => '3',
+                ],
+                'required' => false,
+            ])
 
-				'expanded' => true,
-				'multiple' => true,
-			])
-
-            ->add('information', null, [
-				'label' => 'Character notes (anything relevant you\'d like to show to the raid leaders)',
-				'label_attr' => [
-					'class' => 'h5',
-				],
-				'attr' => [
-					'class' => 'form-control',
-					'rows' => '3',
-				],
-			])
-
-			->add('button', SubmitType::class, [
-				'label' => $options['isEdit'] ? 'Modify' : 'Create',
-				'attr' => [
-					'class' => 'btn btn-primary rounded-pill btn-lg',
-				],
-			]);
+            ->add('button', SubmitType::class, [
+                'label' => $options['isEdit'] ? 'Modify' : 'Create',
+                'attr' => [
+                    'class' => 'btn btn-primary rounded-pill btn-lg',
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-			'isEdit' => false,
+            'isEdit' => false,
             'data_class' => Character::class,
+            'isSubscribeInARaid' => false,
         ]);
     }
 }

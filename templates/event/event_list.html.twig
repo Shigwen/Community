@@ -2,16 +2,22 @@
 
 {% block title %}Calendar{% endblock %}
 
-{% block javascripts %}
-	<script defer src="{{asset('js/calendar.js')}}"></script>
+{% block custom_scripts %}
+    <script defer src="{{asset('js/calendar.js')}}"></script>
+{% endblock %}
+
+{% block banner_title %}
+    <h1>Calendar</h1>
 {% endblock %}
 
 {% block body %}
-	<calendar-wrapper>
-		{{ include('event/_calendar.html.twig') }}
-	</calendar-wrapper>
 
-	<raid-wrapper>
-		{{ include('event/_raids.html.twig')}}
-	</raid-wrapper>
+<calendar-wrapper>
+    {{ include('event/_calendar.html.twig') }}
+</calendar-wrapper>
+
+<raid-wrapper>
+    {{ include('event/_raid_list.html.twig')}}
+</raid-wrapper>
+
 {% endblock %}

@@ -34,45 +34,271 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
 {
-    var CONTAINER = document.querySelector("calendar-wrapper");
+    // Container
+    var CONTAINER_1 = document.querySelector("calendar-wrapper");
     var RAID_CONTAINER_1 = document.querySelector("raid-wrapper");
-    if (CONTAINER === null) {
+    var BUTTON_LIST_CONTAINER = document.querySelector("button-list");
+    // Select list
+    var SELECT_CHARACTER_1 = document.querySelector("#raid_character_userCharacter");
+    var SELECT_NUMBER_OF_RESULT_PER_PAGE_1 = document.querySelector("#nbrOfResultPerPage");
+    // Calendar
+    var NOW_1 = new Date();
+    var STORED_MONTHS_1 = Array.from(CONTAINER_1.querySelectorAll("widget-calendar"));
+    var last_shown_month_1 = STORED_MONTHS_1.length - 1;
+    var abort_handle_1 = null;
+    // Raid List
+    var stored_raid_1 = [];
+    var chosen_number_of_result_per_page_1 = "";
+    // Filters for raid list
+    var chosen_date_1 = "";
+    var chosen_character_1 = "";
+    var chosen_number_of_page_1 = "0";
+    if (CONTAINER_1 === null) {
         throw new Error("Missing calendar wrapper");
     }
-    var NOW_1 = new Date();
-    var STORED_MONTHS_1 = Array.from(CONTAINER.querySelectorAll("widget-calendar"));
     if (STORED_MONTHS_1.length < 1) {
         throw new Error("Missing elements");
     }
-    var chosen_date_1 = "";
-    var last_shown_month_1 = STORED_MONTHS_1.length - 1;
-    var abort_handle_1 = null;
     function clear_process_queue() {
         if (abort_handle_1) {
             abort_handle_1.abort();
             abort_handle_1 = null;
         }
     }
-    function select_date(target) {
+    function change_character() {
         return __awaiter(this, void 0, Promise, function () {
-            var DATE_IDENTIFIER, BODY, RESPONSE, HTML, DIV, ITEM, OLD_RAID_LIST, error_1;
+            var OLD_DATE, BODY, RAID_LIST, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, 4, 5]);
+                        _a.trys.push([0, 2, 3, 4]);
                         clear_process_queue();
+                        OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
+                        if (!OLD_DATE) {
+                            return [2 /*return*/];
+                        }
+                        chosen_character_1 = SELECT_CHARACTER_1.value;
+                        if (!chosen_character_1) {
+                            throw new Error("Missing Attribute");
+                        }
+                        chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
+                        BODY = new FormData();
+                        BODY.set("character", chosen_character_1);
+                        BODY.set("date", chosen_date_1);
+                        BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
+                        return [4 /*yield*/, update_raid_list(BODY)];
+                    case 1:
+                        RAID_LIST = _a.sent();
+                        stored_raid_1 = [];
+                        stored_raid_1[0] = RAID_LIST;
+                        return [3 /*break*/, 4];
+                    case 2:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        clear_process_queue();
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function change_month(go_forward) {
+        return __awaiter(this, void 0, Promise, function () {
+            var MONTH, BODY, ITEM, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, 6, 7]);
+                        clear_process_queue();
+                        if (go_forward) {
+                            ++last_shown_month_1;
+                        }
+                        else if (last_shown_month_1 >= 1) {
+                            --last_shown_month_1;
+                        }
+                        else {
+                            return [2 /*return*/];
+                        }
+                        if (!go_forward) return [3 /*break*/, 3];
+                        if (!!STORED_MONTHS_1[last_shown_month_1]) return [3 /*break*/, 2];
+                        MONTH = new Date(NOW_1.getFullYear(), NOW_1.getMonth() + last_shown_month_1, 27, 0, 0, 0, 0);
+                        BODY = new FormData();
+                        BODY.set("date", MONTH.toISOString().substr(0, 10));
+                        return [4 /*yield*/, update_calendar(BODY)];
+                    case 1:
+                        ITEM = _a.sent();
+                        if (ITEM) {
+                            STORED_MONTHS_1.push(ITEM);
+                        }
+                        _a.label = 2;
+                    case 2:
+                        STORED_MONTHS_1[last_shown_month_1 - 1].insertAdjacentElement("afterend", STORED_MONTHS_1[last_shown_month_1]);
+                        STORED_MONTHS_1[last_shown_month_1 - 1].remove();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        STORED_MONTHS_1[last_shown_month_1 + 1].insertAdjacentElement("beforebegin", STORED_MONTHS_1[last_shown_month_1]);
+                        STORED_MONTHS_1[last_shown_month_1 + 1].remove();
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 7];
+                    case 5:
+                        error_2 = _a.sent();
+                        console.log(error_2);
+                        if (go_forward) {
+                            --last_shown_month_1;
+                        }
+                        else {
+                            ++last_shown_month_1;
+                        }
+                        return [3 /*break*/, 7];
+                    case 6:
+                        clear_process_queue();
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function select_date(target) {
+        if (target === void 0) { target = null; }
+        return __awaiter(this, void 0, Promise, function () {
+            var DATE_IDENTIFIER, OLD_DATE, BODY, RAID_LIST, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, 3, 4]);
+                        clear_process_queue();
+                        DATE_IDENTIFIER = void 0;
                         DATE_IDENTIFIER = target.dataset.date;
                         if (!DATE_IDENTIFIER) {
-                            throw new Error("Missing attribute");
+                            throw new Error("Missing Attribute");
                         }
                         if (target.matches(".is-notavailable")) {
                             return [2 /*return*/];
                         }
+                        OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
+                        if (OLD_DATE) {
+                            OLD_DATE.removeAttribute('id');
+                        }
+                        target.id = 'is-selected';
                         chosen_date_1 = DATE_IDENTIFIER;
+                        chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
+                        if (SELECT_CHARACTER_1) {
+                            chosen_character_1 = SELECT_CHARACTER_1.value;
+                        }
                         BODY = new FormData();
                         BODY.set("date", chosen_date_1);
+                        BODY.set("character", chosen_character_1);
+                        BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
+                        return [4 /*yield*/, update_raid_list(BODY)];
+                    case 1:
+                        RAID_LIST = _a.sent();
+                        stored_raid_1 = [];
+                        stored_raid_1[0] = RAID_LIST;
+                        return [3 /*break*/, 4];
+                    case 2:
+                        error_3 = _a.sent();
+                        console.log(error_3);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        clear_process_queue();
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function change_number_of_result_per_page() {
+        return __awaiter(this, void 0, Promise, function () {
+            var OLD_DATE, BODY, RAID_LIST, error_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, 3, 4]);
+                        clear_process_queue();
+                        OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
+                        if (SELECT_CHARACTER_1) {
+                            chosen_character_1 = SELECT_CHARACTER_1.value;
+                        }
+                        chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
+                        BODY = new FormData();
+                        if (OLD_DATE) {
+                            BODY.set("date", chosen_date_1);
+                            BODY.set("character", chosen_character_1);
+                        }
+                        BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
+                        return [4 /*yield*/, update_raid_list(BODY)];
+                    case 1:
+                        RAID_LIST = _a.sent();
+                        stored_raid_1 = [];
+                        stored_raid_1[0] = RAID_LIST;
+                        return [3 /*break*/, 4];
+                    case 2:
+                        error_4 = _a.sent();
+                        console.log(error_4);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        clear_process_queue();
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function change_page_of_result(target) {
+        return __awaiter(this, void 0, Promise, function () {
+            var BODY, RAID_LIST, OLD_RAID_LIST, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, 5, 6]);
+                        clear_process_queue();
+                        chosen_number_of_page_1 = target.dataset.page;
+                        chosen_number_of_result_per_page_1 = SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value;
+                        if (!(typeof stored_raid_1[parseInt(chosen_number_of_page_1)] === 'undefined')) return [3 /*break*/, 2];
+                        BODY = new FormData();
+                        if (chosen_date_1) {
+                            BODY.set("date", chosen_date_1);
+                            if (chosen_character_1) {
+                                BODY.set("character", chosen_character_1);
+                            }
+                        }
+                        BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
+                        BODY.set("currentPage", chosen_number_of_page_1);
+                        return [4 /*yield*/, update_raid_list(BODY)];
+                    case 1:
+                        RAID_LIST = _a.sent();
+                        if (RAID_LIST) {
+                            stored_raid_1[chosen_number_of_page_1] = RAID_LIST;
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        OLD_RAID_LIST = RAID_CONTAINER_1.querySelector("raid-list");
+                        OLD_RAID_LIST.insertAdjacentElement("beforebegin", stored_raid_1[parseInt(chosen_number_of_page_1)]);
+                        OLD_RAID_LIST.remove();
+                        _a.label = 3;
+                    case 3: return [3 /*break*/, 6];
+                    case 4:
+                        error_5 = _a.sent();
+                        console.log(error_5);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        clear_process_queue();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function update_raid_list(BODY) {
+        return __awaiter(this, void 0, void 0, function () {
+            var RESPONSE, HTML, DIV, ITEM, TITLE, BUTTONS, OLD_RAID_LIST, OLD_RAID_LIST_TITLE, error_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
                         abort_handle_1 = new AbortController();
                         return [4 /*yield*/, fetch("/ajax/get-all-raid-of-the-day", {
                                 method: "POST",
@@ -90,47 +316,34 @@ var _this = this;
                         DIV = document.createElement("div");
                         DIV.innerHTML = HTML;
                         ITEM = DIV.querySelector("raid-list");
+                        TITLE = DIV.querySelector("raid-list-title");
+                        BUTTONS = DIV.querySelector("button-list");
                         if (!ITEM) {
                             throw new Error("Invalid response");
                         }
                         OLD_RAID_LIST = RAID_CONTAINER_1.querySelector("raid-list");
                         OLD_RAID_LIST.insertAdjacentElement("beforebegin", ITEM);
                         OLD_RAID_LIST.remove();
-                        return [3 /*break*/, 5];
+                        OLD_RAID_LIST_TITLE = RAID_CONTAINER_1.querySelector("raid-list-title");
+                        OLD_RAID_LIST_TITLE.insertAdjacentElement("beforebegin", TITLE);
+                        OLD_RAID_LIST_TITLE.remove();
+                        return [2 /*return*/, ITEM];
                     case 3:
-                        error_1 = _a.sent();
-                        console.log(error_1);
-                        return [3 /*break*/, 5];
-                    case 4:
-                        clear_process_queue();
-                        return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
+                        error_6 = _a.sent();
+                        console.log(error_6);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     }
-    function update_calendar(go_forward) {
-        return __awaiter(this, void 0, Promise, function () {
-            var MONTH, BODY, RESPONSE, HTML, DIV, ITEM, error_2;
+    function update_calendar(BODY) {
+        return __awaiter(this, void 0, void 0, function () {
+            var RESPONSE, HTML, DIV, ITEM, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, 7, 8]);
-                        clear_process_queue();
-                        if (go_forward) {
-                            ++last_shown_month_1;
-                        }
-                        else if (last_shown_month_1 >= 1) {
-                            --last_shown_month_1;
-                        }
-                        else {
-                            return [2 /*return*/];
-                        }
-                        if (!go_forward) return [3 /*break*/, 4];
-                        if (!!STORED_MONTHS_1[last_shown_month_1]) return [3 /*break*/, 3];
-                        MONTH = new Date(NOW_1.getFullYear(), NOW_1.getMonth() + last_shown_month_1, 27, 0, 0, 0, 0);
-                        BODY = new FormData();
-                        BODY.set("date", MONTH.toISOString().substr(0, 10));
+                        _a.trys.push([0, 3, , 4]);
                         abort_handle_1 = new AbortController();
                         return [4 /*yield*/, fetch("/ajax/get-availability-calendar", {
                                 method: "POST",
@@ -151,112 +364,53 @@ var _this = this;
                         if (!ITEM) {
                             throw new Error("Invalid response");
                         }
-                        STORED_MONTHS_1.push(ITEM);
-                        _a.label = 3;
+                        return [2 /*return*/, ITEM];
                     case 3:
-                        STORED_MONTHS_1[last_shown_month_1 - 1].insertAdjacentElement("afterend", STORED_MONTHS_1[last_shown_month_1]);
-                        STORED_MONTHS_1[last_shown_month_1 - 1].remove();
-                        return [3 /*break*/, 5];
-                    case 4:
-                        STORED_MONTHS_1[last_shown_month_1 + 1].insertAdjacentElement("beforebegin", STORED_MONTHS_1[last_shown_month_1]);
-                        STORED_MONTHS_1[last_shown_month_1 + 1].remove();
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 8];
-                    case 6:
-                        error_2 = _a.sent();
-                        console.log(error_2);
-                        if (go_forward) {
-                            --last_shown_month_1;
-                        }
-                        else {
-                            ++last_shown_month_1;
-                        }
-                        return [3 /*break*/, 8];
-                    case 7:
-                        clear_process_queue();
-                        return [7 /*endfinally*/];
-                    case 8: return [2 /*return*/];
+                        error_7 = _a.sent();
+                        console.log('coucou');
+                        console.log(error_7);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     }
-    CONTAINER.addEventListener("click", function (event) {
+    CONTAINER_1.addEventListener("click", function (event) {
         var TARGET = event.target;
         var BUTTON = TARGET.closest("button.next, button.prev");
         if (BUTTON) {
-            update_calendar(BUTTON.classList.contains("next"));
+            change_month(BUTTON.classList.contains("next"));
         }
-        var CELL = TARGET.closest("li[data-date]:not(.disabled-period):not(.is-notavailable)");
+        var CELL = TARGET.closest("li[data-date]:not(.text-secondary):not(#is-selected)");
         if (CELL) {
             select_date(CELL);
         }
     });
-    // Initialize from storage
+    RAID_CONTAINER_1.addEventListener("click", function (event) {
+        var TARGET = event.target;
+        var BUTTON = TARGET.closest("button-list button:not(.current)");
+        if (BUTTON) {
+            change_page_of_result(BUTTON);
+        }
+    });
+    SELECT_NUMBER_OF_RESULT_PER_PAGE_1.addEventListener("change", function (event) {
+        var resultPerPage = [10, 20, 50, 70, 100];
+        var resultPerPageSelected = parseInt(SELECT_NUMBER_OF_RESULT_PER_PAGE_1.value);
+        if (resultPerPage.includes(resultPerPageSelected)) {
+            change_number_of_result_per_page();
+        }
+    });
+    SELECT_CHARACTER_1 ? SELECT_CHARACTER_1.addEventListener("change", function () {
+        change_character();
+    }) : null;
+    // Initialize the raid list
     {
-        var ITEM = localStorage.getItem("form-booking");
-        if (ITEM) {
-            var DATES_1 = JSON.parse(ITEM);
-            if (DATES_1.length === 2 && Date.parse(DATES_1[0]) > Date.now()) {
-                (function () { return __awaiter(_this, void 0, Promise, function () {
-                    var i, j, ISO_DATE, done, CELL, BASE;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                i = 0;
-                                j = 0;
-                                _a.label = 1;
-                            case 1:
-                                if (!(j < 2)) return [3 /*break*/, 9];
-                                ISO_DATE = DATES_1[j];
-                                done = false;
-                                _a.label = 2;
-                            case 2:
-                                if (!!done) return [3 /*break*/, 8];
-                                if (!!STORED_MONTHS_1[i]) return [3 /*break*/, 4];
-                                // Load new month
-                                return [4 /*yield*/, update_calendar(true)];
-                            case 3:
-                                // Load new month
-                                _a.sent();
-                                _a.label = 4;
-                            case 4:
-                                CELL = STORED_MONTHS_1[i].querySelector("li[data-date=\"" + ISO_DATE + "\"]");
-                                if (!CELL) return [3 /*break*/, 6];
-                                // Equivalent to a selecting click
-                                return [4 /*yield*/, select_date(CELL)];
-                            case 5:
-                                // Equivalent to a selecting click
-                                _a.sent();
-                                done = true;
-                                return [3 /*break*/, 7];
-                            case 6:
-                                ++i;
-                                _a.label = 7;
-                            case 7: return [3 /*break*/, 2];
-                            case 8:
-                                ++j;
-                                return [3 /*break*/, 1];
-                            case 9:
-                                // Reset if unavailable
-                                if (!STORED_MONTHS_1[i].querySelector("li.is-selected")) {
-                                    if (i > 0) {
-                                        BASE = STORED_MONTHS_1[i].nextElementSibling;
-                                        STORED_MONTHS_1[i].remove();
-                                        STORED_MONTHS_1[i - 1].remove();
-                                        if (BASE) {
-                                            BASE.insertAdjacentElement("beforebegin", STORED_MONTHS_1[0]);
-                                            BASE.insertAdjacentElement("beforebegin", STORED_MONTHS_1[1]);
-                                        }
-                                    }
-                                }
-                                return [2 /*return*/];
-                        }
-                    });
-                }); })();
-            }
-            else {
-                localStorage.removeItem("form-booking");
-            }
+        var BUTTON_FIRST_PAGE = BUTTON_LIST_CONTAINER.querySelector("[data-page='0']");
+        if (BUTTON_FIRST_PAGE) {
+            change_page_of_result(BUTTON_FIRST_PAGE);
+        }
+        else {
+            change_number_of_result_per_page();
         }
     }
 }

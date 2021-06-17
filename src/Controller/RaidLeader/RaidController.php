@@ -7,8 +7,6 @@ use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
 use App\Service\Raid\Identifier;
-use App\Service\Raid\RaidTemplate;
-use App\Service\Raid\RaidRelation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,179 +18,91 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 class RaidController extends AbstractController
 {
-	/**
-	 * Create a raid OR 
-	 * Create a template OR 
-	 * Edit a template
-	 *
-     * @Route("/add", name="add")
+    /**
+     * @Route("/past", name="past")
      */
-    public function add(Request $request, Identifier $identifier, RaidTemplate $template, RaidRelation $raidService): Response
+    public function past(): Response
     {
-        $raid = new Raid();
-		$raid->setUser($this->getUser());
-
-		$raidCharacter = new RaidCharacter();
-		$raidCharacter
-			->setRaid($raid)
-			->setStatus(RaidCharacter::ACCEPT);
-
-		$raid->addRaidCharacter($raidCharacter);
-
-		$raidTemplate = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByIdAndUser(
-			$request->query->get('id'),
-			$this->getUser()
-		);
-
-		$form = $this->createForm(RaidType::class, $raid, [
-			'user' => $this->getUser(),
-            'isRaidTemplate' => $raidTemplate ? true : false,
-		]);
-
-		$form->handleRequest($request);
-
-		if (!$raidTemplate) {	
-
-			// Create new template
-			if ($form->get('saveTemplate')->isClicked() && $form->isValid()) {
-				if (!$raid->getTemplateName()) {
-					$raid->setTemplateName($raid->getName());
-				}
-
-			// Create new raid
-			} else {
-				$raid
-				->setTemplateName(null)
-				->setIdentifier($raid->getIsPrivate() ? $identifier->generate(Raid::IDENTIFIER_SIZE) : null);
-			}
-
-			$raid = $raidService->addCharacterAndServerToRaid($raid, $raidCharacter, $request->request->get('raid'));
-			$this->getDoctrine()->getManager()->persist($raid);
-
-		} else {
-			
-			// Save chosen raid template as a new template 
-			if ($form->get('saveAsNewTemplate')->isClicked() && $form->isValid()) {
-				if (!$raidTemplate->getTemplateName()) {
-					$raidTemplate->setTemplateName($raidTemplate->getName());
-				}
-				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
-				$this->getDoctrine()->getManager()->persist($raid);
-				
-			// Edit chosen raid template 
-			} else if ($form->get('editTemplate')->isClicked() && $form->isValid() ) {
-				if (!$raidTemplate->getTemplateName()) {
-					$raidTemplate->setTemplateName($raidTemplate->getName());
-				}
-				$raidCharacter = $raidTemplate->getRaidCharacterFromUser($this->getUser());
-				$raidTemplate = $template->editTemplate($raidTemplate, $raid, $raidCharacter, $request->request->get('raid'));
-
-			// Create raid from the chosen raid template
-			} else {
-				$raid = $raidService->addCharacterAndServerToRaid($form->getData(), $raidCharacter, $request->request->get('raid'));
-				$raid
-				->setTemplateName(null)
-				->setIdentifier($raid->getIsPrivate() ? $identifier->generate(Raid::IDENTIFIER_SIZE) : null);
-				$this->getDoctrine()->getManager()->persist($raid);
-			}
-		}
-
-		$this->getDoctrine()->getManager()->flush();
-
-       return $this->redirectToRoute('raidleader_events');
+        return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
+            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
+            'user' => $this->getUser(),
+            'pathToRefer' => $this->get('session')->get('pathToRefer'),
+            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
+        ]);
     }
 
-	/**
-     * @Route("/archived", name="archived")
-     */
-    public function archived(): Response
-    {
-		return $this->render('raid_leader/archived_raid_list.html.twig', [
-			'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
-		]);
-	}
-
-	/**
-     * @Route("/{id}", name="show")
-     */
-    public function show(Raid $raid): Response
-    {
-		if (!$this->getUser()->hasRaid($raid)) {
-			throw new AccessDeniedHttpException();
-		}
-
-		return $this->render('raid_leader/show_raid.html.twig', [
-			'raid' => $raid,
-		]);
-	}
-
-	/**
+    /**
      * @Route("/{id}/edit", name="edit")
      */
-    public function edit(Request $request, Raid $raid): Response
+    public function edit(Request $request, Raid $raid, Identifier $identifier): Response
     {
-		if (!$this->getUser()->hasRaid($raid)) {
-			throw new AccessDeniedHttpException();
-		}
+        if (!$this->getUser()->hasRaid($raid)) {
+            throw new AccessDeniedHttpException();
+        }
 
-		$now = new DateTime();
-		if ($now > $raid->getStartAt() ) {
-			$this->addFlash('danger', "You cannot modify a raid already start");
-			return $this->redirectToRoute('raidleader_events');
-		}
+        $now = new DateTime();
+        if ($now > $raid->getStartAt()) {
+            $this->addFlash('danger', "You cannot modify a raid that already begun");
+            return $this->redirectToRoute('raidleader_events');
+        }
 
-		if (!$raidCharacter = $raid->getRaidCharacterFromUser($this->getUser())) {
-			$raidCharacter = new RaidCharacter();
-			$raidCharacter
-				->setStatus(RaidCharacter::ACCEPT)
-				->setRaid($raid);
-			$this->getDoctrine()->getManager()->persist($raidCharacter);
-			$raid->addRaidCharacter($raidCharacter);
-		}
+        $form = $this->createForm(RaidType::class, $raid, [
+            'user' => $this->getUser(),
+            'isEdit' => true,
+        ]);
 
-		$form = $this->createForm(RaidType::class, $raid, [
-			'user' => $this->getUser(),
-			'isEdit' => true,
-		]);
-		$form->get('raidCharacter')->setData($raidCharacter);
-		$form->handleRequest($request);
+        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
 
-		if ($form->isSubmitted() && $form->isValid()) {
-			$raid = $form->getData();
-			$raidLeaderCharacter = $raid->getCharacterFromUser($this->getUser());
+        $form->get('raidCharacter')->setData($raidCharacter);
+        $form->handleRequest($request);
 
-			if(!$this->getUser()->hasCharacter($raidLeaderCharacter)) {
-				throw $this->createNotFoundException('Une erreur est survenue');
-			}
+        if ($form->isSubmitted() && $form->isValid()) {
+            $raid = $form->getData();
+            $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
 
-			$raid
-				->setUpdatedAt(new DateTime())
-				->setServer($raidLeaderCharacter->getServer());
+            if (!$this->getUser()->hasCharacter($raidCharacter->getUserCharacter())) {
+                throw $this->createNotFoundException('Une erreur est survenue');
+            }
+
+            if ($raid->isPrivate()) {
+            } else {
+                $raid->setIdentifier(null);
+            }
+
+            $raid
+                ->setIdentifier($raid->getIdentifier() ? $raid->getIdentifier() : $identifier->generate(Raid::IDENTIFIER_SIZE))
+                ->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
 
-			return $this->redirectToRoute('raidleader_raid_edit', ['id'=> $raid->getId()]);
-		}
+            return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
+        }
 
         return $this->render('raid_leader/edit_raid.html.twig', [
+            'user' => $this->getUser(),
+            'raid' => $raid,
             'form' => $form->createView(),
-			'raid' => $raid,
-			'user' => $this->getUser(),
-		]);
+        ]);
     }
 
-	/**
-     * @Route("/{id}/delete", name="delete")
+    /**
+     * @Route("/{id}/archived", name="archived")
      */
-    public function delete(Raid $raid): Response
+    public function archived(Raid $raid): Response
     {
-		if (!$this->getUser()->hasRaid($raid)) {			
-			throw new AccessDeniedHttpException();
-		}
+        if (!$this->getUser()->hasRaid($raid)) {
+            throw new AccessDeniedHttpException();
+        }
 
-		$this->getDoctrine()->getManager()->remove($raid);
-		$this->getDoctrine()->getManager()->flush();
+        $now = new DateTime();
+        if ($now > $raid->getStartAt()) {
+            $this->addFlash('danger', "You cannot delete a raid that already begun");
+            return $this->redirectToRoute('raidleader_events');
+        }
 
-		return $this->redirectToRoute('raidleader_events');
+        $raid->setIsArchived(true);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('raidleader_events');
     }
 }
