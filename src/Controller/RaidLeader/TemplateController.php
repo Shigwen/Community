@@ -64,17 +64,17 @@ class TemplateController extends AbstractController
             // Create new template
             if ($form->get('saveTemplate')->isClicked()) {
                 $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
-                $this->addFlash('success', 'Le template de raid ' . $newRaidTemplate->getTemplateName() . ' a bien été créé');
+                $this->addFlash('success', 'The raid templace ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
 
                 // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {
                 $templateService->editChosenTemplate($raidTemplateInUse, $newRaidTemplate);
-                $this->addFlash('success', 'Le template de raid ' . $newRaidTemplate->getTemplateName() . ' a bien été modifié');
+                $this->addFlash('success', 'The raid templace ' . $newRaidTemplate->getTemplateName() . ' has been properly modified');
 
                 // Create raid
             } else {
                 $templateService->createRaid($newRaidTemplate, $newRaidCharacter);
-                $this->addFlash('success', 'Le raid ' . $newRaidTemplate->getName() . ' a bien été créé et publié');
+                $this->addFlash('success', 'Your raid ' . $newRaidTemplate->getName() . ' has been properly created and published to the calendar');
             }
 
             return $this->redirectToRoute('raidleader_events');

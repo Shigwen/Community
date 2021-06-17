@@ -60,7 +60,7 @@ class AccountController extends AbstractController
             $user->setUpdatedAt(new \DateTime());
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'Vos informations personnelles ont bien été modifiés');
+            $this->addFlash('success', 'Your personal informations have been properly modified');
 
             return $this->redirectToRoute('user_account');
         }
@@ -81,7 +81,7 @@ class AccountController extends AbstractController
             }
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'Le personnage ' . $character->getName() . ' a bien été créé');
+            $this->addFlash('success', 'Your character ' . $character->getName() . ' has been properly created');
 
             return $this->redirectToRoute('user_account');
         }
@@ -121,7 +121,7 @@ class AccountController extends AbstractController
         $character->setIsArchived(true);
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', 'Le personnage ' . $character->getName() . ' a bien été supprimé');
+        $this->addFlash('success', 'Your character ' . $character->getName() . ' has been properly deleted');
 
         return $this->redirectToRoute('user_account');
     }

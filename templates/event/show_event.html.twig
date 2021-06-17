@@ -140,7 +140,7 @@
                                                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
                                                                 <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
-                                                                Vous ne pouvez pas vous désinscrire de votre propre raid
+                                                                You cannot unsubscribe from a raid you created
                                                             {% endif %}
                                                         {% endif %}
                                                         {{ include('event/modal/_show_event_character_information.html.twig') }}
@@ -180,7 +180,7 @@
                                                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
                                                                 <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
-                                                                Vous ne pouvez pas vous désinscrire de votre propre raid
+                                                                You cannot unsubscribe from a raid you created
                                                             {% endif %}
                                                         {% endif %}
                                                     </td>
@@ -219,7 +219,7 @@
                                                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
                                                                 <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                                             {% else %}
-                                                                Vous ne pouvez pas vous désinscrire de votre propre raid
+                                                                You cannot unsubscribe from a raid you created
                                                             {% endif %}
                                                         </td>
                                                     {% endif %}
