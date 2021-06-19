@@ -3,13 +3,16 @@
 {% block title %}Raid{% endblock %}
 
 {% block banner_title %}
-	<h1>Raid</h1>
+	<h1>{{raid.name}}</h1>
 {% endblock %}
 
 {% block body %}
 
 <div class="row col-12">
-    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">Back to HQ</a>
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">
+        <i class="fas fa-arrow-left"></i>
+        {{ nameOfPageToRefer }}
+    </a>
 </div>
 
 {% if raid.isPrivate %}

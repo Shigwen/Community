@@ -11,13 +11,16 @@
 {% block body %}
 
 <div class="row col-12">
-    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">{{ nameOfPageToRefer }}</a>
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">
+        <i class="fas fa-arrow-left"></i>
+        {{ nameOfPageToRefer }}
+    </a>
 </div>
 
 <div class="row d-flex justify-content-around">
     <div class="col-12 col-md-11 p-md-4 p-xs-1">
         {% if raids is empty %}
-            You did not complete any raid with this app yet
+            <p class="text-center"> You did not complete any raid with this app yet </p>
         {% else %}
             <table class="table table-striped table-bordered table-hover table-dark">
                 <thead class="text-center">
@@ -43,9 +46,9 @@
                             <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                             <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                             <td>
-                                <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
-                                <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id }) }}">Show</a>
-                                {{ include('user_raid_leader_parts/modal/_scheduled_raid_show_breakdown.html.twig') }}
+                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -1,14 +1,20 @@
 {% form_theme formCharacter 'form_theme/form_errors.html.twig' %}
 
-<div class="row d-flex justify-content-around">
+<div class="row d-flex justify-content-around" id="characterForm">
     <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins pb-4">
         {{ form_start(formCharacter) }}
 
         <fieldset class="form-group row d-flex justify-content-around">
 
-            <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('user_account')}}">Reset Form</a>
+            <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('user_account')}}#characterForm">Reset Form</a>
 
-            <legend class="text-center h4">Add Character (max 10):</legend>
+            <legend class="text-center h4">
+                {% if characterNameEdit is not null %}
+                    Modify {{characterNameEdit}}
+                {% else %}
+                    Add character
+                {% endif %}
+            </legend>
 
             <div class="col-lg-5 col-md-11 text-center">
                 {{ form_label(formCharacter.name) }}

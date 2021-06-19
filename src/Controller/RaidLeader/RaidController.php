@@ -81,7 +81,10 @@ class RaidController extends AbstractController
         return $this->render('raid_leader/edit_raid.html.twig', [
             'user' => $this->getUser(),
             'raid' => $raid,
+            'editRaid' => true,
             'form' => $form->createView(),
+            'pathToRefer' => $this->get('session')->get('pathToRefer'),
+            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
         ]);
     }
 

@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Character;
 use App\Service\Calendar;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -113,14 +114,18 @@ class ApiController extends AbstractController
             $nbrOfPages = 0;
         }
 
-        $html =  $this->renderView('event/_raid_list.html.twig', [
-            'nbrOfResultPerPage' => $nbrOfResultPerPage,
-            'nbrOfPages' => $nbrOfPages,
-            'currentPage' => $currentPage,
-            'chosenDate' => $date,
-            'character' => $character,
-            'raids' => $raids,
-        ]);
+        try {
+            $html =  $this->renderView('event/event_list_parts/_raid_list.html.twig', [
+                'nbrOfResultPerPage' => $nbrOfResultPerPage,
+                'nbrOfPages' => $nbrOfPages,
+                'currentPage' => $currentPage,
+                'chosenDate' => $date,
+                'character' => $character,
+                'raids' => $raids,
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
 
         return new Response($html);
     }

@@ -64,12 +64,12 @@ class TemplateController extends AbstractController
             // Create new template
             if ($form->get('saveTemplate')->isClicked()) {
                 $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
-                $this->addFlash('success', 'The raid templace ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
+                $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
 
                 // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {
                 $templateService->editChosenTemplate($raidTemplateInUse, $newRaidTemplate);
-                $this->addFlash('success', 'The raid templace ' . $newRaidTemplate->getTemplateName() . ' has been properly modified');
+                $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly modified');
 
                 // Create raid
             } else {

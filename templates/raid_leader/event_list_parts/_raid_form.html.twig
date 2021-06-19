@@ -1,14 +1,20 @@
 {% form_theme form 'form_theme/form_errors.html.twig' %}
 
-<div class="row d-flex justify-content-around">
+<div class="row d-flex justify-content-around" id="eventForm">
     <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
-        <h2 class="text-center h3">Create An Event</h2>
+        <h2 class="text-center h3">
+            {% if editRaid is defined and editRaid %}
+                Modify {{raid.name}}
+            {% else %}
+                Create An Event
+            {% endif %}
+        </h2>
 
     {% if user.characters|length > 0 %}
         {{ form_start(form) }}
             <fieldset class="form-group">
                 {% if raidTemplates is defined %}
-                    <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}">Reset Form</a>
+                    <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('raidleader_events')}}#eventForm">Reset Form</a>
                 {% endif %}
 
                 <div class="row d-flex justify-content-around">
@@ -185,11 +191,10 @@
                             <div class="text-center">
                                 {{ form_label(form.information) }}
                             </div>
-                            <div class="mb-3 text-left">
-                                It must contain anything relevant you'd like to show to your raiders.
+                            <div class="mb-3 text-center">
+                                It must contain anything relevant you'd like to show to your raiders. <br>
                                 May it be mandatory add-ons, loot rules, raid leading style, objectives,
-                                and so on. It is pre-filled in order to show you what's mainly supposed to be in it,
-                                but feel free to add or remove some parts.
+                                and so on.
                             </div>
 
                             {{ form_widget(form.information) }}
