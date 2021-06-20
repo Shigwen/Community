@@ -66,7 +66,10 @@
                     <tr>
                         {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
                         <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                        <td>{{ raidCharacter.userCharacter.faction.name }}</td>
+                        <td>
+                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}" 
+                            width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
+                        </td>
                         <td>{{ raid.name }}</td>
                         <td>
                             {% if user is defined %}
@@ -84,7 +87,10 @@
                             <span class="text-info font-weight-bold">X</span> to <span class="text-info font-weight-bold">X</span> DPS.
                         </td>
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
-                        <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
+                        <td class="d-none d-md-table-cell">
+                            <img src="{{ raidCharacter.role.imageSource }}" 
+                            width="40" height="40" alt="{{ raidCharacter.role.name }}">
+                        </td>
                         <td>
                             <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id})}}">
                                 <i class="fas fa-eye"></i>

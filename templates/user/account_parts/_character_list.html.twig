@@ -32,11 +32,22 @@
                 <tbody class="text-center">
                     {% for character in characters %}
                         <tr>
-                            <td>{{ character.faction.name }}</td>
+                            <td>
+                                <img src="{{ character.faction.imageSource }}" 
+                                width="40" height="40" alt="{{ character.faction.name }}">
+                            </td>
                             <td>{{ character.name }}</td>
                             <td>{{ character.server.name }}</td>
-                            <td>{{ character.characterClass.name }}</td>
-                            <td>{{ character.strRoles }}</td>
+                            <td>
+                                <img src="{{character.characterClass.imageSource}}" 
+                                width="40" height="40" alt="{{character.characterClass.name}}">
+                            </td>
+                            <td>
+                                {% for role in character.roles %}
+                                    <img src="{{ role.imageSource }}" 
+                                    width="40" height="40" alt="{{ role.name }}">
+                                {% endfor %}
+                            </td>
                             <td>
                                 <a class="text-info text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}">
                                     <i class="fas fa-eye"></i>

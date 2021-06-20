@@ -46,6 +46,11 @@ class CharacterClass
         return $this->id;
     }
 
+    public function getImageSource(): ?string
+    {
+        return "https://wow.zamimg.com/images/wow/icons/large/classicon_" . strtolower($this->name) . ".jpg";
+    }
+
     public function getName(): ?string
     {
         return $this->name;
