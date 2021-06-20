@@ -26,15 +26,17 @@
             <raid-list-title class="col-7">
                 <h2 class="text-center">
                     {% if chosenDate is defined %}
+                        All the raid
+
                         {% if character is not null %}
-                            Raid list for {{ character.name }} the {{ chosenDate|date('d/m/Y') }}
-                        {% elseif chosenDate is not null %}
-                            Raid list for the {{ chosenDate|date('d/m/Y') }}
-                        {% else %}
-                            All raid
+                            for {{ character.name }}
+                        {% endif %}
+
+                        {% if chosenDate is not null %}
+                            the {{ chosenDate|date('d/m/Y') }}
                         {% endif %}
                     {% else %}
-                        All raid
+                        All the raid
                     {% endif %}
                 </h2>
             </raid-list-title>

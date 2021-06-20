@@ -212,6 +212,9 @@
                 BODY.set("date", chosen_date);
                 BODY.set("character", chosen_character);
             }
+            if (SELECT_CHARACTER) {
+                BODY.set("character", chosen_character);
+            }
 
             BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
 

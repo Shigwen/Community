@@ -228,6 +228,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                             BODY.set("date", chosen_date_1);
                             BODY.set("character", chosen_character_1);
                         }
+                        if (SELECT_CHARACTER_1) {
+                            BODY.set("character", chosen_character_1);
+                        }
                         BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
                         return [4 /*yield*/, update_raid_list(BODY)];
                     case 1:
