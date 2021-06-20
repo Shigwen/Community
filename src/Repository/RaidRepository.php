@@ -256,6 +256,7 @@ class RaidRepository extends ServiceEntityRepository
                 ->join('raid.user', 'raidUser')
                 ->leftJoin('raidUser.blockeds', 'userBlocked')
                 ->andWhere('userBlocked.id IS NULL OR userBlocked.id != :user')
+                ->setParameter('user', $user)
                 // Filter using raid leader's character informations (user character must have the same faction / server)
                 ->join('raid.raidCharacters', 'raidCharacter')
                 ->join('raidCharacter.userCharacter', 'rlCharacter')
@@ -263,11 +264,17 @@ class RaidRepository extends ServiceEntityRepository
                 ->andWhere('rlCharacter.server = :server')
                 ->andWhere('rlCharacter.faction = :faction')
                 ->setParameter('server', $character->getServer())
-                ->setParameter('faction', $character->getFaction())
-                // Filter by user character (he must not be subscribed to the raid)
-                ->join('raidCharacter.userCharacter', 'character')
-                ->andWhere('character.user != :user')
-                ->setParameter('user', $user);
+                ->setParameter('faction', $character->getFaction());
+
+            // Filter by user character (he must not be subscribed to the raid)
+            $subq = $this->createQueryBuilder('r')
+                ->select('rc.id')
+                ->from(RaidCharacter::class, 'rc')
+                ->join('rc.userCharacter', 'uc')
+                ->where('rc.raid = raid.id')
+                ->andWhere('uc.user = :user');
+
+            $qb->andWhere($qb->expr()->not($qb->expr()->exists($subq->getDQL())));
         }
 
         if ($start) {

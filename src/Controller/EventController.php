@@ -149,9 +149,9 @@ class EventController extends AbstractController
             return $this->redirectToRoute('event', ['id' => $raid->getId()]);
         }
 
-        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->userAlreadyRegisterInRaid(
-            $this->getUser(),
-            $raid
+        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
+            $raid,
+            $this->getUser()
         );
 
         $this->getDoctrine()->getManager()->remove($raidCharacter);
