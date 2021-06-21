@@ -96,7 +96,7 @@ class Template
     {
         $start = $raidTemplate->getStartAt();
         $end = $raidTemplate->getEndAt();
-        $dayOfWeek = $raidTemplate->getVerboseStartDayOfWeek();
+        $dayOfWeek = $start->format('l');
 
         $newStart = new DateTime();
         $newStart->modify($dayOfWeek . ' this week');

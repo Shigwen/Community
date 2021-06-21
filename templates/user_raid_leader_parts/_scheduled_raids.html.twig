@@ -28,14 +28,21 @@
                             </td>
                             <td>{{ raid.name }}</td>
                             <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                            <td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}</td>
+                            <td>
+                                {% if user is defined %}
+                                    {{ get_date(raid, raidCharacter, user)|raw }}
+                                {% else %}
+                                    {{ get_date(raid, raidCharacter)|raw }}
+                                {% endif %}
+                            </td>
                             <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                             <td class="d-none d-md-table-cell">
                                 <img src="{{ raidCharacter.role.imageSource }}" 
                                 width="40" height="40" alt="{{ raidCharacter.role.name }}">
                             </td>
                             <td>
-                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}">
+                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Show">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </td>
@@ -72,25 +79,39 @@
                             </td>
                             <td>{{ raid.name }}</td>
                             <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                            <td>{{ raid.startAt|date("d/m/Y") }} from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}</td>
+                            <td>
+                                {% if user is defined %}
+                                    {{ get_date(raid, raidCharacter, user)|raw }}
+                                {% else %}
+                                    {{ get_date(raid, raidCharacter)|raw }}
+                                {% endif %}
+                            </td>
                             <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                             <td class="d-none d-md-table-cell">
                                 <img src="{{ raidCharacter.role.imageSource }}" 
                                 width="40" height="40" alt="{{ raidCharacter.role.name }}">
                             </td>
                             <td>
-                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}">
+                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Show">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                {% if is_granted('ROLE_RAID_LEADER') and user == raid.user %}
-                                    <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_raid_edit', {id: raid.id})}}">
+                                {% if user == raid.user %}
+                                    <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_raid_edit', {id: raid.id})}}"
+                                       data-bs-toggle="tooltip" data-placement="top" title="Edit and manage players">
                                         <i class="fas fa-cogs"></i>
                                     </a>
-                                    <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_raid_archived', {id: raid.id})}}">
+                                    <a class="text-danger text-decoration-none ml-2"
+                                       data-bs-toggle="tooltip" data-placement="top" title="Delete"
+                                       onclick="confirmModal('Delete raid {{ raid.name }}', 'Are you sure ?', '{{ path('raidleader_raid_archived', {id: raid.id})}}' )">
                                         <i class="far fa-trash-alt"></i>
                                     </a>
-                                {% elseif is_granted('ROLE_USER') %}
-                                    <a class="btn btn-primary rounded-pill" href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
+                                {% else %}
+                                    <a class="text-danger ml-2"
+                                       data-bs-toggle="tooltip" data-placement="top" title="Unsubscribe"
+                                       onclick="confirmModal('Unsubscribe from raid {{ raid.name }}', 'Are you sure ?', '{{ path('unregister', {id: raid.id})}}' )">
+                                        <i class="fas fa-user-minus"></i>
+                                    </a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -113,13 +134,5 @@
             </div>
 
         {% endif %}
-
-        <div class="d-flex justify-content-center">
-            {% if is_granted('ROLE_RAID_LEADER') %}
-                <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_past')}}">Show past raids</a>
-            {% elseif is_granted('ROLE_USER') %}
-                <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('user_raid_past')}}">Show past raids</a>
-            {% endif %}
-        </div>
     </div>
 </div>

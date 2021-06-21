@@ -26,15 +26,12 @@
                         width="30" height="30" alt="{{ raidCharacter.role.name }}">
                     </td>
                     <td>
-                        <a class="text-info text-decoration-none" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">
-                            <i class="fas fa-info-circle"></i>
+                        <a class="text-info text-decoration-none" 
+                           data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}"
+                           data-bs-toggle="tooltip" data-placement="top" title="Info">
+                            <i class="fas fa-info"></i>
                         </a>
-                        {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
-                            {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                                <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
-                            {% endif %}
-                        {% endif %}
-                        {{ include('event/modal/_show_event_character_information.html.twig') }}
+                        {{ include('event/modal/_character_information.html.twig') }}
                     </td>
                 </tr>
             {% endfor %}

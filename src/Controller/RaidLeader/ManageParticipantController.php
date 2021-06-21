@@ -34,9 +34,17 @@ class ManageParticipantController extends AbstractController
             throw $this->createNotFoundException('Une erreur est survenue');
         }
 
-        $status = $request->query->get('status');
+        $status = intval($request->query->get('status'));
         if (!in_array($status, [RaidCharacter::ACCEPT, RaidCharacter::REFUSED])) {
             throw new BadRequestHttpException('Statut erroné');
+        }
+
+        if ($status === RaidCharacter::ACCEPT) {
+            $this->addFlash('success', $raidCharacter->getUserCharacter()->getName() .
+                ' has been added to the raid roster');
+        } else {
+            $this->addFlash('success', $raidCharacter->getUserCharacter()->getName() .
+                ' has been removed from the raid roster');
         }
 
         $raidCharacter->setStatus($status);
@@ -61,27 +69,30 @@ class ManageParticipantController extends AbstractController
     public function banHammer(Request $request, User $userToBan): Response
     {
         $raidLeader = $this->getUser();
-        $raid = $request->query->get('raid');
+        $currentRaid = $request->query->get('raid');
 
         if ($raidLeader->hasBlocked($userToBan)) {
             $raidLeader->removeBlocked($userToBan);
+            $this->addFlash('success', $userToBan->getName() . ' will be able to access your raids again');
         } else {
             $raidLeader->addBlocked($userToBan);
 
             foreach ($raidLeader->getRaids() as $raid) {
-                foreach ($raid->getRaidCharacters() as $character) {
-                    if ($character->getUser() === $userToBan) {
-                        $raidCharacter = $raid->getRaidCharacterFromUser($userToBan);
-                        $raidCharacter->setStatus(RaidCharacter::REFUSED);
-                    }
+                $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)
+                    ->getOfUserFromRaid($raid, $userToBan);
+                if ($raidCharacter) {
+                    $raidCharacter->setStatus(RaidCharacter::REFUSED);
                 }
             }
+
+            $this->addFlash('success', $userToBan->getName() .
+                ' has properly been banned from all your future raids (and kicked from current raids)');
         }
 
         $this->getDoctrine()->getManager()->flush();
 
-        if ($raid) {
-            return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid]);
+        if ($currentRaid) {
+            return $this->redirectToRoute('raidleader_raid_edit', ['id' => $currentRaid]);
         } else {
             return $this->redirectToRoute('raidleader_manage_participant_ban_players');
         }

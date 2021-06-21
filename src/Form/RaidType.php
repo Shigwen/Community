@@ -57,7 +57,7 @@ class RaidType extends AbstractType
             ->add('startAt', DateTimeType::class, [
                 'widget' => 'choice',
                 'minutes' => [0, 15, 30, 45],
-                'label' => 'Raid starts at :',
+                'label' => 'Raid starts at (local time)',
                 'label_attr' => [
                     'class' => 'h5',
                 ],
@@ -67,7 +67,7 @@ class RaidType extends AbstractType
             ->add('endAt', DateTimeType::class, [
                 'widget' => 'choice',
                 'minutes' => [0, 15, 30, 45],
-                'label' => 'Raid ends at :',
+                'label' => 'Raid ends at (local time)',
                 'label_attr' => [
                     'class' => 'h5',
                 ],

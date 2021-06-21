@@ -35,20 +35,25 @@
                         </td>
                         <td>{{ template.templateName }}</td>
                         <td>{{ raidCharacter.userCharacter.server.name }}</td>
-                        <td>{{ template.verboseStartDayOfWeek }} from {{ template.startAt|date("H:i", user.timezone.name) }} to {{ template.endAt|date("H:i", user.timezone.name) }}</td>
+                        <td>{{ get_date(template, raidCharacter, user, true)|raw }}</td>
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">
                             <img src="{{ raidCharacter.role.imageSource }}" 
                             width="40" height="40" alt="{{ raidCharacter.role.name }}">
                         </td>
                         <td>
-                            <a class="text-info text-decoration-none" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">
-                                <i class="fas fa-info-circle"></i>
+                            <a class="text-info text-decoration-none" 
+                               data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}"
+                               data-bs-toggle="tooltip" data-placement="top" title="Info">
+                                <i class="fas fa-info"></i>
                             </a>
-                            <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_events')}}?id={{template.id}}#eventForm">
+                            <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_events')}}?id={{template.id}}#eventForm"
+                               data-bs-toggle="tooltip" data-placement="top" title="Edit">
                                 <i class="far fa-edit"></i>
                             </a>
-                            <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_template_delete', {id: template.id})}}">
+                            <a class="text-danger text-decoration-none ml-2"
+                               data-bs-toggle="tooltip" data-placement="top" title="Delete"
+                               onclick="confirmModal('Delete template {{ template.name }}', 'Are you sure ?', '{{ path('raidleader_template_delete', {id: template.id})}}' )">
                                 <i class="far fa-trash-alt"></i>
                             </a>
                             {{ include('raid_leader/modal/_template_show_breakdown.html.twig') }}

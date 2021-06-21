@@ -11,9 +11,9 @@
 {% block body %}
 
 <div class="row col-12">
-    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('events')}}">
         <i class="fas fa-arrow-left"></i>
-        {{ nameOfPageToRefer }}
+        Back to calendar
     </a>
 </div>
 
@@ -50,7 +50,7 @@
             <div class="col-lg-5 col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded my-3">
                 {% if form is defined %}
 
-                    {% if isEdit %}
+                    {% if form != null and isEdit %}
                         <h3 class="text-center mb-4 pb-3 border-bottom border-info">Change character ?</h3>
                     {% else %}
                         <h3 class="text-center mb-4 pb-3 border-bottom border-info">Subscription</h3>
@@ -79,7 +79,11 @@
                         {{ form_end(form) }}
 
                     {% else %}
-                        {% if isPastRaid is defined and isPastRaid %}
+                        {% if userIsRefused is defined and userIsRefused %}
+                            <p class="text-center">
+                                The raid leader decided not to take you in for this raid
+                            </p>
+                        {% elseif isPastRaid is defined and isPastRaid %}
                             <p class="text-center">
                                 You cannot subscribe to or change your character in a raid that already happened
                             </p>
@@ -164,17 +168,9 @@
                         <span class="h5">Date :</span>
                         <span class="h5 mt-0">
                             {% if user is defined %}
-                                {{ raid.startAt|date("d/m/Y") }} <br>
-                                from
-                                {{ raid.startAt|date("H:i", user.timezone.name) }}
-                                to
-                                {{ raid.endAt|date("H:i", user.timezone.name) }}
+                                {{ get_date(raid, raidCharacter, user)|raw }}
                             {% else %}
-                                {{ raid.startAt|date("d/m/Y") }} <br>
-                                from
-                                {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
-                                to
-                                {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                                {{ get_date(raid, raidCharacter)|raw }}
                             {% endif %}
                         </span>
                     </div>

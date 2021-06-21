@@ -73,11 +73,9 @@
                         <td>{{ raid.name }}</td>
                         <td>
                             {% if user is defined %}
-                                    {{ raid.startAt|date("d/m/Y") }} <br>
-                                    from {{ raid.startAt|date("H:i", user.timezone.name) }} to {{ raid.endAt|date("H:i", user.timezone.name) }}
+                                {{ get_date(raid, raidCharacter, user)|raw }}
                             {% else %}
-                                {{ raid.startAt|date("d/m/Y") }} <br>
-                                from {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }} to {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                                {{ get_date(raid, raidCharacter)|raw }}
                             {% endif %}
                         </td>
                         <td>
@@ -92,7 +90,8 @@
                             width="40" height="40" alt="{{ raidCharacter.role.name }}">
                         </td>
                         <td>
-                            <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id})}}">
+                            <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id})}}"
+                               data-bs-toggle="tooltip" data-placement="top" title="Show">
                                 <i class="fas fa-eye"></i>
                             </a>
                         </td>

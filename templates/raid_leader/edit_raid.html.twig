@@ -9,11 +9,13 @@
 {% block body %}
 
 <div class="row col-12">
-    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">
         <i class="fas fa-arrow-left"></i>
-        {{ nameOfPageToRefer }}
+        Back to HQ
     </a>
 </div>
+
+{{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
 
 {% if raid.isPrivate %}
     <div class="row d-flex justify-content-around mt-5">
@@ -26,6 +28,5 @@
 {% endif %}
 
 {{ include('raid_leader/event_list_parts/_raid_form.html.twig') }}
-{{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
 
 {% endblock %}

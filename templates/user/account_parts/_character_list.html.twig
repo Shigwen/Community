@@ -49,13 +49,18 @@
                                 {% endfor %}
                             </td>
                             <td>
-                                <a class="text-info text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}">
-                                    <i class="fas fa-info-circle"></i>
+                                <a class="text-info text-decoration-none" 
+                                   data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Info">
+                                    <i class="fas fa-info"></i>
                                 </a>
-                                <a href="{{ path('user_account')}}?id={{ character.id }}#characterForm" class="text-info text-decoration-none ml-2">
+                                <a href="{{ path('user_account')}}?id={{ character.id }}#characterForm" class="text-info text-decoration-none ml-2"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Edit">
                                     <i class="far fa-edit"></i>
                                 </a>
-                                <a href="{{ path('user_archive_character', {id: character.id})}}" class="text-danger text-decoration-none ml-2">
+                                <a class="text-danger text-decoration-none ml-2"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Delete"
+                                   onclick="confirmModal('Delete character {{ character.name }}', 'Are you sure ?', '{{ path('user_archive_character', {id: character.id})}}' )">
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                                 {{ include('user/modal/_character_information.html.twig') }}

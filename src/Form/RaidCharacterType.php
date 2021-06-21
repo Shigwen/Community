@@ -35,7 +35,7 @@ class RaidCharacterType extends AbstractType
                     return $query;
                 },
 
-                'label' => 'Raid leading character',
+                'label' => 'I play',
                 'label_attr' => [
                     'class' => 'h5',
                 ],
@@ -48,7 +48,7 @@ class RaidCharacterType extends AbstractType
             ])
 
             ->add('role', null, [
-                'label' => 'Character Role in this raid',
+                'label' => 'With role',
                 'label_attr' => [
                     'class' => 'h5',
                 ],

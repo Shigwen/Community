@@ -26,8 +26,6 @@ class RaidController extends AbstractController
         return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
             'user' => $this->getUser(),
-            'pathToRefer' => $this->get('session')->get('pathToRefer'),
-            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
         ]);
     }
 
@@ -83,8 +81,19 @@ class RaidController extends AbstractController
             'raid' => $raid,
             'editRaid' => true,
             'form' => $form->createView(),
-            'pathToRefer' => $this->get('session')->get('pathToRefer'),
             'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
+            'playersWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::WAITING_CONFIRMATION
+            ]),
+            'playersValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT
+            ]),
+            'playersRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED
+            ]),
         ]);
     }
 

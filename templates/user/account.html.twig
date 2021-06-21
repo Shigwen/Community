@@ -17,5 +17,9 @@
 {{ include('user/account_parts/_form_character.html.twig') }}
 
 {{ include('user_raid_leader_parts/_scheduled_raids.html.twig') }}
+{{ include('user/account_parts/_refused_raids.html.twig') }}
 
+<div class="d-flex justify-content-center">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('user_raid_past')}}">Show past raids</a>
+</div>
 {% endblock %}

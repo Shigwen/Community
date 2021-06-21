@@ -23,9 +23,6 @@ class TemplateController extends AbstractController
      */
     public function events(Request $request, Template $templateService): Response
     {
-        $this->get('session')->set('pathToRefer', 'raidleader_events');
-        $this->get('session')->set('nameOfPageToRefer', 'Back to HQ');
-
         $newRaidTemplate = new Raid();
         $newRaidCharacter = new RaidCharacter();
 

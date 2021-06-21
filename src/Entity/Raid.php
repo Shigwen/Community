@@ -276,23 +276,6 @@ class Raid
         return $this;
     }
 
-    public function getVerboseStartDayOfWeek()
-    {
-        if (!$this->getStartAt()) {
-            return null;
-        }
-
-        return [
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-            7 => 'Sunday',
-        ][$this->getStartAt()->format('N')]; // N format return 1 (for monday) to 7 (for sunday)
-    }
-
     public function getInformation(): ?string
     {
         return $this->information;
