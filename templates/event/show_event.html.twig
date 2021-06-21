@@ -181,7 +181,11 @@
 
                     <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
                         <span class="h5">Server & Faction</span>
-                        <span class="h4 m-0">{{ raidCharacter.userCharacter.server.name }} - {{ raidCharacter.userCharacter.faction.name }}</span>
+                        <span class="h4 m-0">
+                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}" 
+                            width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
+                            {{ raidCharacter.userCharacter.server.name }}
+                        </span>
                     </div>
                 </div>
             </div>

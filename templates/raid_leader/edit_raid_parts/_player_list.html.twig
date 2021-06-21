@@ -15,11 +15,17 @@
             {% if raidCharacter.isAccept %}
                 <tr>
                     <td>{{ raidCharacter.userCharacter.name }}</td>
-                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                    <td>{{ raidCharacter.role.name }}</td>
                     <td>
-                        <a class="text-primary text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
-                            <i class="fas fa-eye"></i>
+                        <img src="{{ raidCharacter.userCharacter.characterClass.imageSource }}" 
+                        width="40" height="40" alt="{{ raidCharacter.userCharacter.characterClass.name }}">
+                    </td>
+                    <td>
+                        <img src="{{ raidCharacter.role.imageSource }}" 
+                        width="40" height="40" alt="{{ raidCharacter.role.name }}">
+                    </td>
+                    <td>
+                        <a class="text-info text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
+                            <i class="fas fa-info-circle"></i>
                         </a>
                         {{ include('raid_leader/modal/_character_information.html.twig') }}
                         {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
@@ -53,11 +59,17 @@
             {% if raidCharacter.isWaitingConfirmation %}
                 <tr>
                     <td>{{ raidCharacter.userCharacter.name }}</td>
-                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                    <td>{{ raidCharacter.role.name }}</td>
+                    <td>
+                        <img src="{{ raidCharacter.userCharacter.characterClass.imageSource }}" 
+                        width="40" height="40" alt="{{ raidCharacter.userCharacter.characterClass.name }}">
+                    </td>
+                    <td>
+                        <img src="{{ raidCharacter.role.imageSource }}" 
+                        width="40" height="40" alt="{{ raidCharacter.role.name }}">
+                    </td>
                     <td>
                         <a class="text-primary text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
-                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-info-circle"></i>
                         </a>
                         {{ include('raid_leader/modal/_character_information.html.twig') }}
                         <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">
@@ -92,11 +104,17 @@
             {% if raidCharacter.isRefused and user.hasBlocked(raidCharacter.userCharacter.user) == false %}
                 <tr>
                     <td>{{ raidCharacter.userCharacter.name }}</td>
-                    <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                    <td>{{ raidCharacter.role.name }}</td>
+                    <td>
+                        <img src="{{ raidCharacter.userCharacter.characterClass.imageSource }}" 
+                        width="40" height="40" alt="{{ raidCharacter.userCharacter.characterClass.name }}">
+                    </td>
+                    <td>
+                        <img src="{{ raidCharacter.role.imageSource }}" 
+                        width="40" height="40" alt="{{ raidCharacter.role.name }}">
+                    </td>
                     <td>
                         <a class="text-primary text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
-                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-info-circle"></i>
                         </a>
                         {{ include('raid_leader/modal/_character_information.html.twig') }}
                         <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">

@@ -27,7 +27,7 @@
                     </td>
                     <td>
                         <a class="text-info text-decoration-none" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">
-                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-info-circle"></i>
                         </a>
                         {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
                             {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
