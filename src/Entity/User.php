@@ -143,7 +143,6 @@ class User implements UserInterface
 
         $this->createdAt = new DateTime();
         $this->raids = new ArrayCollection();
-        $this->ips = new ArrayCollection();
         $this->blockeds = new ArrayCollection();
         $this->blockers = new ArrayCollection();
         $this->characters = new ArrayCollection();
