@@ -84,9 +84,9 @@
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                         <td>
-                            <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
-                            <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id})}}">Show</a>
-                            {{ include('event/modal/_raid_list_show_breakdown.html.twig') }}
+                            <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id})}}">
+                                <i class="fas fa-eye"></i>
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

@@ -36,9 +36,15 @@
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                         <td>
-                            <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">Show breakdown</button>
-                            <a class="btn btn-primary rounded-pill" href="{{ path('raidleader_events')}}?id={{template.id}}">Use/edit</a>
-                            <a class="btn btn-primary rounded-pill" href="{{ path('raidleader_template_delete', {id: template.id})}}">Delete</a>
+                            <a class="text-info text-decoration-none" data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_events')}}?id={{template.id}}#eventForm">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_template_delete', {id: template.id})}}">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
                             {{ include('raid_leader/modal/_template_show_breakdown.html.twig') }}
                         </td>
                     </tr>

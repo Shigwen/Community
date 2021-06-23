@@ -18,11 +18,17 @@
                     <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
                     <td>{{ raidCharacter.role.name }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">Show notes</button>
+                        <a class="text-primary text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         {{ include('raid_leader/modal/_character_information.html.twig') }}
                         {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                            <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
-                            <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+                            <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">
+                                <i class="fas fa-user-times"></i>
+                            </a>
+                            <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">
+                                <i class="fas fa-gavel"></i>
+                            </a>
                         {% endif %}
                     </td>
                 </tr>
@@ -50,11 +56,19 @@
                     <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
                     <td>{{ raidCharacter.role.name }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">Show notes</button>
+                        <a class="text-primary text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         {{ include('raid_leader/modal/_character_information.html.twig') }}
-                        <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
-                        <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">Refuse</a>
-                        <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+                        <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">
+                            <i class="fas fa-user-check"></i>
+                        </a>
+                        <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}">
+                            <i class="fas fa-user-times"></i>
+                        </a>
+                        <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">
+                            <i class="fas fa-gavel"></i>
+                        </a>
                     </td>
                 </tr>
             {% endif %}
@@ -81,10 +95,16 @@
                     <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
                     <td>{{ raidCharacter.role.name }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">Show notes</button>
+                        <a class="text-primary text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ raidCharacter.userCharacter.id }}">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         {{ include('raid_leader/modal/_character_information.html.twig') }}
-                        <a href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">Accept</a>
-                        <a href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">Ban Hammer</a>
+                        <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}">
+                            <i class="fas fa-user-check"></i>
+                        </a>
+                        <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}">
+                            <i class="fas fa-gavel"></i>
+                        </a>
                     </td>
                 </tr>
             {% endif %}

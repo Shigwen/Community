@@ -89,6 +89,7 @@ class AccountController extends AbstractController
         return $this->render('user/account.html.twig', [
             'formUser' => $formUser->createView(),
             'formCharacter' => $formCharacter->createView(),
+            'characterNameEdit' => $idCharacter ? $character->getName() : null,
             'user' => $user,
             'characters' => $this->getDoctrine()->getRepository(Character::class)->findBy(['user' => $user, 'isArchived' => false]),
             'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::ACCEPT),

@@ -5,13 +5,16 @@
 {% endblock %}
 
 {% block banner_title %}
-    <h1>Raid</h1>
+    <h1>{{raid.name}}</h1>
 {% endblock %}
 
 {% block body %}
 
 <div class="row col-12">
-    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">{{ nameOfPageToRefer }}</a>
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">
+        <i class="fas fa-arrow-left"></i>
+        {{ nameOfPageToRefer }}
+    </a>
 </div>
 
 <div class="row d-flex justify-content-around">

@@ -29,9 +29,9 @@
                             <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                             <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                             <td>
-                                <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show Breakdown</button>
-                                <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id }) }}">Show</a>
-                                {{ include('user_raid_leader_parts/modal/_scheduled_raid_show_breakdown.html.twig') }}
+                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -67,14 +67,16 @@
                             <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                             <td class="d-none d-md-table-cell">{{ raidCharacter.role.name }}</td>
                             <td>
-
-                                <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsRaid_{{ raid.id }}">Show breakdown</button>
-                                <a class="btn btn-primary rounded-pill" href="{{ path('event', {id: raid.id }) }}">Show</a>
-                                {{ include('user_raid_leader_parts/modal/_scheduled_raid_show_breakdown.html.twig') }}
-
+                                <a class="text-info text-decoration-none" href="{{ path('event', {id: raid.id }) }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                                 {% if is_granted('ROLE_RAID_LEADER') and user == raid.user %}
-                                    <a class="btn btn-primary rounded-pill" href="{{ path('raidleader_raid_edit', {id: raid.id})}}">Manage</a>
-                                    <a class="btn btn-primary rounded-pill" href="{{ path('raidleader_raid_archived', {id: raid.id})}}">Delete</a>
+                                    <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_raid_edit', {id: raid.id})}}">
+                                        <i class="fas fa-cogs"></i>
+                                    </a>
+                                    <a class="text-danger text-decoration-none ml-2" href="{{ path('raidleader_raid_archived', {id: raid.id})}}">
+                                        <i class="far fa-trash-alt"></i>
+                                    </a>
                                 {% elseif is_granted('ROLE_USER') %}
                                     <a class="btn btn-primary rounded-pill" href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
                                 {% endif %}
