@@ -74,7 +74,6 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "fzaninotto/faker": "^1.9",
         "symfony/maker-bundle": "^1.30",
         "symfony/stopwatch": "^5.2",
         "symfony/web-profiler-bundle": "^5.2"

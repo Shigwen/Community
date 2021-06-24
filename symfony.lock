@@ -115,9 +115,6 @@
             "./config/packages/fos_ckeditor.yaml"
         ]
     },
-    "fzaninotto/faker": {
-        "version": "v1.9.2"
-    },
     "laminas/laminas-code": {
         "version": "4.1.0"
     },
