@@ -101,6 +101,8 @@ class EventController extends AbstractController
         $now = new DateTime();
         $isPastRaid = $raid->getStartAt() <= $now;
 
+        // Todo : trouver pourquoi le personnage est considéré comme refusé alors que le raid a seulement commencé
+
         if (count($characters) >= 1 && !$isPastRaid && !$raidCharacter->isRefused()) {
             $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
                 'user' => $this->getUser(),
@@ -149,7 +151,7 @@ class EventController extends AbstractController
         $now = new DateTime();
         if ($now > $raid->getStartAt()) {
             $this->addFlash('danger', "You cannot unsubscribe from a raid that already begun");
-            return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+            return $this->redirectToRoute('user_account');
         }
 
         $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
@@ -157,9 +159,15 @@ class EventController extends AbstractController
             $this->getUser()
         );
 
-        $this->getDoctrine()->getManager()->remove($raidCharacter);
+        if (!$raidCharacter->isRefused()) {
+            $this->getDoctrine()->getManager()->remove($raidCharacter);
+            $this->addFlash('success', "Vous vous êtes bien désinscrit du raid");
+        } else {
+            $this->addFlash('danger', "A des fin d'historisation, vous ne pouvez pas quitter un raid où vous avez été refusé");
+        }
+
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('event', ['id' => $raid->getId()]);
+        return $this->redirectToRoute('user_account');
     }
 }

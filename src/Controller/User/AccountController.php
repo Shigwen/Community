@@ -88,12 +88,18 @@ class AccountController extends AbstractController
             'formCharacter' => $formCharacter->createView(),
             'characterNameEdit' => $idCharacter ? $character->getName() : null,
             'user' => $user,
-            'characters' => $this->getDoctrine()->getRepository(Character::class)->findBy(['user' => $user, 'isArchived' => false]),
-            'forthcomingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
-            'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
-            'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
-            'refusedRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfPlayer($user, RaidCharacter::REFUSED),
-            'archivedByRaidLeaderRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingArchivedByRaidLeader($user),
+            'characters' => $this->getDoctrine()->getRepository(Character::class)
+                ->findBy(['user' => $user, 'isArchived' => false]),
+            'forthcomingRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+            'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+            'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
+            'refusedRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingRaidsOfPlayer($user, RaidCharacter::REFUSED),
+            'archivedByRaidLeaderRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingArchivedByRaidLeader($user),
         ]);
     }
 
@@ -103,7 +109,8 @@ class AccountController extends AbstractController
     public function past(): Response
     {
         return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
-            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
+            'raids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
         ]);
     }
 
@@ -116,7 +123,27 @@ class AccountController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        $raidForthcomingWhereUserIsRaidLeader = $this->getDoctrine()->getRepository(Raid::class)
+            ->getForthcomingRaidsOfRaidLeader($this->getUser());
+
+        $raidInProgressWhereUserIsRaidLeader = $this->getDoctrine()->getRepository(Raid::class)
+            ->getInProgressRaidsOfRaidLeader($this->getUser());
+
+        if (!empty($raidForthcomingWhereUserIsRaidLeader) || !empty($raidInProgressWhereUserIsRaidLeader)) {
+            $this->addFlash('danger', "Vous ne pouvez pas supprimer un personnage inscrit dans l'un de vos propre raid en cours ou à venir");
+
+            return $this->redirectToRoute('user_account');
+        }
+
+        $raidCharactersWhereCharacterIsNotRefused = $this->getDoctrine()->getRepository(RaidCharacter::class)
+            ->getAllFutureRaidsNotRefusedWithCharacter($character);
+
+        foreach ($raidCharactersWhereCharacterIsNotRefused as $raidCharacter) {
+            $this->getDoctrine()->getManager()->remove($raidCharacter);
+        }
+
         $character->setIsArchived(true);
+
         $this->getDoctrine()->getManager()->flush();
 
         $this->addFlash('success', 'Your character ' . $character->getName() . ' has been properly deleted');

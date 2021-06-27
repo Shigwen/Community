@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\Raid;
 use App\Entity\User;
+use App\Entity\Character;
 use App\Entity\RaidCharacter;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -57,14 +59,17 @@ class RaidCharacterRepository extends ServiceEntityRepository
     /**
      * @return RaidCharacter[]
      */
-    public function getAllNotRefusedFromRaid(Raid $raid)
+    public function getAllFutureRaidsNotRefusedWithCharacter(Character $character)
     {
+        $now = new DateTime();
         return $this->createQueryBuilder('rc')
             ->join('rc.raid', 'r')
-            ->where('rc.raid = :raid')
+            ->where('rc.userCharacter = :character')
+            ->andWhere('r.startAt > :now')
             ->andWhere('rc.status != :refused')
             ->setParameters([
-                'raid' => $raid,
+                'now' => $now,
+                'character' => $character,
                 'refused' => RaidCharacter::REFUSED,
             ])
             ->getQuery()
