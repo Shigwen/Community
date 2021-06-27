@@ -19,7 +19,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Server</th>
                         <th scope="col">Day</th>
-                        <th scope="col" class="d-none d-md-table-cell">RL as</th>
+                        <th scope="col" class="d-none d-md-table-cell">You play</th>
                         <th scope="col" class="d-none d-md-table-cell">Role</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -28,7 +28,7 @@
                 <tbody class="text-center ">
                     {% for template in raidTemplates %}
                     <tr>
-                        {% set raidCharacter = get_raid_character_from_raidleader(template) %}
+                        {% set raidCharacter = get_raid_character(template) %}
                         <td>
                             <img src="{{ raidCharacter.userCharacter.faction.imageSource }}" 
                             width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">

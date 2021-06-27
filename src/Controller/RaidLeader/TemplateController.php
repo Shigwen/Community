@@ -81,7 +81,7 @@ class TemplateController extends AbstractController
             'user' => $this->getUser(),
             'raidTemplates' => $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser()),
             'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfRaidLeader($this->getUser()),
-            'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfRaidLeader($this->getUser()),
+            'forthcomingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfRaidLeader($this->getUser()),
             'editTemplate' => $request->query->get('id') ? true : false,
             'form' => $form->createView(),
         ]);

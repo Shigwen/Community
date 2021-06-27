@@ -89,10 +89,11 @@ class AccountController extends AbstractController
             'characterNameEdit' => $idCharacter ? $character->getName() : null,
             'user' => $user,
             'characters' => $this->getDoctrine()->getRepository(Character::class)->findBy(['user' => $user, 'isArchived' => false]),
-            'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+            'forthcomingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
             'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
-            'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
-            'refusedRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::REFUSED),
+            'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
+            'refusedRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfPlayer($user, RaidCharacter::REFUSED),
+            'archivedByRaidLeaderRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingArchivedByRaidLeader($user),
         ]);
     }
 

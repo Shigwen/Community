@@ -48,11 +48,6 @@
         {
             clear_process_queue();
 
-            const OLD_DATE : HTMLLIElement|null = CONTAINER.querySelector('li#is-selected');
-            if (!OLD_DATE) {
-                return;
-            }
-
             chosen_character = SELECT_CHARACTER.value;
 
             if (!chosen_character)
@@ -247,9 +242,9 @@
 
                 if (chosen_date) {
                     BODY.set("date", chosen_date);
-                    if (chosen_character) {
-                        BODY.set("character", chosen_character);
-                    }
+                }
+                if (SELECT_CHARACTER) {
+                    BODY.set("character", SELECT_CHARACTER.value);
                 }
 
                 BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page);
@@ -354,7 +349,6 @@
         }
         catch (error)
         {
-            console.log('coucou');
             console.log(error);
         }
     }
@@ -411,7 +405,7 @@
         "change",
         (): void =>
         {
-            change_character()
+            change_character();
         }
     ) : null;
 

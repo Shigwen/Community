@@ -66,7 +66,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getPendingRaidsOfRaidLeader(User $raidLeader)
+    public function getForthcomingRaidsOfRaidLeader(User $raidLeader)
     {
         $now = new DateTime();
         return $this->createQueryBuilder('r')
@@ -154,7 +154,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getPendingRaidsOfPlayer(User $player, $status)
+    public function getForthcomingRaidsOfPlayer(User $player, $status)
     {
         $now = new DateTime();
         return $this->createQueryBuilder('r')
@@ -170,6 +170,34 @@ class RaidRepository extends ServiceEntityRepository
                 'now' => $now,
                 'player' => $player->getId(),
                 'status' => $status,
+            ])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Raid[]
+     */
+    public function getForthcomingArchivedByRaidLeader(User $player)
+    {
+        $now = new DateTime();
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.raidCharacters', 'rc')
+            ->join('rc.userCharacter', 'uc')
+            ->where('uc.user = :player')
+            ->andWhere('r.user != :player')
+            ->andWhere('r.templateName IS NULL')
+            ->andWhere('r.startAt > :now')
+            ->andWhere('rc.status IN (:status)')
+            ->andWhere('r.isArchived = true')
+            ->setParameters([
+                'now' => $now,
+                'player' => $player->getId(),
+                'status' => [
+                    RaidCharacter::ACCEPT,
+                    RaidCharacter::WAITING_CONFIRMATION,
+                ],
             ])
             ->orderBy('r.startAt', 'ASC')
             ->getQuery()

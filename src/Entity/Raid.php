@@ -404,7 +404,7 @@ class Raid
     public function hasCharacter(Character $character)
     {
         foreach ($this->raidCharacters as $raidCharacter) {
-            if ($raidCharacter->getUserCharacter = $character) {
+            if ($raidCharacter->getUserCharacter() === $character) {
                 return true;
             }
         }

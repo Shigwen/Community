@@ -164,7 +164,7 @@
 
                 <div class="row d-flex justify-content-around d-flex align-items-center">
                     <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
-                        {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
+                        {% set raidCharacter = get_raid_character(raid) %}
                         <span class="h5">Date :</span>
                         <span class="h5 mt-0">
                             {% if user is defined %}

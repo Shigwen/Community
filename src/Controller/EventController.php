@@ -117,7 +117,14 @@ class EventController extends AbstractController
                     $this->addFlash('danger', "Your character does not belong to the same faction as the raid");
                     return $this->redirectToRoute('event', ['id' => $raid->getId()]);
                 }
+
                 $this->getDoctrine()->getManager()->flush();
+
+                if ($raid->isAutoAccept()) {
+                    $this->addFlash('success', "Votre personnage a bien été inscrit dans le raid");
+                } else {
+                    $this->addFlash('success', "Votre personnage a été pré-inscrit dans le raid. Il est désormais en attente de confirmation par le raid leader");
+                }
             }
         }
 

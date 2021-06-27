@@ -49,7 +49,7 @@ class ApiController extends AbstractController
         $date = new DateTime($request->request->get('date'));
         $month = $calendar::Process($date->format('Y-m-d'));
 
-        $html =  $this->renderView('event/_calendar.html.twig', [
+        $html =  $this->renderView('event/event_list_parts/_calendar.html.twig', [
             'title' => $month['title'],
             'emptyDaysPadding' => $month['empty_days_padding'],
             'days' => $month['days'],
