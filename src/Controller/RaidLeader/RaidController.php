@@ -6,6 +6,7 @@ use DateTime;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
+use App\Entity\Role;
 use App\Service\Raid\Identifier;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,19 +88,61 @@ class RaidController extends AbstractController
             'user' => $this->getUser(),
             'raid' => $raid,
             'editRaid' => true,
-            'form' => $form->createView(),
-            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
-            'playersWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/manage-players", name="manage_players")
+     */
+    public function managePlayers(Raid $raid): Response
+    {
+        return $this->render('raid_leader/manage_players.html.twig', [
+            'raid' => $raid,
+            'tanksWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
                 'raid' => $raid,
-                'status' => RaidCharacter::WAITING_CONFIRMATION
+                'status' => RaidCharacter::WAITING_CONFIRMATION,
+                'role' => Role::TANK
             ]),
-            'playersValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+            'healersWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
                 'raid' => $raid,
-                'status' => RaidCharacter::ACCEPT
+                'status' => RaidCharacter::WAITING_CONFIRMATION,
+                'role' => Role::HEAL
             ]),
-            'playersRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+            'dpsWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
                 'raid' => $raid,
-                'status' => RaidCharacter::REFUSED
+                'status' => RaidCharacter::WAITING_CONFIRMATION,
+                'role' => Role::DPS
+            ]),
+            'tanksValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT,
+                'role' => Role::TANK
+            ]),
+            'healersValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT,
+                'role' => Role::HEAL
+            ]),
+            'dpsValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT,
+                'role' => Role::DPS
+            ]),
+            'tanksRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED,
+                'role' => Role::TANK
+            ]),
+            'healersRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED,
+                'role' => Role::HEAL
+            ]),
+            'dpsRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED,
+                'role' => Role::DPS
             ]),
         ]);
     }

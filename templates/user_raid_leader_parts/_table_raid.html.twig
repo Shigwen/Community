@@ -49,8 +49,12 @@
                     {% if showManageRaidLinks %}
                         {% if user == raid.user %}
                             <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_raid_edit', {id: raid.id})}}"
-                                data-bs-toggle="tooltip" data-placement="top" title="Edit and manage players">
-                                <i class="fas fa-cogs"></i>
+                                data-bs-toggle="tooltip" data-placement="top" title="Edit">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_raid_manage_players', {id: raid.id})}}"
+                                data-bs-toggle="tooltip" data-placement="top" title="Manage players">
+                                <i class="fas fa-users-cog"></i>
                             </a>
                             <a class="text-danger text-decoration-none ml-2"
                                 data-bs-toggle="tooltip" data-placement="top" title="Delete"

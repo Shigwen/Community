@@ -79,10 +79,14 @@
                             {% endif %}
                         </td>
                         <td>
-                            <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
-                            <span class="text-success font-weight-bold">{{ raid.minHeal }}</span> to <span class="text-success font-weight-bold">{{ raid.maxHeal }}</span> Healers,
+                            <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to 
+                            <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
+                            <span class="text-success font-weight-bold">{{ raid.minHeal }}</span> to 
+                            <span class="text-success font-weight-bold">{{ raid.maxHeal }}</span> Healers,
                             <br>
-                            <span class="text-info font-weight-bold">X</span> to <span class="text-info font-weight-bold">X</span> DPS.
+
+                            <span class="text-info font-weight-bold">{{ (raid.expectedAttendee + 1) - (raid.minTank + raid.minHeal) }}</span> to 
+                            <span class="text-info font-weight-bold">{{ (raid.expectedAttendee + 1) - (raid.maxTank + raid.maxHeal) }}</span> DPS.
                         </td>
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">

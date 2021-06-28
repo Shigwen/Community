@@ -72,7 +72,7 @@ class ManageParticipantController extends AbstractController
         $currentRaid = $request->query->get('raid');
 
         if ($this->getUser() === $userToBan) {
-            $this->addFlash('danger', 'Vous ne pouvez pas vous bannir de vos propres raids');
+            $this->addFlash('danger', 'You cannot ban yourself from your own raids');
             if ($currentRaid) {
                 return $this->redirectToRoute('raidleader_raid_edit', ['id' => $currentRaid]);
             } else {

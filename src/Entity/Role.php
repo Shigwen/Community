@@ -153,4 +153,9 @@ class Role
     {
         return $this->id === self::HEAL;
     }
+
+    public function isDps()
+    {
+        return $this->id === self::DPS;
+    }
 }

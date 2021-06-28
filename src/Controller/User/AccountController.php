@@ -137,7 +137,7 @@ class AccountController extends AbstractController
             ->getInProgressRaidsOfRaidLeader($this->getUser());
 
         if (!empty($raidForthcomingWhereUserIsRaidLeader) || !empty($raidInProgressWhereUserIsRaidLeader)) {
-            $this->addFlash('danger', "Vous ne pouvez pas supprimer un personnage inscrit dans l'un de vos propre raid en cours ou à venir");
+            $this->addFlash('danger', "You cannot remove your raid leading characters from their raids");
 
             return $this->redirectToRoute('user_account');
         }

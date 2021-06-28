@@ -126,9 +126,9 @@ class EventController extends AbstractController
                 $this->getDoctrine()->getManager()->flush();
 
                 if ($raid->isAutoAccept()) {
-                    $this->addFlash('success', "Votre personnage a bien été inscrit dans le raid");
+                    $this->addFlash('success', "You correctly subscribed your character to the raid");
                 } else {
-                    $this->addFlash('success', "Votre personnage a été pré-inscrit dans le raid. Il est désormais en attente de confirmation par le raid leader");
+                    $this->addFlash('success', "Your character is subscribed to the raid, and is now waiting for the raid leader to confirm the subscription");
                 }
             }
         }
@@ -166,9 +166,9 @@ class EventController extends AbstractController
 
         if (!$raidCharacter->isRefused()) {
             $this->getDoctrine()->getManager()->remove($raidCharacter);
-            $this->addFlash('success', "Vous vous êtes bien désinscrit du raid");
+            $this->addFlash('success', "You successfully unsubscribed from the raid");
         } else {
-            $this->addFlash('danger', "A des fin d'historisation, vous ne pouvez pas quitter un raid où vous avez été refusé");
+            $this->addFlash('danger', "You cannot leave a raid from which your subscription has been rejected by the raid leader");
         }
 
         $this->getDoctrine()->getManager()->flush();

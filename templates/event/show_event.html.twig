@@ -10,14 +10,17 @@
 
 {% block body %}
 
-{% if routeToRefer is not null %}
-    <div class="row col-12">
-        <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(routeToRefer)}}">
-            <i class="fas fa-arrow-left"></i>
-            {{ nameOfPageToRefer }}
-        </a>
-    </div>
+{% if routeToRefer is not defined or routeToRefer is null %}
+    {% set routeToRefer = 'events' %}
+    {% set nameOfPageToRefer = 'Back to calendar' %}
 {% endif %}
+
+<div class="row col-12">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(routeToRefer)}}">
+        <i class="fas fa-arrow-left"></i>
+        {{ nameOfPageToRefer }}
+    </a>
+</div>
 
 <div class="row d-flex justify-content-around">
     <div class="col-12 col-md-11 p-md-4 p-xs-1 rounded col-margins">
@@ -30,19 +33,21 @@
                 <div class="d-flex align-items-center">
                     <span class="h5 mt-0 mb-3">
                         The Raid Leader is still looking for
-                        <span class="text-info h4">{{ raid.expectedAttendee }}</span>
-                        raiders.
+                        <span class="text-info h4">{{ raid.expectedAttendee + 1 }}</span>
+                        raiders and
+                        <span class="text-info h4">{{ tanks|length + healers|length + dps|length }}</span>
+                         are actually subscribe
                         <br><br>
-
-                        <span class="text-decoration-underline">Tanks :</span>
+                        
+                        <div class="h5 text-center text-light mb-3 border-bottom border-light">Tanks</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::TANK'))|raw }}
                         <br><br>
 
-                        <span class="text-decoration-underline">Healers :</span>
+                        <div class="h5 text-center text-light mb-3 border-bottom border-light">Healers</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::HEAL'))|raw }}
                         <br><br>
 
-                        <span class="text-decoration-underline">DPS :</span>
+                        <div class="h5 text-center text-light mb-3 border-bottom border-light">DPS</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::DPS'))|raw }}
                     </span>
                 </div>
@@ -116,32 +121,10 @@
             </div>
 
             <div class="col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded justify-content-around my-3">
-
                 <h3 class="text-center mb-4 pb-3 border-bottom border-info">Raid roster</h3>
-
-                <div class="row d-flex mb-4 mx-0">
-
-                    <div class="col-lg-6 col-md-11 text-center d-flex flex-wrap">
-                        <div class="col-md-11 text-center d-flex flex-column align-items-center justify-content-center p-0">
-                            {% set role = tanks %}
-                            {% set roleName = 'tanks' %}
-                            {{ include('event/show_event_parts/_raid_roster_table.html.twig') }}
-                        </div>
-
-                        <div class="col-md-11 text-center d-flex flex-column align-items-center justify-content-center p-0">
-                            {% set role = healers %}
-                            {% set roleName = 'healers' %}
-                            {{ include('event/show_event_parts/_raid_roster_table.html.twig') }}
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-11 text-center d-flex flex-column">
-                        {% set role = dps %}
-                        {% set roleName = 'DPS' %}
-                        {{ include('event/show_event_parts/_raid_roster_table.html.twig') }}
-                    </div>
-                </div>
+                {{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
             </div>
+
         </div>
         <div class="row d-flex justify-content-around">
             <div class="col-12 col-md-11 p-md-4 p-xs-1 col-margins border border-info rounded">
@@ -192,7 +175,11 @@
                 <div class="col-12">
                     <h3 class="text-center mb-4 pb-3 border-bottom border-info">Raid Leader guidelines</h3>
                     <p>
-                        {{ raid.information|raw }}
+                        {% if raid.information is not empty %}
+                            {{ raid.information|raw }}
+                        {% else %}
+                            The raid leader didn't any additional information for this raid
+                        {% endif %}
                     </p>
                 </div>
             </div>
