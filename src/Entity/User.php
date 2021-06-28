@@ -136,7 +136,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles = [self::ROLE_USER];
+        $this->roles = [self::ROLE_RAID_LEADER];
         $this->status = self::STATUS_WAITING_EMAIL_CONFIRMATION;
         $this->nbrOfAttempt = 0;
         $this->lastAttempt = new DateTime();
