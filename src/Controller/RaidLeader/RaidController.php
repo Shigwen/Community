@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -38,6 +39,10 @@ class RaidController extends AbstractController
     {
         if (!$this->getUser()->hasRaid($raid)) {
             throw new AccessDeniedHttpException();
+        }
+
+        if ($raid->getTemplateName()) {
+            throw new BadRequestHttpException("This is not a raid");
         }
 
         $now = new DateTime();
