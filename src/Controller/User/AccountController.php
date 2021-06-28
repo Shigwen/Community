@@ -83,6 +83,11 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
+        if ($this->get('session')) {
+            $this->get('session')->set('routeToRefer', 'user_account');
+            $this->get('session')->set('nameOfPageToRefer', 'Back to account');
+        }
+
         return $this->render('user/account.html.twig', [
             'formUser' => $formUser->createView(),
             'formCharacter' => $formCharacter->createView(),
@@ -111,6 +116,8 @@ class AccountController extends AbstractController
         return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)
                 ->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
+            'routeToRefer' => $this->get('session') ? $this->get('session')->get('routeToRefer') : null,
+            'nameOfPageToRefer' => $this->get('session') ? $this->get('session')->get('nameOfPageToRefer') : null,
         ]);
     }
 

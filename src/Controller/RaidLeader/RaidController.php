@@ -26,6 +26,8 @@ class RaidController extends AbstractController
         return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
             'user' => $this->getUser(),
+            'routeToRefer' => $this->get('session') ? $this->get('session')->get('routeToRefer') : null,
+            'nameOfPageToRefer' => $this->get('session') ? $this->get('session')->get('nameOfPageToRefer') : null,
         ]);
     }
 

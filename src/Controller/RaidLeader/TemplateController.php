@@ -77,6 +77,11 @@ class TemplateController extends AbstractController
             return $this->redirectToRoute('raidleader_events');
         }
 
+        if ($this->get('session')) {
+            $this->get('session')->set('routeToRefer', 'raidleader_events');
+            $this->get('session')->set('nameOfPageToRefer', 'Back to HQ');
+        }
+
         return $this->render('raid_leader/event_list.html.twig', [
             'user' => $this->getUser(),
             'raidTemplates' => $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser()),

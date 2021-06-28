@@ -53,6 +53,11 @@ class EventController extends AbstractController
             }
         }
 
+        if ($this->get('session')) {
+            $this->get('session')->set('routeToRefer', 'events');
+            $this->get('session')->set('nameOfPageToRefer', 'Back to calendar');
+        }
+
         return $this->render('event/event_list.html.twig', [
             'date' => $date,
             'title' => $month['title'],
@@ -101,8 +106,6 @@ class EventController extends AbstractController
         $now = new DateTime();
         $isPastRaid = $raid->getStartAt() <= $now;
 
-        // Todo : trouver pourquoi le personnage est considéré comme refusé alors que le raid a seulement commencé
-
         if (count($characters) >= 1 && !$isPastRaid && !$raidCharacter->isRefused()) {
             $form = $this->createForm(RaidCharacterType::class, $raidCharacter, [
                 'user' => $this->getUser(),
@@ -140,6 +143,8 @@ class EventController extends AbstractController
             'isEdit' => $raidCharacter->getId(),
             'isPastRaid' => $isPastRaid,
             'userIsRefused' => $raidCharacter->isRefused(),
+            'routeToRefer' => $this->get('session') ? $this->get('session')->get('routeToRefer') : null,
+            'nameOfPageToRefer' => $this->get('session') ? $this->get('session')->get('nameOfPageToRefer') : null,
         ]);
     }
 
