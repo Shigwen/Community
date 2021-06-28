@@ -39,7 +39,7 @@
                             {{ include('event/modal/_character_information.html.twig') }}
 
                             {% if showAcceptCharacter is defined and showAcceptCharacter %}
-                                <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}"
+                                <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_players_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::ACCEPT') }}"
                                 data-bs-toggle="tooltip" data-placement="top" title="Accept">
                                     <i class="fas fa-user-check"></i>
                                 </a>
@@ -48,7 +48,7 @@
                             {% if showRefuseCharacter is defined and showRefuseCharacter %}
                                 <a class="text-warning text-decoration-none ml-2"
                                 data-bs-toggle="tooltip" data-placement="top" title="Refuse"
-                                onclick="confirmModal('Refuse character {{ raidCharacter.userCharacter.name }} in your raid', 'Are you sure ?', '{{ path('raidleader_manage_participant_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}' )">
+                                onclick="confirmModal('Refuse character {{ raidCharacter.userCharacter.name }} in your raid', 'Are you sure ?', '{{ path('raidleader_manage_players_accept_or_refuse', {raid_id: raid.id, character_id: raidCharacter.userCharacter.id }) }}?status={{ constant('App\\Entity\\RaidCharacter::REFUSED') }}' )">
                                     <i class="fas fa-user-times"></i>
                                 </a>
                             {% endif %}
@@ -56,7 +56,7 @@
                             {% if showBanUser is defined and showBanUser %}
                                 <a class="text-danger text-decoration-none ml-2"
                                 data-bs-toggle="tooltip" data-placement="top" title="Ban this player from future raid"
-                                onclick="confirmModal('Ban user {{ raidCharacter.userCharacter.user.name }}', 'Are you sure ?', '{{ path('raidleader_manage_participant_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}' )">
+                                onclick="confirmModal('Ban user {{ raidCharacter.userCharacter.user.name }}', 'Are you sure ?', '{{ path('raidleader_manage_players_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}' )">
                                     <i class="fas fa-gavel"></i>
                                 </a>
                             {% endif %}

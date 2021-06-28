@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
- * @Route("/raid-leader/manage-participant", name="raidleader_manage_participant_")
+ * @Route("/raid-leader/manage-players", name="raidleader_manage_players_")
  */
 class ManageParticipantController extends AbstractController
 {
@@ -50,7 +50,7 @@ class ManageParticipantController extends AbstractController
         $raidCharacter->setStatus($status);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
+        return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $raid->getId()]);
     }
 
     /**
@@ -74,9 +74,9 @@ class ManageParticipantController extends AbstractController
         if ($this->getUser() === $userToBan) {
             $this->addFlash('danger', 'You cannot ban yourself from your own raids');
             if ($currentRaid) {
-                return $this->redirectToRoute('raidleader_raid_edit', ['id' => $currentRaid]);
+                return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $currentRaid]);
             } else {
-                return $this->redirectToRoute('raidleader_manage_participant_ban_players');
+                return $this->redirectToRoute('raidleader_manage_players_ban_players');
             }
         }
 
@@ -101,9 +101,9 @@ class ManageParticipantController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         if ($currentRaid) {
-            return $this->redirectToRoute('raidleader_raid_edit', ['id' => $currentRaid]);
+            return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $currentRaid]);
         } else {
-            return $this->redirectToRoute('raidleader_manage_participant_ban_players');
+            return $this->redirectToRoute('raidleader_manage_players_ban_players');
         }
     }
 }

@@ -25,7 +25,7 @@
                     <td>{{ user.name }}</td>
                     <td>{{ user.strCharacterList }}</td>
                     <td>
-                        <a class="text-success" href="{{ path('raidleader_manage_participant_ban_hammer', {id: user.id }) }}"
+                        <a class="text-success" href="{{ path('raidleader_manage_players_ban_hammer', {id: user.id }) }}"
                            data-bs-toggle="tooltip" data-placement="top" title="Unban this player from future raid">
                            <i class="fas fa-gavel"></i>
                         </a>

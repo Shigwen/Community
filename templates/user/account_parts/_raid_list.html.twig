@@ -6,7 +6,7 @@
         <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
             <h2 class="text-center h3">Raid currently happening</h2>
             {% set raids = inProgressRaids %}
-            {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+            {{ include('raid_parts/_table_raid.html.twig') }}
         </div>
     </div>
 {% endif %}
@@ -18,7 +18,7 @@
         <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
             <h2 class="text-center h3">Forthcoming raids</h2>
             {% set raids = forthcomingRaids %}
-            {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+            {{ include('raid_parts/_table_raid.html.twig') }}
         </div>
     </div>
 {% endif %}
@@ -27,13 +27,13 @@
     <div class="row d-flex justify-content-around">
         <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
             <details>
-                <summary class="h5">
+                <summary class="h5 text-warning">
                     Raids subscribed to but waiting for validation by the raid leader
                 </summary>
 
                 <div class="mt-4">
                     {% set raids = waitOfConfirmationRaids %}
-                    {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+                    {{ include('raid_parts/_table_raid.html.twig') }}
                 </div>
             </details>
         </div>
@@ -46,13 +46,13 @@
     <div class="row d-flex justify-content-around">
         <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
             <details>
-                <summary class="h5">
+                <summary class="h5 text-danger">
                     Raids you haven't been accepted for
                 </summary>
 
                 <div class="mt-4">
                     {% set raids = refusedRaids %}
-                    {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+                    {{ include('raid_parts/_table_raid.html.twig') }}
                 </div>
             </details>
         </div>
@@ -69,7 +69,7 @@
 
                 <div class="mt-4">
                     {% set raids = archivedByRaidLeaderRaids %}
-                    {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+                    {{ include('raid_parts/_table_raid.html.twig') }}
                 </div>
             </details>
         </div>

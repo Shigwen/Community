@@ -7,7 +7,7 @@
         {% if inProgressRaids %}
             <h2 class="text-center h3">Raid currently happening</h2>
             {% set raids = inProgressRaids %}
-            {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+            {{ include('raid_parts/_table_raid.html.twig') }}
         {% endif %}
         
         {% set showManageRaidLinks = true %}
@@ -15,7 +15,7 @@
         {% if forthcomingRaids %}
             <h2 class="text-center h3">Forthcoming raids</h2>
             {% set raids = forthcomingRaids %}
-            {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+            {{ include('raid_parts/_table_raid.html.twig') }}
         {% endif %}
 
         {% if raids is not defined %}

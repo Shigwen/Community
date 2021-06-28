@@ -113,7 +113,7 @@ class AccountController extends AbstractController
      */
     public function past(): Response
     {
-        return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
+        return $this->render('raid_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)
                 ->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
             'routeToRefer' => $this->get('session') ? $this->get('session')->get('routeToRefer') : null,

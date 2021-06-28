@@ -122,7 +122,8 @@
 
             <div class="col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded justify-content-around my-3">
                 <h3 class="text-center mb-4 pb-3 border-bottom border-info">Raid roster</h3>
-                {{ include('raid_leader/edit_raid_parts/_player_list.html.twig') }}
+                {% set showMessage = true %}
+                {{ include('raid_parts/_character_list.html.twig') }}
             </div>
 
         </div>
