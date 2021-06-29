@@ -112,7 +112,7 @@ class Raid
      * @Assert\NotBlank(
      *     message = "The maximum number of tanks you are looking for cannot be blank"
      * )
-     * @Assert\GreaterThan(
+     * @Assert\GreaterThanOrEqual(
      *     propertyPath = "minTank",
      *     message = "The maximum number of tanks cannot be inferior to the minimum"
      * )
@@ -134,7 +134,7 @@ class Raid
      * @Assert\NotBlank(
      *     message = "The maximum number of healers you are looking for cannot be blank"
      * )
-     * @Assert\GreaterThan(
+     * @Assert\GreaterThanOrEqual(
      *     propertyPath = "minHeal",
      *     message = "The maximum number of healers cannot be inferior to the minimum"
      * )
@@ -169,7 +169,7 @@ class Raid
     private $isArchived;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

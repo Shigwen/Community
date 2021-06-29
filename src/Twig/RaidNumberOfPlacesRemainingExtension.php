@@ -78,9 +78,9 @@ class RaidNumberOfPlacesRemainingExtension extends AbstractExtension
     {
         $roles = ($role !== 'DPS') ? $role . 's' : $role;
 
-        // Min and max not reached
+        // Min not reached
         if ($min > 0 && $max > 0) {
-            if ($role === 'DPS' && $min === $max) {
+            if ($min === $max) {
                 $html = "<span class='$textColor font-weight-bold'>$min</span> $role slots left";
             } else {
                 $html = "There are between <span class='$textColor font-weight-bold'>$min</span> 

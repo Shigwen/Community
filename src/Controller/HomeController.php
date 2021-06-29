@@ -50,7 +50,7 @@ class HomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pwdEncoded = $passwordEncoder->encodePassword($user, $user->getPassword());
-            $token = $identifier->generate(15);
+            $token = $identifier->generate(15, true, false);
             $url = $this->generateUrl('confirm_account', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
             $user = $form->getData();
@@ -60,8 +60,8 @@ class HomeController extends AbstractController
 
             $template->createDefaultTemplate($user);
 
-            $message = (new \Swift_Message('Validez votre inscription à Community'))
-                ->setFrom('akmennra@gmail.com')
+            $message = (new \Swift_Message("Diana's Community Project - Confirm your subscription"))
+                ->setFrom($this->getParameter('app.email'))
                 ->setTo($user->getEmail())
                 ->setBody(
                     $this->renderView(
@@ -78,9 +78,8 @@ class HomeController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Un email vient de vous être envoyé. Veuillez cliquer sur le lien qu\'il contient pour finaliser votre inscription.'
+                'An email has been sent to your address. Please click the link in it to validate your account'
             );
-
 
             $this->getDoctrine()->getManager()->persist($user);
             $this->getDoctrine()->getManager()->flush();
@@ -135,8 +134,8 @@ class HomeController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
 
             $url = $this->generateUrl('password_recovery', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
-            $message = (new \Swift_Message('Mot de passe oublié - Community'))
-                ->setFrom('akmennra@gmail.com')
+            $message = (new \Swift_Message("Diana's Community Project - Password forgotten"))
+                ->setFrom($this->getParameter('app.email'))
                 ->setTo($user->getEmail())
                 ->setBody(
                     $this->renderView(
@@ -153,9 +152,8 @@ class HomeController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Un email vient de vous être envoyé. Veuillez cliquer sur le lien qu\'il contient pour changer votre mot de passe.'
+                'An email has been sent to your address. Please click the link in it to change your password'
             );
-
 
             return $this->redirectToRoute('home');
         }

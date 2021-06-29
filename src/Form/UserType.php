@@ -58,9 +58,6 @@ class UserType extends AbstractType
                     'attr' => [
                         'class' => 'form-control mb-0',
                     ],
-                    'constraints' => [
-                        new UniqueEmail(),
-                    ]
                 ]);
         }
 

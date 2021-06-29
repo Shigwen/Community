@@ -54,6 +54,7 @@ class Template
             ->setStartAt($start)
             ->setEndAt($end)
             ->setAutoAccept(false)
+            ->setIsArchived(false)
             ->setIsPrivate(true);
 
         $this->em->persist($raid);

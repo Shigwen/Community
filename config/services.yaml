@@ -1,5 +1,6 @@
 
 parameters:
+  app.email: '%env(APP_EMAIL)%'
 
 services:
   # default configuration for services in *this* file
