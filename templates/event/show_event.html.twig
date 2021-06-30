@@ -38,7 +38,7 @@
                         <span class="text-info h4">{{ tanks|length + healers|length + dps|length }}</span>
                          are actually subscribe
                         <br><br>
-                        
+
                         <div class="h5 text-center text-light mb-3 border-bottom border-light">Tanks</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::TANK'))|raw }}
                         <br><br>
@@ -164,7 +164,7 @@
                     <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
                         <span class="h5">Server & Faction</span>
                         <span class="h4 m-0">
-                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}" 
+                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}"
                             width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
                             {{ raidCharacter.userCharacter.server.name }}
                         </span>
@@ -196,7 +196,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Amount of raiders the Raid Leader is looking for :
                         </div>
-                        <div class="col-2 h4 text-success border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
                             {{ raid.expectedAttendee }}
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Min. number of Tanks
                         </div>
-                        <div class="col-2 h4 text-warning border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-warning font-weight-bolder p-2">
                             {{ raid.minTank }}
                         </div>
                     </div>
@@ -214,7 +214,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Max. number of Tanks
                         </div>
-                        <div class="col-2 h4 text-warning border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-warning font-weight-bolder p-2">
                             {{ raid.maxTank }}
                         </div>
                     </div>
@@ -223,7 +223,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Min. number of Healers
                         </div>
-                        <div class="col-2 h4 text-success border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
                             {{ raid.minHeal }}
                         </div>
                     </div>
@@ -232,7 +232,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Max. number of Healers
                         </div>
-                        <div class="col-2 h4 text-success border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
                             {{ raid.maxHeal }}
                         </div>
                     </div>
