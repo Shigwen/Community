@@ -9,6 +9,7 @@ use App\Entity\Character;
 use App\Service\Calendar;
 use App\Entity\RaidCharacter;
 use App\Form\RaidCharacterType;
+use App\Service\Raid\NumberOfPlacesRemaining;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -74,7 +75,7 @@ class EventController extends AbstractController
     /**
      * @Route("/event/{id}", name="event")
      */
-    public function event(Request $request, Raid $raid): Response
+    public function event(Request $request, Raid $raid, NumberOfPlacesRemaining $nbrOfPlaces): Response
     {
         if (!$this->getUser()) {
             return $this->render('event/show_event.html.twig', [
@@ -90,9 +91,7 @@ class EventController extends AbstractController
             $this->getUser()
         )) {
             $raidCharacter = new RaidCharacter();
-            $raidCharacter
-                ->setRaid($raid)
-                ->setStatus($raid->isAutoAccept());
+            $raidCharacter->setRaid($raid);
             $this->getDoctrine()->getManager()->persist($raidCharacter);
         }
 
@@ -113,6 +112,7 @@ class EventController extends AbstractController
             ]);
 
             $form->handleRequest($request);
+
             if ($form->isSubmitted() && $form->isValid()) {
                 $raidCharacter = $form->getData();
                 if ($raidCharacter->getUserCharacter()->getServer() !== $raidCharacterFromRaidLeader->getUserCharacter()->getServer()) {
@@ -123,13 +123,26 @@ class EventController extends AbstractController
                     return $this->redirectToRoute('event', ['id' => $raid->getId()]);
                 }
 
-                $this->getDoctrine()->getManager()->flush();
-
-                if ($raid->isAutoAccept()) {
+                if ($raidCharacter === $raidCharacterFromRaidLeader) {
+                    $raidCharacter->setStatus(RaidCharacter::ACCEPT);
                     $this->addFlash('success', "You correctly subscribed your character to the raid");
                 } else {
-                    $this->addFlash('success', "Your character is subscribed to the raid, and is now waiting for the raid leader to confirm the subscription");
+                    if (!$raid->isAutoAccept()) {
+                        $raidCharacter->setStatus(RaidCharacter::WAITING_CONFIRMATION);
+                        $this->addFlash('success', "Your character is subscribed to the raid, and is now waiting for the raid leader to confirm the subscription");
+                    } else {
+                        $status = $nbrOfPlaces->getStatusOfCharacterByPlacesRemaining($raid, $raidCharacter->getRole());
+                        $raidCharacter->setStatus($status);
+
+                        if ($status) {
+                            $this->addFlash('success', "You correctly subscribed your character to the raid");
+                        } else {
+                            $this->addFlash('success', "Your character is subscribed to the raid, and is now waiting for the raid leader to confirm the subscription");
+                        }
+                    }
                 }
+
+                $this->getDoctrine()->getManager()->flush();
             }
         }
 

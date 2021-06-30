@@ -30,7 +30,7 @@
                     <tr>
                         {% set raidCharacter = get_raid_character(template) %}
                         <td>
-                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}" 
+                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}"
                             width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
                         </td>
                         <td>{{ template.templateName }}</td>
@@ -38,17 +38,17 @@
                         <td>{{ get_date(template, raidCharacter, user, true)|raw }}</td>
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">
-                            <img src="{{ raidCharacter.role.imageSource }}" 
+                            <img src="{{ raidCharacter.role.imageSource }}"
                             width="40" height="40" alt="{{ raidCharacter.role.name }}">
                         </td>
                         <td>
-                            <a class="text-info text-decoration-none" 
+                            <a class="text-info text-decoration-none"
                                data-toggle="modal" data-target="#clickMeTemplate_{{ template.id }}"
                                data-bs-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fas fa-info"></i>
                             </a>
                             <a class="text-info text-decoration-none ml-2" href="{{ path('raidleader_events')}}?id={{template.id}}#eventForm"
-                               data-bs-toggle="tooltip" data-placement="top" title="Edit">
+                               data-bs-toggle="tooltip" data-placement="top" title="Edit/Load">
                                 <i class="far fa-edit"></i>
                             </a>
                             <a class="text-danger text-decoration-none ml-2"

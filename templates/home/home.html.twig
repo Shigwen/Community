@@ -48,14 +48,14 @@
             </form>
         </div>
 
-        {{ form_start(form, {'attr': {'class': 'col-lg-5 col-md-10 p-4 border border-primary rounded col-margins', 'novalidate': 'novalidate'}}) }}
+        {{ form_start(form, {'attr': {'class': 'col-lg-5 col-md-10 p-4 border border-primary rounded col-margins'}}) }}
             <fieldset>
                 <legend class="text-center">Sign up</legend>
 
                 {{ form_label(form.name) }}
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
-                <small id="nicknameHelp" class="form-text text-muted mb-4">Your name cannot contain space or special character. <br> 
+                <small id="nicknameHelp" class="form-text text-muted mb-4">Your name cannot contain space or special character. <br>
                 Preferably, use your main character's name and numbers.</small>
 
                 {{ form_label(form.email) }}

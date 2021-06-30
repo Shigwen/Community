@@ -42,7 +42,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/sign-up", name="sign_up")
      */
-    public function signUp(Request $request, UserPasswordEncoderInterface $passwordEncoder, Identifier $identifier, \Swift_Mailer $mailer, Template $template): Response
+    public function signUp(Request $request, UserPasswordEncoderInterface $passwordEncoder, Identifier $identifier, \Swift_Mailer $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -57,8 +57,6 @@ class HomeController extends AbstractController
             $user
                 ->setPassword($pwdEncoded)
                 ->setToken($token);
-
-            $template->createDefaultTemplate($user);
 
             $message = (new \Swift_Message("Diana's Community Project - Confirm your subscription"))
                 ->setFrom($this->getParameter('app.email'))
