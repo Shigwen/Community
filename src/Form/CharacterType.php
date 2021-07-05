@@ -4,17 +4,41 @@ namespace App\Form;
 
 use App\Entity\Role;
 use App\Entity\Character;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CharacterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // For the API
+        if ($options['gameVersion']) {
+            $builder
+                ->add('server', null, [
+                    'label' => 'Server (Europe only)',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
+                    'query_builder' => function (EntityRepository $er) use ($options) {
+                        return $er->createQueryBuilder('s')
+                            ->join('s.gameVersion', 'gv')
+                            ->where('gv.id = :gameVersion')
+                            ->setParameter('gameVersion', $options['gameVersion']->getId());
+                    },
+                ]);
+
+            return;
+        }
+
         $builder
             ->add('name', null, [
                 'label' => 'Name',
@@ -28,17 +52,29 @@ class CharacterType extends AbstractType
 
         if (!$options['isSubscribeInARaid']) {
             $builder
+                ->add('gameVersion', ChoiceType::class, [
+                    'mapped' => false,
+                    'label' => 'Game version',
+                    'label_attr' => [
+                        'class' => 'h5',
+                    ],
+                    'choices' => [
+                        'Retail' => 1,
+                        'Classic' => 2,
+                        'TBC Classic' => 3
+                    ],
+                    'attr' => [
+                        'class' => 'form-control mb-0',
+                    ],
+                ])
                 ->add('server', null, [
-                    'label' => 'Server',
+                    'label' => 'Server (Europe only)',
                     'label_attr' => [
                         'class' => 'h5',
                     ],
                     'attr' => [
                         'class' => 'custom-select',
-                    ],
-                    'group_by' => function ($server) {
-                        return $server->getVerboseVersionAndRegion();
-                    },
+                    ]
                 ])
                 ->add('faction', null, [
                     'label' => 'Faction',
@@ -78,7 +114,7 @@ class CharacterType extends AbstractType
                 'multiple' => true
             ])
 
-            ->add('information',CKEditorType::class, [
+            ->add('information', CKEditorType::class, [
                 'label' => 'Character notes (anything relevant you\'d like to show to the raid leaders)',
                 'label_attr' => [
                     'class' => 'h5',
@@ -104,6 +140,7 @@ class CharacterType extends AbstractType
             'isEdit' => false,
             'data_class' => Character::class,
             'isSubscribeInARaid' => false,
+            'gameVersion' => null,
         ]);
     }
 }

@@ -1,5 +1,15 @@
 
 <div class="row d-flex justify-content-around">
+    <div class="col-12 col-md-11">
+        <form action="{{ path('events') }}" method="get" class="row">
+            <label class="mb-0">Do you have a private code ?
+                <input class="form-control my-0" type="text" name="identifier" required>
+            </label>
+            <div class="d-flex align-items-end">
+                <button class="btn btn-primary" type="submit">Find raid</button>
+            </div>
+        </form>
+    </div>
     <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
         {% if form is defined and form is not null %}
             <filters class="row d-flex mx-5 justify-content-end mb-4">

@@ -143,6 +143,7 @@ class EventController extends AbstractController
                 }
 
                 $this->getDoctrine()->getManager()->flush();
+                return $this->redirectToRoute('event', ['id' => $raid->getId()]);
             }
         }
 
@@ -164,7 +165,7 @@ class EventController extends AbstractController
     /**
      * @Route("/{id}/unregister", name="unregister")
      */
-    public function unregister(Request $request, Raid $raid): Response
+    public function unregister(Raid $raid): Response
     {
         $now = new DateTime();
         if ($now > $raid->getStartAt()) {
@@ -172,13 +173,22 @@ class EventController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
-        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
+        $raidCharacterToUnsubscribe = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
             $raid,
             $this->getUser()
         );
 
-        if (!$raidCharacter->isRefused()) {
-            $this->getDoctrine()->getManager()->remove($raidCharacter);
+        $raidCharacterOfRaidLeader = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid(
+            $raid
+        );
+
+        if ($raidCharacterOfRaidLeader === $raidCharacterToUnsubscribe) {
+            $this->addFlash('danger', 'You cannot unsubscribe from your own raids');
+            return $this->redirectToRoute('user_account');
+        }
+
+        if (!$raidCharacterToUnsubscribe->isRefused()) {
+            $this->getDoctrine()->getManager()->remove($raidCharacterToUnsubscribe);
             $this->addFlash('success', "You successfully unsubscribed from the raid");
         } else {
             $this->addFlash('danger', "You cannot leave a raid from which your subscription has been rejected by the raid leader");

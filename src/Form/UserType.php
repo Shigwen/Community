@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\User;
-use App\Validator\UniqueEmail;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,15 +26,10 @@ class UserType extends AbstractType
                         'class' => 'form-control mb-0',
                     ],
                     'query_builder' => function (EntityRepository $er) use ($options) {
-                        if ($options['country']) {
-                            $country = "%" . $options['country'] . "/%";
-                            return $er->createQueryBuilder('t')
-                                ->where('t.name LIKE :country ')
-                                ->setParameter('country', $country);
-                        }
+                        $country = "%" . $options['country'] . "/%";
                         return $er->createQueryBuilder('t')
-                            ->where('t.name LIKE :country ')
-                            ->setParameter('country', '%Africa/%');
+                            ->where('t.name LIKE :country')
+                            ->setParameter('country', $country);
                     },
                 ]);
             return;

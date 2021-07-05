@@ -25,15 +25,18 @@ final class Version20210606194322 extends AbstractMigration
 
         $this->addSql("
             INSERT INTO character_class VALUES
-                (1, 'Druid'),
-                (2, 'Hunter'),
-                (3, 'Mage'),
-                (4, 'Paladin'),
-                (5, 'Priest'),
-                (6, 'Rogue'),
-                (7, 'Shaman'),
-                (8, 'Warlock'),
-                (9, 'Warrior')
+                (1, 'Death Knight'),
+                (2, 'Demon Hunter'),
+                (3, 'Druid'),
+                (4, 'Hunter'),
+                (5, 'Mage'),
+                (6, 'Monk'),
+                (7, 'Paladin'),
+                (8, 'Priest'),
+                (9, 'Rogue'),
+                (10, 'Shaman'),
+                (11, 'Warlock'),
+                (12, 'Warrior')
         ");
 
         $this->addSql("
@@ -49,9 +52,9 @@ final class Version20210606194322 extends AbstractMigration
 
         $this->addSql("
             INSERT INTO game_version VALUES
-                (1, 'World of Warcraft'),
-                (2, 'World of Warcraft Classic'),
-                (3, 'Burning Crusade Classic')
+                (1, 'Retail'),
+                (2, 'Classic'),
+                (3, 'TBC Classic')
         ");
 
         $this->addSql("

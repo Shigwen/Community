@@ -19,38 +19,35 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class ManageParticipantController extends AbstractController
 {
     /**
-     * @Route("/{raid_id}/character/{character_id}/accept-or-refuse", name="accept_or_refuse")
-     * @ParamConverter("raid", options={"id" = "raid_id"})
-     * @ParamConverter("character", options={"id" = "character_id"})
+     * @Route("/raid/character/{id}/accept-or-refuse/{acceptOrRefuse}", name="accept_or_refuse")
      */
-    public function acceptOrRefuse(Request $request, Raid $raid, Character $character): Response
+    public function acceptOrRefuse(RaidCharacter $raidCharacter, int $acceptOrRefuse): Response
     {
-        $raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->findOneBy([
-            'raid' => $raid,
-            'userCharacter' => $character,
-        ]);
-
-        if (!$raidCharacter) {
-            throw $this->createNotFoundException('Une erreur est survenue');
-        }
-
-        $status = intval($request->query->get('status'));
-        if (!in_array($status, [RaidCharacter::ACCEPT, RaidCharacter::REFUSED])) {
+        if (!in_array($acceptOrRefuse, [RaidCharacter::ACCEPT, RaidCharacter::REFUSED])) {
             throw new BadRequestHttpException('Bad status');
         }
 
-        if ($status === RaidCharacter::ACCEPT) {
+        if ($acceptOrRefuse === RaidCharacter::ACCEPT) {
             $this->addFlash('success', $raidCharacter->getUserCharacter()->getName() .
                 ' has been added to the raid roster');
         } else {
+            $raidCharacterOfRaidLeader = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid(
+                $raidCharacter->getRaid(),
+            );
+
+            if ($raidCharacterOfRaidLeader === $raidCharacter) {
+                $this->addFlash('danger', 'You cannot refuse your own character in your own raid');
+                return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $raidCharacter->getRaid()->getId()]);
+            }
+
             $this->addFlash('success', $raidCharacter->getUserCharacter()->getName() .
                 ' has been removed from the raid roster');
         }
 
-        $raidCharacter->setStatus($status);
+        $raidCharacter->setStatus($acceptOrRefuse);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $raid->getId()]);
+        return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $raidCharacter->getRaid()->getId()]);
     }
 
     /**

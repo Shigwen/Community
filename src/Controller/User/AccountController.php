@@ -33,6 +33,8 @@ class AccountController extends AbstractController
             $character
                 ->setUser($this->getUser())
                 ->setIsArchived(false);
+        } else {
+            $gameVersion = $character->getServer()->getGameVersion();
         }
 
         if ($idCharacter && !$this->getUser()->hasCharacter($character)) {
@@ -70,6 +72,10 @@ class AccountController extends AbstractController
             'isSubscribeInARaid' => count($subscribedRaid),
         ]);
 
+        if (isset($gameVersion)) {
+            $formCharacter->get('gameVersion')->setData($gameVersion->getId());
+        }
+
         $formCharacter->handleRequest($request);
         if ($formCharacter->isSubmitted() && $formCharacter->isValid()) {
             $character = $formCharacter->getData();
@@ -91,7 +97,7 @@ class AccountController extends AbstractController
         return $this->render('user/account.html.twig', [
             'formUser' => $formUser->createView(),
             'formCharacter' => $formCharacter->createView(),
-            'characterNameEdit' => $idCharacter ? $character->getName() : null,
+            'character' => $idCharacter ? $character : null,
             'user' => $user,
             'characters' => $this->getDoctrine()->getRepository(Character::class)
                 ->findBy(['user' => $user, 'isArchived' => false]),

@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class RaidType extends AbstractType
 {
@@ -31,6 +30,7 @@ class RaidType extends AbstractType
             ->add('raidType', ChoiceType::class, [
                 'choices'  => [
                     '10' => 10,
+                    '20' => 20,
                     '25' => 25,
                     '40' => 40,
                 ],

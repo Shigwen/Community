@@ -8,6 +8,8 @@ use App\Entity\Raid;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Character;
+use App\Entity\GameVersion;
+use App\Form\CharacterType;
 use App\Service\Calendar;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,6 +37,28 @@ class ApiController extends AbstractController
         ]);
 
         $html =  $this->render('api/_select_form_timezone.html.twig', [
+            'form' => $form->createView(),
+        ]);
+
+        return new JsonResponse(['html' => $html->getContent()]);
+    }
+
+    /**
+     * @Route("/list-servers-for-game-version/{id}")
+     */
+    public function getServers(Request $request, GameVersion $gameVersion): Response
+    {
+        if (!$character = $this->getDoctrine()->getRepository(Character::class)->findOneBy([
+            'id' => $request->query->get('idCharacter')
+        ])) {
+            $character = new Character();
+        }
+
+        $form = $this->createForm(CharacterType::class, $character, [
+            'gameVersion' => $gameVersion,
+        ]);
+
+        $html =  $this->render('api/_select_form_server.html.twig', [
             'form' => $form->createView(),
         ]);
 

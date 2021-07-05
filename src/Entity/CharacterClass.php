@@ -48,7 +48,8 @@ class CharacterClass
 
     public function getImageSource(): ?string
     {
-        return "https://wow.zamimg.com/images/wow/icons/large/classicon_" . strtolower($this->name) . ".jpg";
+        $className = str_replace(' ', '', strtolower($this->name));
+        return "https://wow.zamimg.com/images/wow/icons/large/classicon_" . $className . ".jpg";
     }
 
     public function getName(): ?string
