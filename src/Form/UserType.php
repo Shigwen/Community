@@ -91,7 +91,12 @@ class UserType extends AbstractType
                         'class' => 'form-control mb-0',
                         'placeholder' => $options['isEdit'] ? 'Let this input empty if you want to keep your old password' : 'Password',
                     ],
-                    'constraints' => $options['isEdit'] ? [] : [
+                    'constraints' => $options['isEdit'] ? [
+                        new Regex([
+                            "pattern" => "/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",
+                            "message" => "Your password must contain minimum 8 characters, at least one uppercase, one lowercase, one number and one special character"
+                        ])
+                    ] : [
                         new NotBlank(['message' => 'The password cannot be blank']),
                         new Regex([
                             "pattern" => "/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",

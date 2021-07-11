@@ -41,6 +41,7 @@
                 <table class="table table-striped table-bordered table-hover table-dark">
                     <thead class="text-center">
                         <tr>
+                            <th scope="col">Game version</th>
                             <th scope="col">Server</th>
                             <th scope="col">Faction</th>
                             <th scope="col">Name</th>
@@ -56,6 +57,7 @@
                         {% for raid in raids %}
                         <tr>
                             {% set raidCharacter = get_raid_character(raid) %}
+                            <td>{{ raidCharacter.userCharacter.server.gameVersion.name }}</td>
                             <td>{{ raidCharacter.userCharacter.server.name }}</td>
                             <td>
                                 <img src="{{ raidCharacter.userCharacter.faction.imageSource }}" 

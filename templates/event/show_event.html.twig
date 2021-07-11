@@ -162,10 +162,11 @@
                     </div>
 
                     <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
-                        <span class="h5">Server & Faction</span>
+                        <span class="h5">Server &  Faction</span>
                         <span class="h4 m-0">
                             <img src="{{ raidCharacter.userCharacter.faction.imageSource }}"
                             width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
+                            {{ raidCharacter.userCharacter.server.gameVersion.name }} - 
                             {{ raidCharacter.userCharacter.server.name }}
                         </span>
                     </div>
@@ -194,7 +195,7 @@
 
                     <div class="form-row justify-content-between mb-2 mt-4">
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
-                            Amount of raiders the Raid Leader is looking for :
+                            Amount of raiders the Raid Leader is looking for
                         </div>
                         <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
                             {{ raid.expectedAttendee }}

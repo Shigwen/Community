@@ -3,6 +3,7 @@
         <tr>
             <th scope="col">Faction</th>
             <th scope="col">Name</th>
+            <th scope="col">Game version</th>
             <th scope="col">Server</th>
             <th scope="col">Date</th>
             <th scope="col" class="d-none d-md-table-cell">
@@ -27,6 +28,7 @@
                     width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
                 </td>
                 <td>{{ raid.name }}</td>
+                <td>{{ raidCharacter.userCharacter.server.gameVersion.name }}</td>
                 <td>{{ raidCharacter.userCharacter.server.name }}</td>
                 <td>
                     {% if user is defined %}

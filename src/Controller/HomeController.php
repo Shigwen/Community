@@ -165,7 +165,7 @@ class HomeController extends AbstractController
     public function recoverPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         if (!$user = $this->getDoctrine()->getRepository(User::class)->findOneByToken($token)) {
-            $this->addFlash('danger', 'Le lien servant à modifier ce mot de passe a déjà été utilisé');
+            $this->addFlash('danger', 'The link to reset your password has already been used');
 
             return $this->redirectToRoute('home');
         }
@@ -179,7 +179,7 @@ class HomeController extends AbstractController
                 ->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
 
             $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('success', 'Le mot de passe a bien été modifié');
+            $this->addFlash('success', 'Password successfully modified');
 
             return $this->redirectToRoute('home');
         }

@@ -20,6 +20,7 @@
                     <thead class="text-center">
                         <tr>
                             <th scope="col">Raid type</th>
+                            <th scope="col">You're looking for</th>
                             <th scope="col">Min. and Max. Tanks</th>
                             <th scope="col">Min. and Max. Healers</th>
                         </tr>
@@ -28,8 +29,21 @@
                     <tbody class="text-center ">
                         <tr>
                             <td>{{ template.raidType }}</td>
-                            <td>{{ template.minTank }} to {{ template.maxTank }}</td>
-                            <td>{{ template.minHeal }} to {{ template.maxHeal }}</td>
+                            <td>{{ template.expectedAttendee }}</td>
+                            <td> 
+                                {% if template.minTank == template.maxTank %} 
+                                    {{ template.minTank }}
+                                {% else %} 
+                                    {{ template.minTank }} to {{ template.maxTank }}
+                                {% endif %} 
+                            </td>
+                            <td>
+                                {% if template.minHeal == template.maxHeal %} 
+                                    {{ template.minHeal }}
+                                {% else %} 
+                                    {{ template.minHeal }} to {{ template.maxHeal }}
+                                {% endif %}
+                            </td>
                         </tr>
                     </tbody>
                 </table>

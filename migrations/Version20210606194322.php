@@ -41,13 +41,12 @@ final class Version20210606194322 extends AbstractMigration
 
         $this->addSql("
             INSERT INTO message_type VALUES
-                (1, 'I\'d like to become a Raid Leader and organize my own events'),
-                (2, 'I cannot sign up / sign in'),
-                (3, 'I cannot create/modify characters'),
-                (4, 'I cannot create/modify a raid'),
-                (5, 'I cannot subscribe to / unsubscribe from a raid'),
-                (6, 'I was banned from the website'),
-                (7, 'Others')
+                (1, 'I cannot sign up / sign in'),
+                (2, 'I cannot create/modify characters'),
+                (3, 'I cannot create/modify a raid'),
+                (4, 'I cannot subscribe to / unsubscribe from a raid'),
+                (5, 'I was banned from the website'),
+                (6, 'Others')
         ");
 
         $this->addSql("

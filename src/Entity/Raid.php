@@ -56,7 +56,7 @@ class Raid
      *     message = "You must specify a raid type"
      * )
      * @Assert\Choice(
-     *     choices = {10, 25, 40},
+     *     choices = {10, 20, 25, 40},
      *     message = "Choose a valid raid type"
      * )
      *
