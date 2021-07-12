@@ -8,7 +8,7 @@
 
             <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('user_account')}}#characterForm">Reset Form</a>
 
-            <legend class="text-center h4" {% if character is not null %} id="character" data-id="{{character.id}}" {% endif %}>
+            <legend class="text-center h4 mb-5" {% if character is not null %} id="character" data-id="{{character.id}}" {% endif %}>
                 {% if character is not null %}
                     Modify {{character.name}}
                 {% else %}
@@ -16,29 +16,24 @@
                 {% endif %}
             </legend>
 
-            {% if formCharacter.server is defined %}
-                <div class="col-lg-5 col-md-11 row m-0">
-                    <div class="col-lg-6 col-md-12 p-0 text-center">
-                        {{ form_label(formCharacter.name) }}
-                        {{ form_widget(formCharacter.name) }}
-                        <small class="form-text text-muted mb-4">Your character name cannot contain space or special character</small>
-                        {{ form_errors(formCharacter.name) }}
-                    </div>
+            <div class="col-lg-5 col-md-11 row m-0">
+                <div class="{% if formCharacter.server is defined %} col-lg-6 col-md-12 {% else %} col-12 {% endif %} p-0 text-center">
+                    {{ form_label(formCharacter.name) }}
+                    {{ form_widget(formCharacter.name) }}
+                    <small class="form-text text-muted mb-4">Your character name cannot contain space or special character</small>
+                    {{ form_errors(formCharacter.name) }}
+                </div>
+                {% if formCharacter.server is defined %}
                     <div class="col-lg-6 col-md-12 p-0 text-center">
                         {{ form_label(formCharacter.faction) }}
                         {{ form_widget(formCharacter.faction) }}
                         {{ form_errors(formCharacter.faction) }}
                     </div>
-                </div>
-            {% else %}
-                <div class="mt-2 p-2 border border-primary rounded">
-                    You cannot change the server or faction of character who's subscribe
-                    a raid or is in waiting confirmation
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
 
-            {% if formCharacter.server is defined %}
-                <div class="col-lg-5 col-md-11 row m-0">
+            <div class="col-lg-5 col-md-11 row m-0">
+                {% if formCharacter.gameVersion is defined %}
                     <div class="col-lg-6 col-md-12 p-0 text-center">
                         {{ form_label(formCharacter.gameVersion) }}
                         {{ form_widget(formCharacter.gameVersion) }}
@@ -49,13 +44,15 @@
                         {{ form_widget(formCharacter.server) }}
                         {{ form_errors(formCharacter.server) }}
                     </div>
-                </div>
-            {% else %}
-                <div class="mt-2 p-2 border border-primary rounded">
-                    You cannot change the server or faction of character who's subscribe
-                    a raid or is in waiting confirmation
-                </div>
-            {% endif %}
+                {% else %}
+                    <div class="col-12 p-0 text-center">
+                        <p class="h5 p-1 border border-primary rounded"> 
+                            You cannot change the server or faction of character who's subscribe
+                            a raid or is in waiting confirmation
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
 
             <div class="col-lg-5 col-md-11 text-center">
                 {{ form_label(formCharacter.characterClass) }}

@@ -81,6 +81,8 @@ class RaidController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'The raid has been properly modified');
+
             return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
         }
 
@@ -99,6 +101,7 @@ class RaidController extends AbstractController
     {
         return $this->render('raid_leader/manage_players.html.twig', [
             'raid' => $raid,
+            'user' => $this->getUser(),
             'tanksWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
                 'raid' => $raid,
                 'status' => RaidCharacter::WAITING_CONFIRMATION,

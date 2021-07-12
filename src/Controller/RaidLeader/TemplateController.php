@@ -57,24 +57,26 @@ class TemplateController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $newRaidTemplate = $form->getData();
+            $fragment = 'templateList';
 
             // Create new template
             if ($form->get('saveTemplate')->isClicked()) {
                 $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
                 $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
 
-                // Edit chosen raid template
+            // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {
                 $templateService->editChosenTemplate($raidTemplateInUse, $newRaidTemplate);
                 $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly modified');
 
-                // Create raid
+            // Create raid
             } else {
                 $templateService->createRaid($newRaidTemplate, $newRaidCharacter);
                 $this->addFlash('success', 'Your raid ' . $newRaidTemplate->getName() . ' has been properly created and published to the calendar');
+                $fragment = 'raidList';
             }
 
-            return $this->redirectToRoute('raidleader_events');
+            return $this->redirectToRoute('raidleader_events', ['_fragment' => $fragment]);
         }
 
         if ($this->get('session')) {

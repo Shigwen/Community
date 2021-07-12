@@ -44,7 +44,7 @@ class EventController extends AbstractController
             ]);
         }
 
-        $identifier = $request->query->get('identifier');
+        $identifier = trim($request->query->get('identifier'));
         if ($identifier) {
             $raid = $this->getDoctrine()->getRepository(Raid::class)->findOneBy(['identifier' => $identifier]);
             if ($raid) {

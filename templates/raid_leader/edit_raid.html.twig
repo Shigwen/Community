@@ -18,9 +18,9 @@
 {% if raid.isPrivate %}
     <div class="row d-flex justify-content-around mt-5">
         <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded h5">
-            Private raid code : {{ raid.identifier }} <br><br>
-            This raid is private. It will not appear in the public results of the calendar page <br>
-            Give the code to your raiders so they can fill it in the calendar form to access the raid page
+            Private raid code : <span class="text-warning">{{ raid.identifier }} </span> <br><br>
+            This raid is private. It will not appear in the public results of the calendar page. <br>
+            Give the code to your raiders so they can fill it in the calendar form to access the raid page.
         </div>
     </div>
 {% endif %}

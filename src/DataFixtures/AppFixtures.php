@@ -3,16 +3,13 @@
 namespace App\DataFixtures;
 
 use DateTime;
-use App\Entity\Raid;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Server;
 use App\Entity\Faction;
 use App\Entity\Timezone;
 use App\Entity\Character;
-use App\Entity\RaidCharacter;
 use App\Entity\CharacterClass;
-use App\Service\Raid\Identifier;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -22,21 +19,19 @@ class AppFixtures extends Fixture
     /** @var UserPasswordEncoderInterface */
     private $encoder;
 
-    /** @var Identifier */
-    private $identifier;
-
-    public function __construct(UserPasswordEncoderInterface $encoder, Identifier $identifier)
+    public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
-        $this->identifier = $identifier;
     }
 
     public function load(ObjectManager $manager)
     {
         // Users
-
+        $users = [];
         $timezones = $manager->getRepository(Timezone::class)->findBy([], [], 50);
-        for ($i = 0; $i <= 40; $i++) {
+        $classes = $manager->getRepository(CharacterClass::class)->findAll();
+
+        for ($i = 0; $i < 45; $i++) {
             $user = new User();
             $user
                 ->setName('User_' . $i)
@@ -49,35 +44,72 @@ class AppFixtures extends Fixture
                 ->setLastAttempt(new DateTime());
 
             $manager->persist($user);
+            $users[] = $user;
         }
 
-
         // Characters
+        $classes = $manager->getRepository(CharacterClass::class)->findAll();
+        $roles = $manager->getRepository(Role::class)->findAll();
 
-        // $users = $manager->getRepository(User::class)->findAll();
-        // $faction = $manager->getRepository(Faction::class)->find(1);
-        // $server = $manager->getRepository(Server::class)->find(1);
-        // $classes = $manager->getRepository(CharacterClass::class)->findAll();
-        // $roles = $manager->getRepository(Role::class)->findAll();
+        $alliance = $manager->getRepository(Faction::class)->find(1);
+        $horde = $manager->getRepository(Faction::class)->find(2);
 
-        // foreach ($users as $key => $user) {
-        //     $character = new Character();
-        //     $character
-        //         ->setUser($user)
-        //         ->setName('character_' . $key)
-        //         ->setFaction($faction)
-        //         ->setServer($server)
-        //         ->setCharacterClass($classes[rand(0, 8)])
-        //         ->addRole($roles[rand(0, 2)])
-        //         ->addRole($roles[rand(0, 2)])
-        //         ->addRole($roles[rand(0, 2)])
-        //         ->setInformation('Informations')
-        //         ->setIsArchived(false);
+        $lucifron = $manager->getRepository(Server::class)->find(22);
+        $chromie = $manager->getRepository(Server::class)->find(49);
+        $zenedar = $manager->getRepository(Server::class)->find(350);
 
-        //     $manager->persist($character);
-        //     $characters[] = $character;
-        // }
+        foreach ($users as $key => $user) {
 
-        $manager->flush();
+            $character = new Character();
+            $character
+                ->setUser($user)
+                ->setName('character_' . $key . '_of_' . $user->getName())
+                ->setFaction($alliance)
+                ->setServer($zenedar)
+                ->setCharacterClass($classes[rand(0, 8)])
+                ->addRole($roles[rand(0, 2)])
+                ->addRole($roles[rand(0, 2)])
+                ->addRole($roles[rand(0, 2)])
+                ->setInformation('Informations')
+                ->setIsArchived(false);
+
+            $manager->persist($character);
+
+            if ($key < 15) {
+                $character = new Character();
+                $character
+                    ->setUser($user)
+                    ->setName('character_' . $key . '_of_' . $user->getName())
+                    ->setFaction($horde)
+                    ->setServer($chromie)
+                    ->setCharacterClass($classes[rand(0, 8)])
+                    ->addRole($roles[rand(0, 2)])
+                    ->addRole($roles[rand(0, 2)])
+                    ->addRole($roles[rand(0, 2)])
+                    ->setInformation('Informations')
+                    ->setIsArchived(false);
+
+                $manager->persist($character);
+            }
+
+            if ($key < 30) {
+                $character = new Character();
+                $character
+                    ->setUser($user)
+                    ->setName('character_' . $key . '_of_' . $user->getName())
+                    ->setFaction($alliance)
+                    ->setServer($lucifron)
+                    ->setCharacterClass($classes[rand(0, 8)])
+                    ->addRole($roles[rand(0, 2)])
+                    ->addRole($roles[rand(0, 2)])
+                    ->addRole($roles[rand(0, 2)])
+                    ->setInformation('Informations')
+                    ->setIsArchived(false);
+
+                $manager->persist($character);
+            }
+
+            $manager->flush();
+        }
     }
 }

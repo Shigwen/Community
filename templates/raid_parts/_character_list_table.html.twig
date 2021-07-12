@@ -28,7 +28,7 @@
                         width="30" height="30" alt="{{ raidCharacter.role.name }}">
                     </td>
                     <td>
-                        {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) %}
+                        {% if raidCharacter.isCharacterFromUser(user) %}
                             <span class="text-info">- You -</span>
                         {% else %}
                             <a class="text-info text-decoration-none mr-2" 

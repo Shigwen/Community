@@ -2,16 +2,13 @@
 
 namespace App\Controller\RaidLeader;
 
-use App\Entity\Raid;
 use App\Entity\User;
-use App\Entity\Character;
 use App\Entity\RaidCharacter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/raid-leader/manage-players", name="raidleader_manage_players_")

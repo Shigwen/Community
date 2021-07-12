@@ -9,8 +9,10 @@ use App\Entity\User;
 use App\Entity\Character;
 use App\Entity\RaidCharacter;
 use App\Service\Raid\Identifier;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\Date;
 
 class Template
 {
@@ -97,38 +99,37 @@ class Template
     {
         $start = $raidTemplate->getStartAt();
         $end = $raidTemplate->getEndAt();
-        $dayOfWeek = $start->format('l');
-
-        $newStart = new DateTime();
-        $newStart->modify($dayOfWeek . ' this week');
-        $newStart->setTime(
-            $start->format('H'),
-            $start->format('i'),
-            $start->format('s')
-        );
 
         $now = new DateTime();
-        if ($now > $newStart) {
-            $newStart->modify($dayOfWeek . ' next week');
-            $newStart->setTime(
-                $start->format('H'),
-                $start->format('i'),
-                $start->format('s')
-            );
-        }
+        $newStart = $this->getNextDate($start, 'this week');
 
-        $newEnd = clone $newStart;
-        $newEnd->setTime(
-            $end->format('H'),
-            $end->format('i'),
-            $end->format('s')
-        );
+        if ($now > $newStart) {
+            $newStart = $this->getNextDate($start, 'next week');
+            $newEnd = $this->getNextDate($end, 'next week');
+        } else {
+            $newEnd = $this->getNextDate($end, 'this week');
+        }
 
         $newRaid
             ->setStartAt($newStart)
             ->setEndAt($newEnd);
 
         return $newRaid;
+    }
+
+    public function getNextDate(DateTime $date, string $modifier)
+    {
+        $dayOfWeek = $date->format('l');
+
+        $newDate = new DateTime();
+        $newDate->modify($dayOfWeek . ' ' . $modifier);
+        $newDate->setTime(
+            $date->format('H'),
+            $date->format('i'),
+            $date->format('s')
+        );
+
+        return $newDate;
     }
 
     /**

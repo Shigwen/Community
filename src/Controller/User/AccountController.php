@@ -72,7 +72,7 @@ class AccountController extends AbstractController
             'isSubscribeInARaid' => count($subscribedRaid),
         ]);
 
-        if (isset($gameVersion)) {
+        if (count($subscribedRaid) == 0 && isset($gameVersion)) {
             $formCharacter->get('gameVersion')->setData($gameVersion->getId());
         }
 
