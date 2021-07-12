@@ -10,7 +10,7 @@
             <tr>
                 <th>Name</th>
                 <th>Class</th>
-                <th>Role</th>
+                <th>{{ role|length }} / {{raid.maxForRole(roleName)}}</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -18,7 +18,19 @@
         <tbody class="text-center">
             {% for raidCharacter in role %}
                 <tr>
-                    <td>{{ raidCharacter.userCharacter.name }}</td>
+                    {% if user is defined and raidCharacter.userCharacter.user == user %}
+                        <td class="text-info">
+                            {{ raidCharacter.userCharacter.name }}
+                        </td>
+                    {% elseif raidCharacter.userCharacter.user == raidCharacter.raid.user %}
+                        <td class="text-success">
+                            {{ raidCharacter.userCharacter.name }} <small class="text-light">(Raid Leader)</small>
+                        </td>
+                    {% else %}
+                        <td>
+                            {{ raidCharacter.userCharacter.name }}
+                        </td>
+                    {% endif %}
                     <td>
                         <img src="{{ raidCharacter.userCharacter.characterClass.imageSource }}" 
                         width="30" height="30" alt="{{ raidCharacter.userCharacter.characterClass.name }}">
@@ -28,7 +40,7 @@
                         width="30" height="30" alt="{{ raidCharacter.role.name }}">
                     </td>
                     <td>
-                        {% if raidCharacter.isCharacterFromUser(user) %}
+                        {% if user is defined and raidCharacter.userCharacter.user == user %}
                             <span class="text-info">- You -</span>
                         {% else %}
                             <a class="text-info text-decoration-none mr-2" 

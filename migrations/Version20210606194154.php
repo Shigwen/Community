@@ -49,6 +49,7 @@ final class Version20210606194154 extends AbstractMigration
         $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D6493FE997DE FOREIGN KEY (timezone_id) REFERENCES timezone (id)');
         $this->addSql('ALTER TABLE user_user ADD CONSTRAINT FK_F7129A803AD8644E FOREIGN KEY (user_source) REFERENCES user (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE user_user ADD CONSTRAINT FK_F7129A80233D34C1 FOREIGN KEY (user_target) REFERENCES user (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE raid_character ADD created_at DATETIME NOT NULL;');
     }
 
     public function down(Schema $schema): void

@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RaidRepository;
+use App\Validator as AssertCustom;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator as AssertCustom;
 
 /**
  * @ORM\Entity(repositoryClass=RaidRepository::class)
@@ -286,6 +287,22 @@ class Raid
         $this->information = $information;
 
         return $this;
+    }
+
+    public function getMaxForRole(string $roleName)
+    {
+        switch ($roleName) {
+            case 'tanks':
+                $max = $this->getMaxTank();
+                break;
+            case 'healers':
+                $max = $this->getMaxHeal();
+                break;
+            case 'DPS':
+                $max = ($this->expectedAttendee + 1) - ($this->getMaxTank() + $this->getMaxHeal());
+                break;
+        }
+        return $max;
     }
 
     public function getMinTank(): ?int

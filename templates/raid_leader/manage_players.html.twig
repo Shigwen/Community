@@ -28,8 +28,11 @@
     {% set tanks = tanksValidated %}
     {% set healers = healersValidated %}
     {% set dps = dpsValidated %}
+    {% set nbrOfPlayers = tanks|length + healers|length + dps|length %}
 
-    <p class="h4 mb-3 py-3 mt-5 text-center border-bottom border-top border-info"> Validated players </p>
+    <p class="h4 mb-3 py-3 mt-5 text-center border-bottom border-top border-info"> 
+        Validated players - {{ nbrOfPlayers }} / {{raid.expectedAttendee + 1}} 
+    </p>
     {{ include('raid_parts/_character_list.html.twig') }}
 {% endif %}
 

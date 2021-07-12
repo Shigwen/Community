@@ -10,6 +10,7 @@ use App\Service\Calendar;
 use App\Entity\RaidCharacter;
 use App\Form\RaidCharacterType;
 use App\Service\Raid\NumberOfPlacesRemaining;
+use App\Service\Raid\ReplacePlayer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,7 +76,7 @@ class EventController extends AbstractController
     /**
      * @Route("/event/{id}", name="event")
      */
-    public function event(Request $request, Raid $raid, NumberOfPlacesRemaining $nbrOfPlaces): Response
+    public function event(Request $request, Raid $raid, NumberOfPlacesRemaining $nbrOfPlaces, ReplacePlayer $replacePlayer): Response
     {
         if (!$this->getUser()) {
             return $this->render('event/show_event.html.twig', [
@@ -86,10 +87,14 @@ class EventController extends AbstractController
             ]);
         }
 
-        if (!$raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
+        if ($raidCharacter = $this->getDoctrine()->getRepository(RaidCharacter::class)->getOfUserFromRaid(
             $raid,
             $this->getUser()
         )) {
+            if ($raidCharacter->getStatus() === RaidCharacter::ACCEPT) {
+                $oldRole = $raidCharacter->getRole();
+            }
+        } else {
             $raidCharacter = new RaidCharacter();
             $raidCharacter->setRaid($raid);
             $this->getDoctrine()->getManager()->persist($raidCharacter);
@@ -123,13 +128,16 @@ class EventController extends AbstractController
                     return $this->redirectToRoute('event', ['id' => $raid->getId()]);
                 }
 
+                // Raid leader character
                 if ($raidCharacter === $raidCharacterFromRaidLeader) {
                     $raidCharacter->setStatus(RaidCharacter::ACCEPT);
                     $this->addFlash('success', "You correctly subscribed your character to the raid");
                 } else {
+                    // Raid without Auto accept
                     if (!$raid->isAutoAccept()) {
                         $raidCharacter->setStatus(RaidCharacter::WAITING_CONFIRMATION);
                         $this->addFlash('success', "Your character is subscribed to the raid, and is now waiting for the raid leader to confirm the subscription");
+                        // Raid with Auto accept
                     } else {
                         $status = $nbrOfPlaces->getStatusOfCharacterByPlacesRemaining($raid, $raidCharacter->getRole());
                         $raidCharacter->setStatus($status);
@@ -138,6 +146,11 @@ class EventController extends AbstractController
                             $this->addFlash('success', "You correctly subscribed your character to the raid");
                         } else {
                             $this->addFlash('success', "Your character is subscribed to the raid, and is now waiting for the raid leader to confirm the subscription");
+                        }
+
+                        // The user change this role in the raid
+                        if (isset($oldRole) && $oldRole !== $raidCharacter->getRole()) {
+                            $replacePlayer->replace($raidCharacter, $oldRole);
                         }
                     }
                 }
@@ -165,7 +178,7 @@ class EventController extends AbstractController
     /**
      * @Route("/{id}/unregister", name="unregister")
      */
-    public function unregister(Raid $raid): Response
+    public function unregister(Raid $raid, ReplacePlayer $replacePlayer): Response
     {
         $now = new DateTime();
         if ($now > $raid->getStartAt()) {
@@ -188,6 +201,8 @@ class EventController extends AbstractController
         }
 
         if (!$raidCharacterToUnsubscribe->isRefused()) {
+            $replacePlayer->replace($raidCharacterToUnsubscribe, $raidCharacterToUnsubscribe->getRole());
+
             $this->getDoctrine()->getManager()->remove($raidCharacterToUnsubscribe);
             $this->addFlash('success', "You successfully unsubscribed from the raid");
         } else {

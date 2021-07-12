@@ -121,7 +121,10 @@
             </div>
 
             <div class="col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded justify-content-around my-3">
-                <h3 class="text-center mb-4 pb-3 border-bottom border-info">Raid roster</h3>
+                <h3 class="text-center mb-4 pb-3 border-bottom border-info">
+                    {% set nbrOfPlayers = tanks|length + healers|length + dps|length %}
+                    Raid roster - {{ nbrOfPlayers }} / {{raid.expectedAttendee + 1}} players
+                </h3>
                 {% set showMessage = true %}
                 {{ include('raid_parts/_character_list.html.twig') }}
             </div>
