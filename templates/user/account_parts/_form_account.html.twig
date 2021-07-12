@@ -2,7 +2,7 @@
 
 <div class="row d-flex justify-content-around">
     <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
-        <details>
+        <details  {% if form_errors(formUser.password.first)|length > 1 %} open {% endif %}>
             <summary class="h5">
                 Welcome <span class="text-success">{{ user.name }}</span> !
                 <br> The mail adress you are currently using is <span class="text-success">{{ user.email }}</span>.

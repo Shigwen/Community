@@ -23,9 +23,6 @@ class TemplateController extends AbstractController
      */
     public function events(Request $request, Template $templateService): Response
     {
-        $this->get('session')->set('pathToRefer', 'raidleader_events');
-        $this->get('session')->set('nameOfPageToRefer', 'Back to HQ');
-
         $newRaidTemplate = new Raid();
         $newRaidCharacter = new RaidCharacter();
 
@@ -60,31 +57,38 @@ class TemplateController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $newRaidTemplate = $form->getData();
+            $fragment = 'templateList';
 
             // Create new template
             if ($form->get('saveTemplate')->isClicked()) {
                 $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
                 $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
 
-                // Edit chosen raid template
+            // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {
                 $templateService->editChosenTemplate($raidTemplateInUse, $newRaidTemplate);
                 $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly modified');
 
-                // Create raid
+            // Create raid
             } else {
                 $templateService->createRaid($newRaidTemplate, $newRaidCharacter);
                 $this->addFlash('success', 'Your raid ' . $newRaidTemplate->getName() . ' has been properly created and published to the calendar');
+                $fragment = 'raidList';
             }
 
-            return $this->redirectToRoute('raidleader_events');
+            return $this->redirectToRoute('raidleader_events', ['_fragment' => $fragment]);
+        }
+
+        if ($this->get('session')) {
+            $this->get('session')->set('routeToRefer', 'raidleader_events');
+            $this->get('session')->set('nameOfPageToRefer', 'Back to HQ');
         }
 
         return $this->render('raid_leader/event_list.html.twig', [
             'user' => $this->getUser(),
             'raidTemplates' => $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser()),
             'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfRaidLeader($this->getUser()),
-            'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfRaidLeader($this->getUser()),
+            'forthcomingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getForthcomingRaidsOfRaidLeader($this->getUser()),
             'editTemplate' => $request->query->get('id') ? true : false,
             'form' => $form->createView(),
         ]);

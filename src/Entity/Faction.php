@@ -44,6 +44,11 @@ class Faction
         return $this->id;
     }
 
+    public function getImageSource(): ?string
+    {
+        return "https://wow.zamimg.com/images/wow/icons/large/ui_" . strtolower($this->name) . "icon.jpg";
+    }
+
     public function getName(): ?string
     {
         return $this->name;

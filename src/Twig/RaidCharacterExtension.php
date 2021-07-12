@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Entity\Raid;
+use App\Entity\User;
 use Twig\TwigFunction;
 use App\Entity\RaidCharacter;
 use Twig\Extension\AbstractExtension;
@@ -20,12 +21,16 @@ class RaidCharacterExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('get_raid_character_from_raidleader', [$this, 'getRaidCharacterFromRaidLeader']),
+            new TwigFunction('get_raid_character', [$this, 'getRaidCharacter']),
         ];
     }
 
-    public function getRaidCharacterFromRaidLeader(Raid $raid)
+    public function getRaidCharacter(Raid $raid, User $user = null)
     {
+        if ($user) {
+            return $this->em->getRepository(RaidCharacter::class)->getOfUserFromRaid($raid, $user);
+        }
+
         return $this->em->getRepository(RaidCharacter::class)->getOfRaidLeaderFromRaid($raid);
     }
 }

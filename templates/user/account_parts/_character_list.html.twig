@@ -22,6 +22,7 @@
                     <tr>
                         <th scope="col">Faction</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Game version</th>
                         <th scope="col">Server</th>
                         <th scope="col">Class</th>
                         <th scope="col" class="d-none d-md-table-cell">Role</th>
@@ -32,19 +33,36 @@
                 <tbody class="text-center">
                     {% for character in characters %}
                         <tr>
-                            <td>{{ character.faction.name }}</td>
-                            <td>{{ character.name }}</td>
-                            <td>{{ character.server.name }}</td>
-                            <td>{{ character.characterClass.name }}</td>
-                            <td>{{ character.strRoles }}</td>
                             <td>
-                                <a class="text-info text-decoration-none" data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}">
-                                    <i class="fas fa-eye"></i>
+                                <img src="{{ character.faction.imageSource }}" 
+                                width="40" height="40" alt="{{ character.faction.name }}">
+                            </td>
+                            <td>{{ character.name }}</td>
+                            <td>{{ character.server.gameVersion.name }}</td>
+                            <td>{{ character.server.name }}</td>
+                            <td>
+                                <img src="{{character.characterClass.imageSource}}" 
+                                width="40" height="40" alt="{{character.characterClass.name}}">
+                            </td>
+                            <td>
+                                {% for role in character.roles %}
+                                    <img src="{{ role.imageSource }}" 
+                                    width="40" height="40" alt="{{ role.name }}">
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a class="text-info text-decoration-none" 
+                                   data-toggle="modal" data-target="#clickMeCharacter_{{ character.id }}"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Info">
+                                    <i class="fas fa-info"></i>
                                 </a>
-                                <a href="{{ path('user_account')}}?id={{ character.id }}#characterForm" class="text-info text-decoration-none ml-2">
+                                <a href="{{ path('user_account')}}?id={{ character.id }}#characterForm" class="text-info text-decoration-none ml-2"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Edit">
                                     <i class="far fa-edit"></i>
                                 </a>
-                                <a href="{{ path('user_archive_character', {id: character.id})}}" class="text-danger text-decoration-none ml-2">
+                                <a class="text-danger text-decoration-none ml-2"
+                                   data-bs-toggle="tooltip" data-placement="top" title="Delete"
+                                   onclick="confirmModal('Delete character {{ character.name }}', 'Are you sure ?', '{{ path('user_archive_character', {id: character.id})}}' )">
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                                 {{ include('user/modal/_character_information.html.twig') }}

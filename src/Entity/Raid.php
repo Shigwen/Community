@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RaidRepository;
+use App\Validator as AssertCustom;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator as AssertCustom;
 
 /**
  * @ORM\Entity(repositoryClass=RaidRepository::class)
@@ -56,7 +57,7 @@ class Raid
      *     message = "You must specify a raid type"
      * )
      * @Assert\Choice(
-     *     choices = {10, 25, 40},
+     *     choices = {10, 20, 25, 40},
      *     message = "Choose a valid raid type"
      * )
      *
@@ -95,7 +96,7 @@ class Raid
     private $endAt;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $information;
 
@@ -112,7 +113,7 @@ class Raid
      * @Assert\NotBlank(
      *     message = "The maximum number of tanks you are looking for cannot be blank"
      * )
-     * @Assert\GreaterThan(
+     * @Assert\GreaterThanOrEqual(
      *     propertyPath = "minTank",
      *     message = "The maximum number of tanks cannot be inferior to the minimum"
      * )
@@ -134,7 +135,7 @@ class Raid
      * @Assert\NotBlank(
      *     message = "The maximum number of healers you are looking for cannot be blank"
      * )
-     * @Assert\GreaterThan(
+     * @Assert\GreaterThanOrEqual(
      *     propertyPath = "minHeal",
      *     message = "The maximum number of healers cannot be inferior to the minimum"
      * )
@@ -169,7 +170,7 @@ class Raid
     private $isArchived;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -276,23 +277,6 @@ class Raid
         return $this;
     }
 
-    public function getVerboseStartDayOfWeek()
-    {
-        if (!$this->getStartAt()) {
-            return null;
-        }
-
-        return [
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-            7 => 'Sunday',
-        ][$this->getStartAt()->format('N')]; // N format return 1 (for monday) to 7 (for sunday)
-    }
-
     public function getInformation(): ?string
     {
         return $this->information;
@@ -303,6 +287,22 @@ class Raid
         $this->information = $information;
 
         return $this;
+    }
+
+    public function getMaxForRole(string $roleName)
+    {
+        switch ($roleName) {
+            case 'tanks':
+                $max = $this->getMaxTank();
+                break;
+            case 'healers':
+                $max = $this->getMaxHeal();
+                break;
+            case 'DPS':
+                $max = ($this->expectedAttendee + 1) - ($this->getMaxTank() + $this->getMaxHeal());
+                break;
+        }
+        return $max;
     }
 
     public function getMinTank(): ?int
@@ -421,7 +421,7 @@ class Raid
     public function hasCharacter(Character $character)
     {
         foreach ($this->raidCharacters as $raidCharacter) {
-            if ($raidCharacter->getUserCharacter = $character) {
+            if ($raidCharacter->getUserCharacter() === $character) {
                 return true;
             }
         }

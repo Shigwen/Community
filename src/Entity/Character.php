@@ -241,25 +241,6 @@ class Character
         return $this->roles;
     }
 
-    /**
-     * List of role in the following format : Tank / Heal / DPS
-     * @return string
-     */
-    public function getStrRoles(): string
-    {
-        $string = '';
-
-        foreach ($this->roles as $index => $role) {
-            $string .= $role->getName();
-
-            if ($index + 1 < count($this->roles)) {
-                $string .= ' / ';
-            }
-        }
-
-        return $string;
-    }
-
     public function addRole(Role $role): self
     {
         if (!$this->roles->contains($role)) {

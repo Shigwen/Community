@@ -24,9 +24,6 @@ class AccountController extends AbstractController
      */
     public function account(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-        $this->get('session')->set('pathToRefer', 'user_account');
-        $this->get('session')->set('nameOfPageToRefer', 'Back to account');
-
         $user = $this->getUser();
         $oldPass = $user->getPassword();
         $idCharacter = $request->query->get('id');
@@ -36,6 +33,8 @@ class AccountController extends AbstractController
             $character
                 ->setUser($this->getUser())
                 ->setIsArchived(false);
+        } else {
+            $gameVersion = $character->getServer()->getGameVersion();
         }
 
         if ($idCharacter && !$this->getUser()->hasCharacter($character)) {
@@ -73,6 +72,10 @@ class AccountController extends AbstractController
             'isSubscribeInARaid' => count($subscribedRaid),
         ]);
 
+        if (count($subscribedRaid) == 0 && isset($gameVersion)) {
+            $formCharacter->get('gameVersion')->setData($gameVersion->getId());
+        }
+
         $formCharacter->handleRequest($request);
         if ($formCharacter->isSubmitted() && $formCharacter->isValid()) {
             $character = $formCharacter->getData();
@@ -86,15 +89,28 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
+        if ($this->get('session')) {
+            $this->get('session')->set('routeToRefer', 'user_account');
+            $this->get('session')->set('nameOfPageToRefer', 'Back to account');
+        }
+
         return $this->render('user/account.html.twig', [
             'formUser' => $formUser->createView(),
             'formCharacter' => $formCharacter->createView(),
-            'characterNameEdit' => $idCharacter ? $character->getName() : null,
+            'character' => $idCharacter ? $character : null,
             'user' => $user,
-            'characters' => $this->getDoctrine()->getRepository(Character::class)->findBy(['user' => $user, 'isArchived' => false]),
-            'pendingRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
-            'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
-            'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)->getPendingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
+            'characters' => $this->getDoctrine()->getRepository(Character::class)
+                ->findBy(['user' => $user, 'isArchived' => false]),
+            'forthcomingRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+            'inProgressRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getInProgressRaidsOfPlayer($user, RaidCharacter::ACCEPT),
+            'waitOfConfirmationRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingRaidsOfPlayer($user, RaidCharacter::WAITING_CONFIRMATION),
+            'refusedRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingRaidsOfPlayer($user, RaidCharacter::REFUSED),
+            'archivedByRaidLeaderRaids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getForthcomingArchivedByRaidLeader($user),
         ]);
     }
 
@@ -103,10 +119,11 @@ class AccountController extends AbstractController
      */
     public function past(): Response
     {
-        return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
-            'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
-            'pathToRefer' => $this->get('session')->get('pathToRefer'),
-            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
+        return $this->render('raid_parts/past_raid_list.html.twig', [
+            'raids' => $this->getDoctrine()->getRepository(Raid::class)
+                ->getPastRaidsOfPlayer($this->getUser(), RaidCharacter::ACCEPT),
+            'routeToRefer' => $this->get('session') ? $this->get('session')->get('routeToRefer') : null,
+            'nameOfPageToRefer' => $this->get('session') ? $this->get('session')->get('nameOfPageToRefer') : null,
         ]);
     }
 
@@ -119,7 +136,27 @@ class AccountController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        $raidForthcomingWhereUserIsRaidLeader = $this->getDoctrine()->getRepository(Raid::class)
+            ->getForthcomingRaidsOfRaidLeader($this->getUser());
+
+        $raidInProgressWhereUserIsRaidLeader = $this->getDoctrine()->getRepository(Raid::class)
+            ->getInProgressRaidsOfRaidLeader($this->getUser());
+
+        if (!empty($raidForthcomingWhereUserIsRaidLeader) || !empty($raidInProgressWhereUserIsRaidLeader)) {
+            $this->addFlash('danger', "You cannot remove your raid leading characters from their raids");
+
+            return $this->redirectToRoute('user_account');
+        }
+
+        $raidCharactersWhereCharacterIsNotRefused = $this->getDoctrine()->getRepository(RaidCharacter::class)
+            ->getAllFutureRaidsNotRefusedWithCharacter($character);
+
+        foreach ($raidCharactersWhereCharacterIsNotRefused as $raidCharacter) {
+            $this->getDoctrine()->getManager()->remove($raidCharacter);
+        }
+
         $character->setIsArchived(true);
+
         $this->getDoctrine()->getManager()->flush();
 
         $this->addFlash('success', 'Your character ' . $character->getName() . ' has been properly deleted');

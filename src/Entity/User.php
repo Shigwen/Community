@@ -9,9 +9,19 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * 
+ *  @UniqueEntity(
+ *     fields={"email"}, 
+ *     message="Email already used"
+ * )
+ *  @UniqueEntity(
+ *     fields={"name"}, 
+ *     message="Nickname already used"
+ * )
  */
 class User implements UserInterface
 {
@@ -136,14 +146,13 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles = [self::ROLE_USER];
+        $this->roles = [self::ROLE_RAID_LEADER];
         $this->status = self::STATUS_WAITING_EMAIL_CONFIRMATION;
         $this->nbrOfAttempt = 0;
         $this->lastAttempt = new DateTime();
 
         $this->createdAt = new DateTime();
         $this->raids = new ArrayCollection();
-        $this->ips = new ArrayCollection();
         $this->blockeds = new ArrayCollection();
         $this->blockers = new ArrayCollection();
         $this->characters = new ArrayCollection();
@@ -424,8 +433,10 @@ class User implements UserInterface
     {
         $str = '';
         foreach ($this->characters as $character) {
-            $str .= $character->getName() . ' ';
+            $str .= $character->getName() . ', ';
         }
+
+        $str = substr($str, 0, -2);
 
         return $str;
     }

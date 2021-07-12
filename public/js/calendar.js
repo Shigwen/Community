@@ -68,16 +68,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
     function change_character() {
         return __awaiter(this, void 0, Promise, function () {
-            var OLD_DATE, BODY, RAID_LIST, error_1;
+            var BODY, RAID_LIST, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, 3, 4]);
                         clear_process_queue();
-                        OLD_DATE = CONTAINER_1.querySelector('li#is-selected');
-                        if (!OLD_DATE) {
-                            return [2 /*return*/];
-                        }
                         chosen_character_1 = SELECT_CHARACTER_1.value;
                         if (!chosen_character_1) {
                             throw new Error("Missing Attribute");
@@ -228,6 +224,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                             BODY.set("date", chosen_date_1);
                             BODY.set("character", chosen_character_1);
                         }
+                        if (SELECT_CHARACTER_1) {
+                            BODY.set("character", chosen_character_1);
+                        }
                         BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
                         return [4 /*yield*/, update_raid_list(BODY)];
                     case 1:
@@ -261,9 +260,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         BODY = new FormData();
                         if (chosen_date_1) {
                             BODY.set("date", chosen_date_1);
-                            if (chosen_character_1) {
-                                BODY.set("character", chosen_character_1);
-                            }
+                        }
+                        if (SELECT_CHARACTER_1) {
+                            BODY.set("character", SELECT_CHARACTER_1.value);
                         }
                         BODY.set("numberOfResultPerPage", chosen_number_of_result_per_page_1);
                         BODY.set("currentPage", chosen_number_of_page_1);
@@ -367,7 +366,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                         return [2 /*return*/, ITEM];
                     case 3:
                         error_7 = _a.sent();
-                        console.log('coucou');
                         console.log(error_7);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];

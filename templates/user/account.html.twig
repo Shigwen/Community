@@ -8,6 +8,7 @@
 
 {% block custom_scripts %}
     <script defer src="{{asset('js/timezone.js')}}"></script>
+    <script defer src="{{asset('js/gameVersion.js')}}"></script>
 {% endblock %}
 
 {% block body %}
@@ -15,7 +16,9 @@
 {{ include('user/account_parts/_form_account.html.twig') }}
 {{ include('user/account_parts/_character_list.html.twig') }}
 {{ include('user/account_parts/_form_character.html.twig') }}
+{{ include('user/account_parts/_raid_list.html.twig') }}
 
-{{ include('user_raid_leader_parts/_scheduled_raids.html.twig') }}
-
+<div class="d-flex justify-content-center">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('user_raid_past')}}">Show past raids</a>
+</div>
 {% endblock %}

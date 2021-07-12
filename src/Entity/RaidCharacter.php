@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RaidCharacterRepository;
+use DateTime;
 
 /**
  * @ORM\Entity(repositoryClass=RaidCharacterRepository::class)
@@ -45,6 +45,16 @@ class RaidCharacter
      */
     private $status;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -72,15 +82,6 @@ class RaidCharacter
         $this->userCharacter = $userCharacter;
 
         return $this;
-    }
-
-    public function isCharacterFromUser(User $user)
-    {
-        if ($this->userCharacter->getUser() !== $user) {
-            return false;
-        }
-
-        return true;
     }
 
     public function getRole(): ?Role
@@ -128,9 +129,26 @@ class RaidCharacter
         return $this->status === $this::REFUSED;
     }
 
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

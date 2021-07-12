@@ -66,7 +66,7 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getPendingRaidsOfRaidLeader(User $raidLeader)
+    public function getForthcomingRaidsOfRaidLeader(User $raidLeader)
     {
         $now = new DateTime();
         return $this->createQueryBuilder('r')
@@ -154,13 +154,14 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
-    public function getPendingRaidsOfPlayer(User $player, $status)
+    public function getForthcomingRaidsOfPlayer(User $player, $status)
     {
         $now = new DateTime();
         return $this->createQueryBuilder('r')
             ->innerJoin('r.raidCharacters', 'rc')
             ->join('rc.userCharacter', 'uc')
             ->where('uc.user = :player')
+            ->andWhere('r.user != :player')
             ->andWhere('r.templateName IS NULL')
             ->andWhere('r.startAt > :now')
             ->andWhere('rc.status = :status')
@@ -178,6 +179,34 @@ class RaidRepository extends ServiceEntityRepository
     /**
      * @return Raid[]
      */
+    public function getForthcomingArchivedByRaidLeader(User $player)
+    {
+        $now = new DateTime();
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.raidCharacters', 'rc')
+            ->join('rc.userCharacter', 'uc')
+            ->where('uc.user = :player')
+            ->andWhere('r.user != :player')
+            ->andWhere('r.templateName IS NULL')
+            ->andWhere('r.startAt > :now')
+            ->andWhere('rc.status IN (:status)')
+            ->andWhere('r.isArchived = true')
+            ->setParameters([
+                'now' => $now,
+                'player' => $player->getId(),
+                'status' => [
+                    RaidCharacter::ACCEPT,
+                    RaidCharacter::WAITING_CONFIRMATION,
+                ],
+            ])
+            ->orderBy('r.startAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Raid[]
+     */
     public function getInProgressRaidsOfPlayer(User $player, $status)
     {
         $now = new DateTime();
@@ -185,6 +214,7 @@ class RaidRepository extends ServiceEntityRepository
             ->innerJoin('r.raidCharacters', 'rc')
             ->join('rc.userCharacter', 'uc')
             ->where('uc.user = :player')
+            ->andWhere('r.user != :player')
             ->andWhere('r.templateName IS NULL')
             ->andWhere('r.startAt < :now')
             ->andWhere('r.endAt > :now')
@@ -224,215 +254,74 @@ class RaidRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**************************************
-     *      Calendar - User logged        *
-     **************************************/
-
-    /**
-     * @return Raid[]
-     */
-    public function countAllRaidWhereUserIsAccepted(User $player)
-    {
-        $now = new DateTime();
-        return  $this->createQueryBuilder('r')
-            ->select('count(r.id)')
-            ->join('r.user', 'u')
-            ->leftJoin('u.blockeds', 'ub')
-            ->where('ub.id IS NULL OR ub.id != :player')
-            ->andWhere('r.templateName IS NULL')
-            ->andWhere('r.startAt > :now')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
-            ->setParameters([
-                'now' => $now,
-                'player' => $player->getId(),
-            ])
-            ->orderBy('r.startAt', 'ASC')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * @return Raid[]
-     */
-    public function getAllRaidWhereUserIsAccepted(User $player, int $nbrOfResultPerPage, int $offset)
-    {
-        $now = new DateTime();
-        return  $this->createQueryBuilder('r')
-            ->join('r.user', 'u')
-            ->leftJoin('u.blockeds', 'ub')
-            ->where('ub.id IS NULL OR ub.id != :player')
-            ->andWhere('r.templateName IS NULL')
-            ->andWhere('r.startAt > :now')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
-            ->setParameters([
-                'now' => $now,
-                'player' => $player->getId(),
-            ])
-            ->orderBy('r.startAt', 'ASC')
-            ->setMaxResults($nbrOfResultPerPage)
-            ->setFirstResult($offset)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @return Raid[]
-     */
-    public function countAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start)
-    {
-        $end = clone $start;
-        $now = new DateTime();
-
-        return $this->createQueryBuilder('raid')
-            ->select('count(raid.id)')
-            ->join('raid.user', 'raidUser')
-            ->leftJoin('raidUser.blockeds', 'userBlocked')
-            ->where('userBlocked.id IS NULL OR userBlocked.id != :player')
-            ->join('raid.raidCharacters', 'raidCharacter')
-            ->join('raidCharacter.userCharacter', 'character')
-            ->andWhere('character.user = raidUser.id')
-            ->andWhere('character.server = :server')
-            ->andWhere('character.faction = :faction')
-            ->andWhere('raid.templateName IS NULL')
-            ->andWhere('raid.startAt > :now')
-            ->andWhere('raid.startAt BETWEEN :start AND :end')
-            ->andWhere('raid.isPrivate = false')
-            ->andWhere('raid.isArchived = false')
-            ->setParameters([
-                'now' => $now,
-                'start' => $start->setTime(0, 0, 0),
-                'end' => $end->setTime(23, 59, 59),
-                'player' => $player,
-                'server' => $character->getServer(),
-                'faction' => $character->getFaction(),
-            ])
-            ->orderBy('raid.startAt', 'ASC')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * @return Raid[]
-     */
-    public function getAllRaidWhereUserCharacterIsAcceptedFromDate(User $player, Character $character, DateTime $start, int $nbrOfResultPerPage, int $offset)
-    {
-        $end = clone $start;
-        $now = new DateTime();
-
-        return $this->createQueryBuilder('raid')
-            ->join('raid.user', 'raidUser')
-            ->leftJoin('raidUser.blockeds', 'userBlocked')
-            ->where('userBlocked.id IS NULL OR userBlocked.id != :player')
-            ->join('raid.raidCharacters', 'raidCharacter')
-            ->join('raidCharacter.userCharacter', 'character')
-            ->andWhere('character.user = raidUser.id')
-            ->andWhere('character.server = :server')
-            ->andWhere('character.faction = :faction')
-            ->andWhere('raid.templateName IS NULL')
-            ->andWhere('raid.startAt > :now')
-            ->andWhere('raid.startAt BETWEEN :start AND :end')
-            ->andWhere('raid.isPrivate = false')
-            ->andWhere('raid.isArchived = false')
-            ->setParameters([
-                'now' => $now,
-                'start' => $start->setTime(0, 0, 0),
-                'end' => $end->setTime(23, 59, 59),
-                'player' => $player,
-                'server' => $character->getServer(),
-                'faction' => $character->getFaction(),
-            ])
-            ->orderBy('raid.startAt', 'ASC')
-            ->setMaxResults($nbrOfResultPerPage)
-            ->setFirstResult($offset)
-            ->getQuery()
-            ->getResult();
-    }
-
     /************************************
-     *        Calendar - Anonymous      *
+     *             Calendar             *
      ************************************/
 
     /**
      * @return Raid[]
      */
-    public function countAllPendingRaid()
+    public function getAllPendingRaid(User $user = null, Character $character = null, DateTime $start = null, int $nbrOfResultPerPage = null, int $offset = null)
     {
         $now = new DateTime();
-        return $this->createQueryBuilder('r')
-            ->select('count(r.id)')
-            ->where('r.startAt > :now')
-            ->andWhere('r.templateName IS NULL')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
-            ->setParameter('now', $now)
-            ->orderBy('r.startAt', 'ASC')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
 
-    /**
-     * @return Raid[]
-     */
-    public function getAllPendingRaid(int $nbrOfResultPerPage, int $offset)
-    {
-        $now = new DateTime();
-        return $this->createQueryBuilder('r')
-            ->where('r.startAt > :now')
-            ->andWhere('r.templateName IS NULL')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
+        if (!$nbrOfResultPerPage) {
+            $qb = $this->createQueryBuilder('raid')
+                ->select('count(raid.id)');
+        } else {
+            $qb = $this->createQueryBuilder('raid');
+        }
+
+        $qb
+            ->where('raid.startAt > :now')
+            ->andWhere('raid.templateName IS NULL')
+            ->andWhere('raid.isPrivate = false')
+            ->andWhere('raid.isArchived = false')
             ->setParameter('now', $now)
-            ->orderBy('r.startAt', 'ASC')
+            ->orderBy('raid.startAt', 'ASC');
+
+        if ($user && $character) {
+            $qb
+                // Filter by user (he must not have been blocked by the raid leader)
+                ->join('raid.user', 'raidUser')
+                ->leftJoin('raidUser.blockeds', 'userBlocked')
+                ->andWhere('userBlocked.id IS NULL OR userBlocked.id != :user')
+                ->setParameter('user', $user)
+                // Filter using raid leader's character informations (user character must have the same faction / server)
+                ->join('raid.raidCharacters', 'raidCharacter')
+                ->join('raidCharacter.userCharacter', 'rlCharacter')
+                ->andWhere('rlCharacter.user = raidUser.id')
+                ->andWhere('rlCharacter.server = :server')
+                ->andWhere('rlCharacter.faction = :faction')
+                ->setParameter('server', $character->getServer())
+                ->setParameter('faction', $character->getFaction());
+
+            // Filter by user character (he must not be subscribed to the raid)
+            $subq = $this->createQueryBuilder('r')
+                ->select('rc.id')
+                ->from(RaidCharacter::class, 'rc')
+                ->join('rc.userCharacter', 'uc')
+                ->where('rc.raid = raid.id')
+                ->andWhere('uc.user = :user');
+
+            $qb->andWhere($qb->expr()->not($qb->expr()->exists($subq->getDQL())));
+        }
+
+        if ($start) {
+            $end = clone $start;
+            $qb
+                ->andWhere('raid.startAt BETWEEN :start AND :end')
+                ->setParameter('start',  $start->setTime(0, 0, 0))
+                ->setParameter('end', $end->setTime(23, 59, 59));
+        }
+
+        if (!$nbrOfResultPerPage) {
+            return $qb->getQuery()->getSingleScalarResult();
+        }
+
+        return $qb
             ->setMaxResults($nbrOfResultPerPage)
             ->setFirstResult($offset)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @return Raid[]
-     */
-    public function countAllPendingRaidFromDate(DateTime $start)
-    {
-        $end = clone $start;
-
-        return $this->createQueryBuilder('r')
-            ->select('count(r.id)')
-            ->where('r.templateName IS NULL')
-            ->andWhere('r.startAt BETWEEN :start AND :end')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
-            ->setParameters([
-                'start' => $start->setTime(0, 0, 0),
-                'end' => $end->setTime(23, 59, 59),
-            ])
-            ->orderBy('r.startAt', 'ASC')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * @return Raid[]
-     */
-    public function getAllPendingRaidFromDate(DateTime $start, int $nbrOfResultPerPage, int $offset)
-    {
-        $end = clone $start;
-
-        return $this->createQueryBuilder('r')
-            ->where('r.templateName IS NULL')
-            ->andWhere('r.startAt BETWEEN :start AND :end')
-            ->andWhere('r.isPrivate = false')
-            ->andWhere('r.isArchived = false')
-            ->setParameters([
-                'start' => $start->setTime(0, 0, 0),
-                'end' => $end->setTime(23, 59, 59),
-            ])
-            ->orderBy('r.startAt', 'ASC')
-            ->setMaxResults($nbrOfResultPerPage)
-            ->setFirstResult($offset)
-            ->getQuery()
-            ->getResult();
+            ->getQuery()->getResult();
     }
 }

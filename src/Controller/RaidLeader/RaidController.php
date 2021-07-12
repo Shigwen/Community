@@ -6,11 +6,13 @@ use DateTime;
 use App\Entity\Raid;
 use App\Form\RaidType;
 use App\Entity\RaidCharacter;
+use App\Entity\Role;
 use App\Service\Raid\Identifier;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -23,11 +25,11 @@ class RaidController extends AbstractController
      */
     public function past(): Response
     {
-        return $this->render('user_raid_leader_parts/past_raid_list.html.twig', [
+        return $this->render('raid_parts/past_raid_list.html.twig', [
             'raids' => $this->getDoctrine()->getRepository(Raid::class)->getPastRaidsOfRaidLeader($this->getUser()),
             'user' => $this->getUser(),
-            'pathToRefer' => $this->get('session')->get('pathToRefer'),
-            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
+            'routeToRefer' => $this->get('session') ? $this->get('session')->get('routeToRefer') : null,
+            'nameOfPageToRefer' => $this->get('session') ? $this->get('session')->get('nameOfPageToRefer') : null,
         ]);
     }
 
@@ -38,6 +40,10 @@ class RaidController extends AbstractController
     {
         if (!$this->getUser()->hasRaid($raid)) {
             throw new AccessDeniedHttpException();
+        }
+
+        if ($raid->getTemplateName()) {
+            throw new BadRequestHttpException("This is not a raid");
         }
 
         $now = new DateTime();
@@ -64,16 +70,17 @@ class RaidController extends AbstractController
                 throw $this->createNotFoundException('Une erreur est survenue');
             }
 
-            if ($raid->isPrivate()) {
-            } else {
+            if (!$raid->isPrivate()) {
                 $raid->setIdentifier(null);
+            } else {
+                $raid->setIdentifier($raid->getIdentifier() ? $raid->getIdentifier() : $identifier->generate(Raid::IDENTIFIER_SIZE));
             }
 
-            $raid
-                ->setIdentifier($raid->getIdentifier() ? $raid->getIdentifier() : $identifier->generate(Raid::IDENTIFIER_SIZE))
-                ->setUpdatedAt(new DateTime());
+            $raid->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'The raid has been properly modified');
 
             return $this->redirectToRoute('raidleader_raid_edit', ['id' => $raid->getId()]);
         }
@@ -82,9 +89,63 @@ class RaidController extends AbstractController
             'user' => $this->getUser(),
             'raid' => $raid,
             'editRaid' => true,
-            'form' => $form->createView(),
-            'pathToRefer' => $this->get('session')->get('pathToRefer'),
-            'nameOfPageToRefer' => $this->get('session')->get('nameOfPageToRefer'),
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/manage-players", name="manage_players")
+     */
+    public function managePlayers(Raid $raid): Response
+    {
+        return $this->render('raid_leader/manage_players.html.twig', [
+            'raid' => $raid,
+            'user' => $this->getUser(),
+            'tanksWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::WAITING_CONFIRMATION,
+                'role' => Role::TANK
+            ]),
+            'healersWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::WAITING_CONFIRMATION,
+                'role' => Role::HEAL
+            ]),
+            'dpsWaitingConfirmation' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::WAITING_CONFIRMATION,
+                'role' => Role::DPS
+            ]),
+            'tanksValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT,
+                'role' => Role::TANK
+            ]),
+            'healersValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT,
+                'role' => Role::HEAL
+            ]),
+            'dpsValidated' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::ACCEPT,
+                'role' => Role::DPS
+            ]),
+            'tanksRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED,
+                'role' => Role::TANK
+            ]),
+            'healersRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED,
+                'role' => Role::HEAL
+            ]),
+            'dpsRefused' => $this->getDoctrine()->getRepository(RaidCharacter::class)->findBy([
+                'raid' => $raid,
+                'status' => RaidCharacter::REFUSED,
+                'role' => Role::DPS
+            ]),
         ]);
     }
 

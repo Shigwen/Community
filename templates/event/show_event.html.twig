@@ -10,8 +10,13 @@
 
 {% block body %}
 
+{% if routeToRefer is not defined or routeToRefer is null %}
+    {% set routeToRefer = 'events' %}
+    {% set nameOfPageToRefer = 'Back to calendar' %}
+{% endif %}
+
 <div class="row col-12">
-    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(pathToRefer)}}">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(routeToRefer)}}">
         <i class="fas fa-arrow-left"></i>
         {{ nameOfPageToRefer }}
     </a>
@@ -28,19 +33,21 @@
                 <div class="d-flex align-items-center">
                     <span class="h5 mt-0 mb-3">
                         The Raid Leader is still looking for
-                        <span class="text-info h4">{{ raid.expectedAttendee }}</span>
-                        raiders.
+                        <span class="text-info h4">{{ raid.expectedAttendee + 1 }}</span>
+                        raiders and
+                        <span class="text-info h4">{{ tanks|length + healers|length + dps|length }}</span>
+                         are actually subscribe
                         <br><br>
 
-                        <span class="text-decoration-underline">Tanks :</span>
+                        <div class="h5 text-center text-light mb-3 border-bottom border-light">Tanks</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::TANK'))|raw }}
                         <br><br>
 
-                        <span class="text-decoration-underline">Healers :</span>
+                        <div class="h5 text-center text-light mb-3 border-bottom border-light">Healers</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::HEAL'))|raw }}
                         <br><br>
 
-                        <span class="text-decoration-underline">DPS :</span>
+                        <div class="h5 text-center text-light mb-3 border-bottom border-light">DPS</div>
                         {{ number_of_places_remaining(raid, constant('App\\Entity\\Role::DPS'))|raw }}
                     </span>
                 </div>
@@ -50,7 +57,7 @@
             <div class="col-lg-5 col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded my-3">
                 {% if form is defined %}
 
-                    {% if isEdit %}
+                    {% if form != null and isEdit %}
                         <h3 class="text-center mb-4 pb-3 border-bottom border-info">Change character ?</h3>
                     {% else %}
                         <h3 class="text-center mb-4 pb-3 border-bottom border-info">Subscription</h3>
@@ -79,7 +86,11 @@
                         {{ form_end(form) }}
 
                     {% else %}
-                        {% if isPastRaid is defined and isPastRaid %}
+                        {% if userIsRefused is defined and userIsRefused %}
+                            <p class="text-center">
+                                The raid leader decided not to take you in for this raid
+                            </p>
+                        {% elseif isPastRaid is defined and isPastRaid %}
                             <p class="text-center">
                                 You cannot subscribe to or change your character in a raid that already happened
                             </p>
@@ -110,125 +121,15 @@
             </div>
 
             <div class="col-md-11 d-flex flex-column p-2 p-md-4 border border-info rounded justify-content-around my-3">
-
-                <h3 class="text-center mb-4 pb-3 border-bottom border-info">Raid roster</h3>
-
-                <div class="row d-flex mb-4 mx-0">
-
-                    <div class="col-lg-6 col-md-11 text-center d-flex flex-wrap">
-                        <div class="col-md-11 text-center d-flex flex-column align-items-center justify-content-center p-0">
-
-                            <span class="h4">Tanks</span>
-
-                            <table class="table">
-
-                                <thead class="text-center">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Class</th>
-                                        <th>Role</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody class="text-center">
-                                    {% for raidCharacter in tanks %}
-                                        <tr>
-                                            <td>{{ raidCharacter.userCharacter.name }}</td>
-                                            <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                            <td>{{ raidCharacter.role.name }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
-                                                {% if user is defined and user.hasCharacter(raidCharacter.userCharacter) %}
-                                                    {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                                                        <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
-                                                    {% endif %}
-                                                {% endif %}
-                                                {{ include('event/modal/_show_event_character_information.html.twig') }}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="col-md-11 text-center d-flex flex-column align-items-center justify-content-center p-0">
-                            <span class="h4">Healers</span>
-
-
-                            <table class="table">
-
-                                <thead class="text-center">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Class</th>
-                                        <th>Role</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody class="text-center">
-                                    {% for raidCharacter in healers %}
-                                        <tr>
-                                            <td>{{ raidCharacter.userCharacter.name }}</td>
-                                            <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                            <td>{{ raidCharacter.role.name }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
-                                                {{ include('event/modal/_show_event_character_information.html.twig') }}
-
-                                                {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
-                                                    {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                                                        <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
-                                                    {% endif %}
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-11 text-center d-flex flex-column">
-                        <span class="h4">DPS</span>
-
-                        <table class="table">
-
-                            <thead class="text-center">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Class</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class="text-center">
-                                {% for raidCharacter in dps %}
-                                        <tr>
-                                            <td>{{ raidCharacter.userCharacter.name }}</td>
-                                            <td>{{ raidCharacter.userCharacter.characterClass.name }}</td>
-                                            <td>{{ raidCharacter.role.name }}</td>
-                                            {% if user and user.hasCharacter(raidCharacter.userCharacter) %}
-                                                <td>
-                                                    <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}">Informations</button>
-                                                    {{ include('event/modal/_show_event_character_information.html.twig') }}
-
-                                                    {% if raidCharacter.isCharacterFromUser(raidCharacter.raid.user) == false %}
-                                                        <a href="{{ path('unregister', {id: raid.id})}}">Unregister</a>
-                                                    {% endif %}
-                                                </td>
-                                            {% endif %}
-                                        </tr>
-                                    {% endfor %}
-                            </tbody>
-                        </table>
-
-
-                    </div>
-                </div>
+                <h3 class="text-center mb-4 pb-3 border-bottom border-info">
+                    {% set nbrOfPlayers = tanks|length + healers|length + dps|length %}
+                    Raid roster - {{ nbrOfPlayers }} / {{raid.expectedAttendee + 1}} players
+                </h3>
+                {% set showMessage = true %}
+                {% set showNbrSubscribe = true %}
+                {{ include('raid_parts/_character_list.html.twig') }}
             </div>
+
         </div>
         <div class="row d-flex justify-content-around">
             <div class="col-12 col-md-11 p-md-4 p-xs-1 col-margins border border-info rounded">
@@ -253,28 +154,25 @@
 
                 <div class="row d-flex justify-content-around d-flex align-items-center">
                     <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
-                        {% set raidCharacter = get_raid_character_from_raidleader(raid) %}
+                        {% set raidCharacter = get_raid_character(raid) %}
                         <span class="h5">Date :</span>
                         <span class="h5 mt-0">
                             {% if user is defined %}
-                                {{ raid.startAt|date("d/m/Y") }} <br>
-                                from
-                                {{ raid.startAt|date("H:i", user.timezone.name) }}
-                                to
-                                {{ raid.endAt|date("H:i", user.timezone.name) }}
+                                {{ get_date(raid, raidCharacter, user)|raw }}
                             {% else %}
-                                {{ raid.startAt|date("d/m/Y") }} <br>
-                                from
-                                {{ raid.startAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
-                                to
-                                {{ raid.endAt|date("H:i", raidCharacter.userCharacter.server.timezone.name) }}
+                                {{ get_date(raid, raidCharacter)|raw }}
                             {% endif %}
                         </span>
                     </div>
 
                     <div class="col-lg-5 col-md-11 text-center d-flex flex-column align-items-center justify-content-center">
-                        <span class="h5">Server & Faction</span>
-                        <span class="h4 m-0">{{ raidCharacter.userCharacter.server.name }} - {{ raidCharacter.userCharacter.faction.name }}</span>
+                        <span class="h5">Server &  Faction</span>
+                        <span class="h4 m-0">
+                            <img src="{{ raidCharacter.userCharacter.faction.imageSource }}"
+                            width="40" height="40" alt="{{ raidCharacter.userCharacter.faction.name }}">
+                            {{ raidCharacter.userCharacter.server.gameVersion.name }} - 
+                            {{ raidCharacter.userCharacter.server.name }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -283,7 +181,11 @@
                 <div class="col-12">
                     <h3 class="text-center mb-4 pb-3 border-bottom border-info">Raid Leader guidelines</h3>
                     <p>
-                        {{ raid.information|raw }}
+                        {% if raid.information is not empty %}
+                            {{ raid.information|raw }}
+                        {% else %}
+                            The raid leader didn't any additional information for this raid
+                        {% endif %}
                     </p>
                 </div>
             </div>
@@ -297,9 +199,9 @@
 
                     <div class="form-row justify-content-between mb-2 mt-4">
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
-                            Amount of raiders the Raid Leader is looking for :
+                            Amount of raiders the Raid Leader is looking for
                         </div>
-                        <div class="col-2 h4 text-success border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
                             {{ raid.expectedAttendee }}
                         </div>
                     </div>
@@ -308,7 +210,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Min. number of Tanks
                         </div>
-                        <div class="col-2 h4 text-warning border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-warning font-weight-bolder p-2">
                             {{ raid.minTank }}
                         </div>
                     </div>
@@ -317,7 +219,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Max. number of Tanks
                         </div>
-                        <div class="col-2 h4 text-warning border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-info font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-warning font-weight-bolder p-2">
                             {{ raid.maxTank }}
                         </div>
                     </div>
@@ -326,7 +228,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Min. number of Healers
                         </div>
-                        <div class="col-2 h4 text-success border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
                             {{ raid.minHeal }}
                         </div>
                     </div>
@@ -335,7 +237,7 @@
                         <div class="col-8 h5 mb-2 d-flex align-items-center">
                             Max. number of Healers
                         </div>
-                        <div class="col-2 h4 text-success border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
+                        <div class="col-2 h4 border rounded-pill m-0 mb-2 d-flex align-items-center justify-content-center text-success font-weight-bolder p-2">
                             {{ raid.maxHeal }}
                         </div>
                     </div>

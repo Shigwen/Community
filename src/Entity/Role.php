@@ -58,6 +58,23 @@ class Role
         return $this->id;
     }
 
+    public function getImageSource(): ?string
+    {
+        switch ($this->id) {
+            case self::TANK:
+                $src = "https://static.wikia.nocookie.net/wowwiki/images/7/7e/Icon-class-role-tank-42x42.png";
+                break;
+            case self::HEAL:
+                $src = "https://static.wikia.nocookie.net/wowwiki/images/0/07/Icon-class-role-healer-42x42.png";
+                break;
+            case self::DPS:
+                $src = "https://static.wikia.nocookie.net/wowwiki/images/3/3f/Icon-class-role-dealer-42x42.png";
+                break;
+        }
+
+        return $src;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -135,5 +152,10 @@ class Role
     public function isHeal()
     {
         return $this->id === self::HEAL;
+    }
+
+    public function isDps()
+    {
+        return $this->id === self::DPS;
     }
 }
