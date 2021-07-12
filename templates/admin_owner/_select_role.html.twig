@@ -1,0 +1,18 @@
+
+<form action="{{ path('owner_change_role', {id: user.id}) }}" method="post" class="form-role">
+    <select name="role">
+        <option value="{{ constant('App\\Entity\\User::ROLE_USER') }}"
+            {% if user.getStrRole == constant('App\\Entity\\User::ROLE_USER') %} selected {% endif %}>
+            User
+        </option>
+        <option value="{{ constant('App\\Entity\\User::ROLE_RAID_LEADER') }}"
+            {% if user.getStrRole == constant('App\\Entity\\User::ROLE_RAID_LEADER') %} selected {% endif %}>
+            Raid Leader
+        </option>
+        <option value="{{ constant('App\\Entity\\User::ROLE_ADMIN') }}"
+            {% if user.getStrRole == constant('App\\Entity\\User::ROLE_ADMIN') %} selected {% endif %}>
+            Admin
+        </option>
+    </select>
+    <button type="submit"> Valider </button>
+</form>

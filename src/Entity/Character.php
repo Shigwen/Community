@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacterRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CharacterRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CharacterRepository::class)
@@ -13,12 +15,31 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Character
 {
+    const FACTION_HORDE = 'Horde';
+    const FACTION_ALLIANCE = 'Alliance';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a character name"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "Your character name cannot be longer than 250 characters"
+     * ) 
+     * @Assert\Regex(
+     *     pattern = "/^\w{1,}$/",
+     *     message = "Your character name cannot contain space or special character (except underscore)"
+     * )
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -28,12 +49,17 @@ class Character
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updated_at;
+    private $updatedAt;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="characters")
@@ -42,18 +68,37 @@ class Character
     private $user;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a character class"
+     * )
+     *  
      * @ORM\ManyToOne(targetEntity=CharacterClass::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $characterClass;
 
     /**
+     * @Assert\NotNull(
+     *     message = "You must specify a server"
+     * )
+     *  
      * @ORM\ManyToOne(targetEntity=Server::class, inversedBy="characters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $server;
 
-	/**
+    /**
+     * @ORM\ManyToOne(targetEntity=Faction::class, inversedBy="characters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $faction;
+
+    /**
+     * @Assert\Count(
+     *     min = 1,
+     *     minMessage = "You must specify at least one role"
+     * )
+     * 
      * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="characters")
      */
     private $roles;
@@ -65,13 +110,31 @@ class Character
 
     public function __construct()
     {
+        $this->createdAt = new DateTime();
         $this->roles = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
+    }
+
+    function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getInformation(): ?string
@@ -88,24 +151,29 @@ class Character
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
@@ -134,14 +202,26 @@ class Character
         return $this;
     }
 
-	public function getServer(): ?Server
-                   {
-                       return $this->server;
-                   }
+    public function getServer(): ?Server
+    {
+        return $this->server;
+    }
 
     public function setServer(?Server $server): self
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getFaction(): ?Faction
+    {
+        return $this->faction;
+    }
+
+    public function setFaction(?Faction $faction): self
+    {
+        $this->faction = $faction;
 
         return $this;
     }
@@ -153,7 +233,7 @@ class Character
         return $this;
     }
 
-	/**
+    /**
      * @return Collection|Role[]
      */
     public function getRoles(): Collection

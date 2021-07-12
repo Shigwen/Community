@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ban hammer{% endblock %}
+
+{% block banner_title %}
+	<h1>Ban hammer</h1>
+{% endblock %}
+
+{% block body %}
+
+{% if user.blockeds|length > 0 %}
+    <h4 class="h4 mb-3 mt-5"> List of players ban from your raids </h4>
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead class="text-center">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Character list</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-center">
+            {% for user in user.blockeds %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.strCharacterList }}</td>
+                    <td>
+                        <a class="text-success" href="{{ path('raidleader_manage_players_ban_hammer', {id: user.id }) }}"
+                           data-bs-toggle="tooltip" data-placement="top" title="Unban this player from future raid">
+                           <i class="fas fa-gavel"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mb-3 mt-5 text-center">
+        You did not ban any player yet from your raids
+    </p>
+{% endif %}
+
+{% endblock %}

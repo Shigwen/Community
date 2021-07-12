@@ -2,16 +2,23 @@
 
 namespace App\Entity;
 
-use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use App\Entity\Character;
+use App\Entity\RaidCharacter;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RoleRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  */
 class Role
 {
+    const TANK = 1;
+    const HEAL = 2;
+    const DPS = 3;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -25,16 +32,6 @@ class Role
     private $name;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $updated_at;
-
-    /**
      * @ORM\ManyToMany(targetEntity=Character::class, mappedBy="roles")
      */
     private $characters;
@@ -46,13 +43,36 @@ class Role
 
     public function __construct()
     {
+        $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
         $this->raidCharacters = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getImageSource(): ?string
+    {
+        switch ($this->id) {
+            case self::TANK:
+                $src = "https://static.wikia.nocookie.net/wowwiki/images/7/7e/Icon-class-role-tank-42x42.png";
+                break;
+            case self::HEAL:
+                $src = "https://static.wikia.nocookie.net/wowwiki/images/0/07/Icon-class-role-healer-42x42.png";
+                break;
+            case self::DPS:
+                $src = "https://static.wikia.nocookie.net/wowwiki/images/3/3f/Icon-class-role-dealer-42x42.png";
+                break;
+        }
+
+        return $src;
     }
 
     public function getName(): ?string
@@ -63,30 +83,6 @@ class Role
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
-    {
-        $this->updated_at = $updated_at;
 
         return $this;
     }
@@ -146,5 +142,20 @@ class Role
         }
 
         return $this;
+    }
+
+    public function isTank()
+    {
+        return $this->id === self::TANK;
+    }
+
+    public function isHeal()
+    {
+        return $this->id === self::HEAL;
+    }
+
+    public function isDps()
+    {
+        return $this->id === self::DPS;
     }
 }

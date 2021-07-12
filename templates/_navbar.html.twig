@@ -1,0 +1,89 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <a class="navbar-brand bg-primary rounded-pill pl-3 pr-3" href="{{path('home')}}">Community Project</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') == false %}
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'home' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('home') }}">
+                        <i class="fas fa-home"></i>
+                        <span class="ml-2">Home</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'user_account' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('user_account') }}">
+                        <i class="fas fa-user"></i>
+                        <span class="ml-2">Account</span>
+                    </a>
+                </li>
+
+            {% endif %}
+
+            <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'events' %}active{% endif %}">
+                <a class="nav-link" href="{{ path('events') }}">
+                    <i class="fas fa-scroll"></i>
+                    <span class="ml-2">Calendar</span>
+                </a>
+            </li>
+
+            {% if is_granted('ROLE_RAID_LEADER') %}
+
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'raidleader_events' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('raidleader_events') }}">
+                        <i class="fas fa-dungeon"></i>
+                        <span class="ml-2">HQ</span>
+                    </a>
+                </li>
+
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'raidleader_manage_players_ban_players' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('raidleader_manage_players_ban_players') }}">
+                        <i class="fas fa-gavel"></i>
+                        <span class="ml-2">Ban Hammer</span>
+                    </a>
+                </li>
+
+            {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'admin_users' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('admin_users') }}">
+                        <i class="fas fa-user-tag"></i>
+                        <span class="ml-2">Manage users</span>
+                    </a>
+                </li>
+
+                <li class="nav-item border border-primary {% if app.request.attributes.get('_route') == 'admin_messages' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('admin_messages') }}">
+                        <i class="far fa-envelope"></i>
+                        <span class="ml-2">Messages</span>
+                    </a>
+                </li>
+
+            {% endif %}
+
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+                <li class="nav-item border border-primary">
+                    <a class="nav-link" href="{{ path('logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="ml-2">Logout</span>
+                    </a>
+                </li>
+
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>

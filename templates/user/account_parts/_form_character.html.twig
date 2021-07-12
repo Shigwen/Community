@@ -1,0 +1,97 @@
+{% form_theme formCharacter 'form_theme/form_errors.html.twig' %}
+
+<div class="row d-flex justify-content-around" id="characterForm">
+    <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins pb-4">
+        {{ form_start(formCharacter) }}
+
+        <fieldset class="form-group row d-flex justify-content-around">
+
+            <a class="btn btn-primary rounded-pill btn-lg reset-form-button" href="{{ path('user_account')}}#characterForm">Reset Form</a>
+
+            <legend class="text-center h4 mb-5" {% if character is not null %} id="character" data-id="{{character.id}}" {% endif %}>
+                {% if character is not null %}
+                    Modify {{character.name}}
+                {% else %}
+                    Add character
+                {% endif %}
+            </legend>
+
+            <div class="col-lg-5 col-md-11 row m-0">
+                <div class="{% if formCharacter.server is defined %} col-lg-6 col-md-12 {% else %} col-12 {% endif %} p-0 text-center">
+                    {{ form_label(formCharacter.name) }}
+                    {{ form_widget(formCharacter.name) }}
+                    <small class="form-text text-muted mb-4">Your character name cannot contain space or special character</small>
+                    {{ form_errors(formCharacter.name) }}
+                </div>
+                {% if formCharacter.server is defined %}
+                    <div class="col-lg-6 col-md-12 p-0 text-center">
+                        {{ form_label(formCharacter.faction) }}
+                        {{ form_widget(formCharacter.faction) }}
+                        {{ form_errors(formCharacter.faction) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-5 col-md-11 row m-0">
+                {% if formCharacter.gameVersion is defined %}
+                    <div class="col-lg-6 col-md-12 p-0 text-center">
+                        {{ form_label(formCharacter.gameVersion) }}
+                        {{ form_widget(formCharacter.gameVersion) }}
+                        {{ form_errors(formCharacter.gameVersion) }}
+                    </div>
+                    <div id="serverContainer" class="col-lg-6 col-md-12 p-0 text-center">
+                        {{ form_label(formCharacter.server) }}
+                        {{ form_widget(formCharacter.server) }}
+                        {{ form_errors(formCharacter.server) }}
+                    </div>
+                {% else %}
+                    <div class="col-12 p-0 text-center">
+                        <p class="h5 p-1 border border-primary rounded"> 
+                            You cannot change the server or faction of character who's subscribe
+                            a raid or is in waiting confirmation
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-5 col-md-11 text-center">
+                {{ form_label(formCharacter.characterClass) }}
+                {{ form_widget(formCharacter.characterClass) }}
+                {{ form_errors(formCharacter.characterClass) }}
+            </div>
+
+            <div class="col-lg-5 col-md-11 text-center d-flex flex-column">
+                {{ form_label(formCharacter.roles) }}
+                <div class="btn-group" role="group" aria-label="Roles checkbox button group">
+                    {% for row in formCharacter.roles %}
+                        {{ form_widget(row) }}
+                        {{
+                            form_label(row, null,
+                                {label_attr:
+                                    {
+                                        class: 'btn btn-outline-primary',
+                                        autocomplete: 'off',
+                                        checked: '',
+                                    }
+                                }
+                            )
+                        }}
+                    {% endfor %}
+                </div>
+                {{ form_errors(formCharacter.roles) }}
+            </div>
+
+            <div class="col-12 col-md-11">
+                <div class="form-group">
+                    {{ form_label(formCharacter.information) }}
+                    {{ form_widget(formCharacter.information) }}
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ form_row(formCharacter.button) }}
+        </div>
+        {{ form_end(formCharacter) }}
+    </div>
+</div>

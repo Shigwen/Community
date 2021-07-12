@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Raid Leader HQ {% endblock %}
+
+{% block banner_title %}
+	<h1>Raid Leader HQ</h1>
+{% endblock %}
+
+{% block body %}
+
+{{ include('raid_leader/event_list_parts/_welcome_message.html.twig') }}
+{{ include('raid_leader/event_list_parts/_template_list.html.twig') }}
+{{ include('raid_leader/event_list_parts/_template_system_info.html.twig') }}
+{{ include('raid_parts/_raid_form.html.twig') }}
+{{ include('raid_leader/event_list_parts/_raid_list.html.twig') }}
+
+<div class="d-flex justify-content-center">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_raid_past')}}">Show past raids</a>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+
+<div class="row d-flex justify-content-around">
+
+    <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+        <details>
+            <summary class="h5 text-success">
+                If you're on this page for the first time, click here !
+            </summary>
+
+            <p>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    This is where all the raids relevant to your characters are listed. First, select a character, so we can show you the raids for the right server and the right faction. They will be listed by chronological order : the sooner a raid will be starting, the closer to the top of the list it will be.
+                {% endif %}
+                
+                You can click a date on the calendar to see the raids for a particular day. <br><br>
+                If you are looking for a private raid, please fill the code that was given to you in the relevant field, and you will be sent to its page.
+            </p>
+        </details>
+    </div>
+</div>

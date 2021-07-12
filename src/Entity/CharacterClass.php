@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use App\Repository\CharacterClassRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CharacterClassRepository::class)
@@ -25,28 +26,30 @@ class CharacterClass
     private $name;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $updated_at;
-
-    /**
      * @ORM\OneToMany(targetEntity=Character::class, mappedBy="characterClass", orphanRemoval=true)
      */
     private $characters;
 
     public function __construct()
     {
+        $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getImageSource(): ?string
+    {
+        $className = str_replace(' ', '', strtolower($this->name));
+        return "https://wow.zamimg.com/images/wow/icons/large/classicon_" . $className . ".jpg";
     }
 
     public function getName(): ?string
@@ -57,30 +60,6 @@ class CharacterClass
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
-    {
-        $this->updated_at = $updated_at;
 
         return $this;
     }

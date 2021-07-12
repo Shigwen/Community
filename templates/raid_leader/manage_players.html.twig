@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Raid{% endblock %}
+
+{% block banner_title %}
+	<h1>{{raid.name}}</h1>
+{% endblock %}
+
+{% block body %}
+
+<div class="row col-12">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">
+        <i class="fas fa-arrow-left"></i>
+        Back to HQ
+    </a>
+</div>
+
+{% set raidHaveSubscribeCharacter = false %}
+{% set showMessage = false %}
+{% set showBanUser = true %}
+
+{% if tanksValidated|length > 0 or healersValidated|length > 0 or dpsValidated|length > 0  %}
+    {% set raidHaveSubscribeCharacter = true %}
+
+    {% set showAcceptCharacter = false %}
+    {% set showRefuseCharacter = true %}
+
+    {% set tanks = tanksValidated %}
+    {% set healers = healersValidated %}
+    {% set dps = dpsValidated %}
+    {% set nbrOfPlayers = tanks|length + healers|length + dps|length %}
+
+    {% set showNbrSubscribe = true %}
+
+    <p class="h4 mb-3 py-3 mt-5 text-center border-bottom border-top border-info"> 
+        Validated players - {{ nbrOfPlayers }} / {{raid.expectedAttendee + 1}} 
+    </p>
+    {{ include('raid_parts/_character_list.html.twig') }}
+{% endif %}
+
+{% set showNbrSubscribe = false %}
+
+{% if tanksWaitingConfirmation|length > 0 or healersWaitingConfirmation|length > 0 or dpsWaitingConfirmation|length > 0  %}
+    {% set raidHaveSubscribeCharacter = true %}
+
+    {% set showAcceptCharacter = true %}
+    {% set showRefuseCharacter = true %}
+
+    {% set tanks = tanksWaitingConfirmation %}
+    {% set healers = healersWaitingConfirmation %}
+    {% set dps = dpsWaitingConfirmation %}
+
+    <p class="h4 mb-3 py-3 mt-5 text-center border-bottom border-top border-info"> Players in waiting </p>
+    {{ include('raid_parts/_character_list.html.twig') }}
+{% endif %}
+
+{% if tanksRefused|length > 0 or healersRefused|length > 0 or dpsRefused|length > 0  %}
+    {% set raidHaveSubscribeCharacter = true %}
+
+    {% set showAcceptCharacter = true %}
+    {% set showRefuseCharacter = false %}
+
+    {% set tanks = tanksRefused %}
+    {% set healers = healersRefused %}
+    {% set dps = dpsRefused %}
+
+    <p class="h4 mb-3 py-3 mt-5 text-center border-bottom border-top border-info"> Players refused </p>
+    {{ include('raid_parts/_character_list.html.twig') }}
+{% endif %}
+
+{% if raidHaveSubscribeCharacter == false %}
+    <p class="h4 mb-3 py-3 mt-5 text-center"> Nobody's subscribed to the raid yet </p>
+{% endif %}
+
+{% endblock %}

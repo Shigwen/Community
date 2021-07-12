@@ -1,0 +1,61 @@
+
+month-selection
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+calendar-body
+{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	text-align: center;
+	width: 840px;
+
+	ul
+	{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		border-collapse: collapse;
+		text-align: center;
+		padding: 0;
+		margin: 0;
+
+		&.daysOfTheWeek li
+		{
+			background-color: #375a7f;
+			box-sizing: border-box;
+		}
+
+		&.innerCalendarCells li
+		{
+			cursor: pointer;
+			border: 1px solid #375a7f;
+			box-sizing: border-box;
+
+			&:hover
+			{
+				background-color: #e74c3c;
+			}
+		}
+
+		li
+		{
+			font-size: 1.2rem;
+			list-style: none;
+			text-align: center;
+			width: 120px;
+			min-width: 70px;
+			margin: 0;
+			padding: 5px;
+
+			&#is-selected
+			{
+				border: 2px solid #fd7e14;
+			}
+		}
+	}
+}

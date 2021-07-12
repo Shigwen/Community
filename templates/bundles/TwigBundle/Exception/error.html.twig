@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ooops...
+{% endblock %}
+
+{% block banner_title %}
+{% endblock %}
+
+{% block body %}
+    <h3 class="text-center">Ooops... An error has occurred</h3>
+
+    {% if exception.message is not empty %}
+        <p class="text-center m-4">Reason ? {{exception.message}} </p>
+    {% endif %}
+{% endblock %}

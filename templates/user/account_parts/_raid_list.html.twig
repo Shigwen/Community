@@ -1,0 +1,89 @@
+
+{% set showManageRaidLinks = false %}
+
+{% if inProgressRaids %}
+    <div class="row d-flex justify-content-around">
+        <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+            <h2 class="text-center h3">Raid currently happening</h2>
+            {% set raids = inProgressRaids %}
+            {{ include('raid_parts/_table_raid.html.twig') }}
+        </div>
+    </div>
+{% endif %}
+
+{% set showManageRaidLinks = true %}
+
+{% if forthcomingRaids %}
+    <div class="row d-flex justify-content-around">
+        <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+            <h2 class="text-center h3">Forthcoming raids</h2>
+            {% set raids = forthcomingRaids %}
+            {{ include('raid_parts/_table_raid.html.twig') }}
+        </div>
+    </div>
+{% endif %}
+
+{% if waitOfConfirmationRaids %}
+    <div class="row d-flex justify-content-around">
+        <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+            <details>
+                <summary class="h5 text-warning">
+                    Raids subscribed to but waiting for validation by the raid leader
+                </summary>
+
+                <div class="mt-4">
+                    {% set raids = waitOfConfirmationRaids %}
+                    {{ include('raid_parts/_table_raid.html.twig') }}
+                </div>
+            </details>
+        </div>
+    </div>
+{% endif %}
+
+{% set showManageRaidLinks = false %}
+
+{% if refusedRaids %}
+    <div class="row d-flex justify-content-around">
+        <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+            <details>
+                <summary class="h5 text-danger">
+                    Raids you haven't been accepted for
+                </summary>
+
+                <div class="mt-4">
+                    {% set raids = refusedRaids %}
+                    {{ include('raid_parts/_table_raid.html.twig') }}
+                </div>
+            </details>
+        </div>
+    </div>
+{% endif %}
+
+{% if archivedByRaidLeaderRaids %}
+    <div class="row d-flex justify-content-around">
+        <div class="col-12 col-md-11 p-4 border border-primary rounded col-margins">
+            <details>
+                <summary class="h5">
+                    Raids deleted by the raid leader
+                </summary>
+
+                <div class="mt-4">
+                    {% set raids = archivedByRaidLeaderRaids %}
+                    {{ include('raid_parts/_table_raid.html.twig') }}
+                </div>
+            </details>
+        </div>
+    </div>
+{% endif %}
+
+{% if raids is not defined %}
+    <div class="row d-flex justify-content-around">
+        <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+        <h2 class="text-center h3">Forthcoming raids</h2>
+        <p class="m-auto text-center">
+            It seems that you did not subscribe to any of the forthcoming raids yet.
+            Create characters on this page and look for raids in the Calendar page.
+        </p>
+        </div>
+    </div>
+{% endif %}

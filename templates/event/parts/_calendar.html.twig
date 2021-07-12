@@ -1,0 +1,71 @@
+
+<div class="row d-flex justify-content-around">
+    <div class="col-12 col-md-11">
+        <form action="{{ path('events') }}" method="get" class="row">
+            <label class="mb-0">Do you have a private code ?
+                <input class="form-control my-0" type="text" name="identifier" required>
+            </label>
+            <div class="d-flex align-items-end">
+                <button class="btn btn-primary" type="submit">Find raid</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded col-margins">
+        {% if form is defined and form is not null %}
+            <filters class="row d-flex mx-5 justify-content-end mb-4">
+                <p class="col-8 text-right">Choose a character and pick a day you want to find a raid for</p>
+                <div class="col-3">{{ form_widget(form.userCharacter) }}</div>
+            </filters>
+        {% endif %}
+        <widget-calendar class="mb-4">
+
+            <month-selection>
+                <month-selection-previous class="mb-4">
+                    {% if date|date('m/Y') != "now"|date('m/Y') %}
+                        <button class="prev btn btn-primary rounded-pill"> Previous month </button>
+                    {% else %}
+                        <button class="btn btn-primary rounded-pill disabled"> Previous month </button>
+                    {% endif %}
+                </month-selection-previous>
+
+                <h2 class="text-center mb-4">{{ title }}</h2>
+
+                <month-selection-next class="mb-4">
+                    <button class="next btn btn-primary rounded-pill"> Next month </button>
+                </month-selection-next>
+            </month-selection>
+
+            <div class="d-flex justify-content-center mb-4">
+                <calendar-body>
+                    <ul class="daysOfTheWeek">
+                        <li>Monday</li>
+                        <li>Tuesday</li>
+                        <li>Wednesday</li>
+                        <li>Thursday</li>
+                        <li>Friday</li>
+                        <li>Saturday</li>
+                        <li>Sunday</li>
+                    </ul>
+                    <ul class="innerCalendarCells">
+                        {% if emptyDaysPadding > 0 %}
+                            {% for date in range(1, emptyDaysPadding) %}
+                                <li class="empty-dates"></li>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% set style = '' %}
+
+                        {% for item in days %}
+                            {% if item.past == true %}
+                                {% set style = 'text-secondary' %}
+                            {% else %}
+                                {% set style = '' %}
+                            {% endif %}
+                            <li data-date="{{ item.date }}" class="{{style}}" >{{ item.number }}</li>
+                        {% endfor %}
+                    </ul>
+                </calendar-body>
+            </div>
+        </widget-calendar>
+    </div>
+</div>

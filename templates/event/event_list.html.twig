@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block custom_scripts %}
+    <script defer src="{{asset('js/calendar.js')}}"></script>
+{% endblock %}
+
+{% block banner_title %}
+    <h1>Calendar</h1>
+{% endblock %}
+
+{% block body %}
+
+{{ include('event/parts/_information_message.html.twig') }}
+
+<calendar-wrapper>
+    {{ include('event/parts/_calendar.html.twig') }}
+</calendar-wrapper>
+
+<raid-wrapper>
+    {{ include('event/parts/_raid_list.html.twig')}}
+</raid-wrapper>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+
+{% if role|length == 0 %}
+    {% if showMessage is defined and showMessage %}
+        No {{ roleName }} subscribe to the raid yet
+    {% endif %}
+{% else %}
+    <table class="table">
+
+        <thead class="text-center">
+            <tr>
+                <th>Name</th>
+                <th>Class</th>
+                <th> 
+                    {% if showNbrSubscribe is defined and showNbrSubscribe %} 
+                        {{ role|length }} / {{raid.maxForRole(roleName)}}
+                    {% else %}
+                        Role
+                    {% endif %}
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-center">
+            {% for raidCharacter in role %}
+                <tr>
+                    {% if user is defined and raidCharacter.userCharacter.user == user %}
+                        <td class="text-info">
+                            {{ raidCharacter.userCharacter.name }}
+                        </td>
+                    {% elseif raidCharacter.userCharacter.user == raidCharacter.raid.user %}
+                        <td class="text-success">
+                            {{ raidCharacter.userCharacter.name }} <small class="text-light">(Raid Leader)</small>
+                        </td>
+                    {% else %}
+                        <td>
+                            {{ raidCharacter.userCharacter.name }}
+                        </td>
+                    {% endif %}
+                    <td>
+                        <img src="{{ raidCharacter.userCharacter.characterClass.imageSource }}" 
+                        width="30" height="30" alt="{{ raidCharacter.userCharacter.characterClass.name }}">
+                    </td>
+                    <td>
+                        <img src="{{ raidCharacter.role.imageSource }}" 
+                        width="30" height="30" alt="{{ raidCharacter.role.name }}">
+                    </td>
+                    <td>
+                        {% if user is defined and raidCharacter.userCharacter.user == user %}
+                            <span class="text-info">- You -</span>
+                        {% else %}
+                            <a class="text-info text-decoration-none mr-2" 
+                            data-toggle="modal" data-target="#detailsCharacter_{{ raidCharacter.userCharacter.id }}"
+                            data-bs-toggle="tooltip" data-placement="top" title="Info">
+                                <i class="fas fa-info"></i>
+                            </a>
+                            {{ include('event/modal/_character_information.html.twig') }}
+
+                            {% if showAcceptCharacter is defined and showAcceptCharacter %}
+                                <a class="text-success text-decoration-none ml-2" href="{{ path('raidleader_manage_players_accept_or_refuse', {id: raidCharacter.id, acceptOrRefuse: constant('App\\Entity\\RaidCharacter::ACCEPT') }) }}"
+                                data-bs-toggle="tooltip" data-placement="top" title="Accept">
+                                    <i class="fas fa-user-check"></i>
+                                </a>
+                            {% endif %}
+
+                            {% if showRefuseCharacter is defined and showRefuseCharacter %}
+                                <a class="text-warning text-decoration-none ml-2"
+                                data-bs-toggle="tooltip" data-placement="top" title="Refuse"
+                                onclick="confirmModal('Refuse character {{ raidCharacter.userCharacter.name }} in your raid', 'Are you sure ?', '{{ path('raidleader_manage_players_accept_or_refuse', {id: raidCharacter.id, acceptOrRefuse: constant('App\\Entity\\RaidCharacter::REFUSED') }) }}' )">
+                                    <i class="fas fa-user-times"></i>
+                                </a>
+                            {% endif %}
+
+                            {% if showBanUser is defined and showBanUser %}
+                                {% if user.hasBlocked(raidCharacter.userCharacter.user) %}
+                                    <a class="text-success ml-2" href="{{ path('raidleader_manage_players_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}"
+                                    data-bs-toggle="tooltip" data-placement="top" title="Unban this player from future raid">
+                                    <i class="fas fa-gavel"></i>
+                                    </a>
+                                {% else %}
+                                    <a class="text-danger text-decoration-none ml-2"
+                                    data-bs-toggle="tooltip" data-placement="top" title="Ban this player from future raid"
+                                    onclick="confirmModal('Ban user {{ raidCharacter.userCharacter.user.name }}', 'Are you sure ?', '{{ path('raidleader_manage_players_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}' )">
+                                        <i class="fas fa-gavel"></i>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

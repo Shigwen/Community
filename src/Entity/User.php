@@ -2,17 +2,41 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * 
+ *  @UniqueEntity(
+ *     fields={"email"}, 
+ *     message="Email already used"
+ * )
+ *  @UniqueEntity(
+ *     fields={"name"}, 
+ *     message="Nickname already used"
+ * )
  */
 class User implements UserInterface
 {
+    const DELAY_AFTER_MAX_ATTEMPT = 5;
+    const NUMBER_MAX_OF_ATTEMPT = 5;
+
+    const STATUS_WAITING_EMAIL_CONFIRMATION = 0;
+    const STATUS_EMAIL_CONFIRMED = 1;
+    const STATUS_BAN = 2;
+
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_RAID_LEADER = 'ROLE_RAID_LEADER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_OWNER = 'ROLE_OWNER';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -21,6 +45,30 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a username"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "Your username cannot be longer than 250 characters"
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^\w{1,}$/",
+     *     message = "Your username cannot contain space or special character (except underscore)"
+     * )
+     *
+     * @ORM\Column(type="string", length=100, unique=true)
+     */
+    private $name;
+
+    /**
+     * @Assert\NotBlank(
+     *     message = "You must specify an email"
+     * )
+     * @Assert\Email(
+     *     message = "This email is not valid"
+     * )
+     *
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -31,32 +79,48 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
     private $password;
 
-	/**
+    /**
+     * @ORM\ManyToOne(targetEntity=Timezone::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $timezone;
+
+    /**
      * @ORM\Column(type="smallint")
      */
     private $status;
 
-	/**
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $nbrOfAttempt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $lastAttempt;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $token;
+
+    /**
      * @var Date
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
-	/**
+    /**
      * @var Date
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
-
-    /**
-     * @ORM\OneToMany(targetEntity=RaidTemplate::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $raidTemplates;
 
     /**
      * @ORM\OneToMany(targetEntity=Raid::class, mappedBy="user", orphanRemoval=true)
@@ -64,16 +128,13 @@ class User implements UserInterface
     private $raids;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ip::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $ips;
-
-    /**
+     * List of users blocked by the raid leader
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="blockers")
      */
     private $blockeds;
 
     /**
+     * List of raid leader who blocked the user
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="blockeds")
      */
     private $blockers;
@@ -85,12 +146,21 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->raidTemplates = new ArrayCollection();
+        $this->roles = [self::ROLE_RAID_LEADER];
+        $this->status = self::STATUS_WAITING_EMAIL_CONFIRMATION;
+        $this->nbrOfAttempt = 0;
+        $this->lastAttempt = new DateTime();
+
+        $this->createdAt = new DateTime();
         $this->raids = new ArrayCollection();
-        $this->ips = new ArrayCollection();
         $this->blockeds = new ArrayCollection();
         $this->blockers = new ArrayCollection();
         $this->characters = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->email;
     }
 
     public function getId(): ?int
@@ -98,12 +168,24 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail($email)
     {
         $this->email = $email;
 
@@ -113,7 +195,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername()
     {
         return (string) $this->email;
     }
@@ -121,16 +203,45 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    public function getRoles()
     {
-		if (empty($roles = $this->roles)) {
-			$roles[] = 'ROLE_USER';
-		}
+        if (empty($roles = $this->roles)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    public function getStrRole()
+    {
+        return $this->roles[0];
+    }
+
+    /**
+     * Get the verbose name of user's first role
+     * @return string
+     */
+    public function getVerboseStrRole()
+    {
+        switch ($this->roles[0]) {
+            case 'ROLE_USER':
+                $role = 'User';
+                break;
+            case 'ROLE_RAID_LEADER':
+                $role = 'Raid Leader';
+                break;
+            case 'ROLE_ADMIN':
+                $role = 'Administrator';
+                break;
+            case 'ROLE_OWNER':
+                $role = 'Owner';
+                break;
+        }
+
+        return  $role;
+    }
+
+    public function setRoles($roles)
     {
         $this->roles = $roles;
 
@@ -140,47 +251,84 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getPassword(): string
+    public function getPassword()
     {
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword($password)
     {
         $this->password = $password;
 
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getTimezone(): ?Timezone
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?Timezone $timezone): self
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus($status)
     {
         $this->status = $status;
 
         return $this;
     }
 
-	/**
+    public function getNbrOfAttempt()
+    {
+        return $this->nbrOfAttempt;
+    }
+
+    public function setNbrOfAttempt($nbrOfAttempt)
+    {
+        $this->nbrOfAttempt = $nbrOfAttempt;
+
+        return $this;
+    }
+
+    public function getLastAttempt()
+    {
+        return $this->lastAttempt;
+    }
+
+    public function setLastAttempt($lastAttempt)
+    {
+        $this->lastAttempt = $lastAttempt;
+
+        return $this;
+    }
+
+    public function getToken()
+    {
+        return (string) $this->token;
+    }
+
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
      * @return  \DateTime
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    /**
-     * @param  \DateTime  $createdAt
-     * @return  self
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**
@@ -195,7 +343,7 @@ class User implements UserInterface
      * @param  \DateTime  $updatedAt
      * @return  self
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
@@ -205,7 +353,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt(): ?string
+    public function getSalt()
     {
         return null;
     }
@@ -220,44 +368,14 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|RaidTemplate[]
-     */
-    public function getRaidTemplates(): Collection
-    {
-        return $this->raidTemplates;
-    }
-
-    public function addRaidTemplate(RaidTemplate $raidTemplate): self
-    {
-        if (!$this->raidTemplates->contains($raidTemplate)) {
-            $this->raidTemplates[] = $raidTemplate;
-            $raidTemplate->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRaidTemplate(RaidTemplate $raidTemplate): self
-    {
-        if ($this->raidTemplates->removeElement($raidTemplate)) {
-            // set the owning side to null (unless already changed)
-            if ($raidTemplate->getUser() === $this) {
-                $raidTemplate->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Raid[]
      */
-    public function getRaids(): Collection
+    public function getRaids()
     {
         return $this->raids;
     }
 
-    public function addRaid(Raid $raid): self
+    public function addRaid($raid)
     {
         if (!$this->raids->contains($raid)) {
             $this->raids[] = $raid;
@@ -267,7 +385,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeRaid(Raid $raid): self
+    public function removeRaid($raid)
     {
         if ($this->raids->removeElement($raid)) {
             // set the owning side to null (unless already changed)
@@ -279,45 +397,23 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Ip[]
-     */
-    public function getIps(): Collection
-    {
-        return $this->ips;
-    }
-
-    public function addIp(Ip $ip): self
-    {
-        if (!$this->ips->contains($ip)) {
-            $this->ips[] = $ip;
-            $ip->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIp(Ip $ip): self
-    {
-        if ($this->ips->removeElement($ip)) {
-            // set the owning side to null (unless already changed)
-            if ($ip->getUser() === $this) {
-                $ip->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|self[]
-     */
-    public function getBlockeds(): Collection
+    public function getBlockeds()
     {
         return $this->blockeds;
     }
 
-    public function addBlocked(self $blocked): self
+    public function hasBlocked($blockedToSearch)
+    {
+        foreach ($this->blockeds as $blocked) {
+            if ($blocked === $blockedToSearch) {
+                return $blocked;
+            }
+        }
+
+        return null;
+    }
+
+    public function addBlocked($blocked)
     {
         if (!$this->blockeds->contains($blocked)) {
             $this->blockeds[] = $blocked;
@@ -326,49 +422,31 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeBlocked(self $blocked): self
+    public function removeBlocked($blocked)
     {
         $this->blockeds->removeElement($blocked);
 
         return $this;
     }
 
-    /**
-     * @return Collection|self[]
-     */
-    public function getBlockers(): Collection
+    public function getStrCharacterList()
     {
-        return $this->blockers;
-    }
-
-    public function addBlocker(self $blocker): self
-    {
-        if (!$this->blockers->contains($blocker)) {
-            $this->blockers[] = $blocker;
-            $blocker->addBlocked($this);
+        $str = '';
+        foreach ($this->characters as $character) {
+            $str .= $character->getName() . ', ';
         }
 
-        return $this;
+        $str = substr($str, 0, -2);
+
+        return $str;
     }
 
-    public function removeBlocker(self $blocker): self
-    {
-        if ($this->blockers->removeElement($blocker)) {
-            $blocker->removeBlocked($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Character[]
-     */
     public function getCharacters(): Collection
     {
         return $this->characters;
     }
 
-    public function addCharacter(Character $character): self
+    public function addCharacter($character)
     {
         if (!$this->characters->contains($character)) {
             $this->characters[] = $character;
@@ -378,7 +456,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeCharacter(Character $character): self
+    public function removeCharacter($character)
     {
         if ($this->characters->removeElement($character)) {
             // set the owning side to null (unless already changed)
@@ -388,5 +466,23 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function hasCharacter($character)
+    {
+        if ($this->characters->contains($character)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasRaid($raid)
+    {
+        if ($this->raids->contains($raid)) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ServerRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ServerRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=ServerRepository::class)
@@ -25,14 +26,22 @@ class Server
     private $name;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\ManyToOne(targetEntity=GameVersion::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $created_at;
+    private $gameVersion;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\ManyToOne(targetEntity=Region::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $updated_at;
+    private $region;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Timezone::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $timezone;
 
     /**
      * @ORM\OneToMany(targetEntity=Character::class, mappedBy="server", orphanRemoval=true)
@@ -41,7 +50,13 @@ class Server
 
     public function __construct()
     {
+        $this->createdAt = new DateTime();
         $this->characters = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
@@ -49,40 +64,34 @@ class Server
         return $this->id;
     }
 
+    public function getGameVersion(): ?GameVersion
+    {
+        return $this->gameVersion;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function getVerboseVersionAndRegion()
+    {
+        return $this->gameVersion->getName() . ' - ' . $this->getRegion()->getName();
+    }
+    
+    public function getVerboseVersionAndName()
+    {
+        return $this->gameVersion->getName() . ' - ' . $this->name;
+    }
+
+    public function getTimezone(): ?Timezone
+    {
+        return $this->timezone;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
     }
 
     /**
@@ -109,6 +118,18 @@ class Server
             // set the owning side to null (unless already changed)
             if ($character->getServer() === $this) {
                 $character->setServer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function removeRaid(Raid $raid): self
+    {
+        if ($this->raids->removeElement($raid)) {
+            // set the owning side to null (unless already changed)
+            if ($raid->getServer() === $this) {
+                $raid->setServer(null);
             }
         }
 

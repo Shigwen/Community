@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'form_theme/form_errors.html.twig' %}
+
+{% block custom_scripts %}
+    <script defer src="{{asset('js/timezone.js')}}"></script>
+{% endblock %}
+
+{% block body %}
+
+<p class="text-center">
+    If you landed here, you probably already heard what this Community Project for World of Warcraft is about. <br>
+    In case you didn't, visit <a href="{{ path('about_us') }}">this page</a> , all the explanations are there.  <br> <br>
+    Otherwise, you can just sign up, sign in, and get started right now !
+</p>
+
+<div class="row d-flex justify-content-around">
+
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') == false %}
+        <div class="col-lg-5 col-md-10 col-margins p-0">
+            <form class="p-4 border border-primary rounded" method="post" action="{{ path('home') }}">
+                <fieldset>
+                    <legend class="text-center">Sign in</legend>
+
+                    <label for="inputEmail">Email address</label>
+                    <input type="email" class="form-control" aria-describedby="emailHelp" value="{% if last_username is defined %}{{ last_username }}{% endif %}" name="email" id="inputEmail" required autofocus>
+
+                    <label for="inputPassword">Password</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control mb-1" required>
+                    <a href="{{ path('password_forgotten') }}">Forgot your password ?</a>
+
+                </fieldset>
+                {% if error is defined and error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <div class="checkbox mt-4">
+                    <label>
+                        <input type="checkbox" id="remember_me" name="_remember_me" checked/> Remember me
+                    </label>
+                </div>
+
+                <input type="hidden" name="_csrf_token"value="{{ csrf_token('authenticate') }}">
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        {{ form_start(form, {'attr': {'class': 'col-lg-5 col-md-10 p-4 border border-primary rounded col-margins'}}) }}
+            <fieldset>
+                <legend class="text-center">Sign up</legend>
+
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name) }}
+                {{ form_errors(form.name) }}
+                <small id="nicknameHelp" class="form-text text-muted mb-4">Your name cannot contain space or special character. <br>
+                Preferably, use your main character's name and numbers.</small>
+
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+                {{ form_errors(form.email) }}
+                <small id="emailHelp" class="form-text text-muted mb-4">We'll never share your email with anyone else.</small>
+
+                <div class="col-12 p-0 m-0 row">
+                    <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
+                        {{ form_label(form.country) }}
+                        {{ form_widget(form.country) }}
+                        {{ form_errors(form.country) }}
+                    </div>
+                    <div id="timezoneContainer" class="col-12 col-md-6 p-0">
+                        {{ form_label(form.timezone) }}
+                        {{ form_widget(form.timezone) }}
+                        {{ form_errors(form.timezone) }}
+                    </div>
+                </div>
+
+                <small id="regionHelp" class="form-text text-muted mb-4">Important ! It allows us to calculate the raid beginning and ending hours taking your time zone into account</small>
+
+                {{ form_label(form.password.first) }}
+                {{ form_widget(form.password.first) }}
+                {{ form_errors(form.password.first) }}
+                <small id="passwordHelp" class="form-text text-muted mb-4">Make it stronk.</small>
+
+                {{ form_label(form.password.second) }}
+                {{ form_widget(form.password.second) }}
+                {{ form_errors(form.password.second) }}
+
+                <input type="hidden" name="_csrf_token"value="{{ csrf_token('authenticate') }}">
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill btn-lg">Submit</button>
+                </div>
+            </fieldset>
+        {{ form_end(form) }}
+
+    {% endif %}
+</div>
+
+{% endblock %}

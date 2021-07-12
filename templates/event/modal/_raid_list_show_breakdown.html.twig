@@ -1,0 +1,33 @@
+<div class="modal fade" id="detailsRaid_{{ raid.id }}" tabindex="-1" aria-labelledby="Raid details" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Additional informations</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-striped table-bordered table-hover table-dark">
+                    <thead class="text-center">
+                        <tr>
+                            <th scope="col">Raid type</th>
+                            <th scope="col">Min. and Max. Tanks</th>
+                            <th scope="col">Min. and Max. Healers</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-center">
+                        <tr>
+                            <td>{{ raid.raidType }}</td>
+                            <td>{{ raid.minTank }} to {{ raid.maxTank }}</td>
+                            <td>{{ raid.minHeal }} to {{ raid.maxHeal }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

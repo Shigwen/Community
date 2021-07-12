@@ -2,9 +2,13 @@
 
 namespace App\Repository;
 
+use DateTime;
+use App\Entity\Raid;
+use App\Entity\User;
+use App\Entity\Character;
 use App\Entity\RaidCharacter;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method RaidCharacter|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +23,75 @@ class RaidCharacterRepository extends ServiceEntityRepository
         parent::__construct($registry, RaidCharacter::class);
     }
 
-    // /**
-    //  * @return RaidCharacter[] Returns an array of RaidCharacter objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return RaidCharacter
+     */
+    public function getOfRaidLeaderFromRaid(Raid $raid)
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->join('rc.userCharacter', 'uc')
+            ->where('rc.raid = :raid')
+            ->andWhere('uc.user = r.user')
+            ->setParameter('raid', $raid)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?RaidCharacter
+    /**
+     * @return RaidCharacter
+     */
+    public function getOfUserFromRaid(Raid $raid, User $user)
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->join('rc.userCharacter', 'uc')
+            ->where('rc.raid = :raid')
+            ->andWhere('uc.user = :user')
+            ->setParameters([
+                'raid' => $raid,
+                'user' => $user,
+            ])
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    /**
+     * @return RaidCharacter[]
+     */
+    public function getAllFutureRaidsNotRefusedWithCharacter(Character $character)
+    {
+        $now = new DateTime();
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->where('rc.userCharacter = :character')
+            ->andWhere('r.startAt > :now')
+            ->andWhere('rc.status != :refused')
+            ->setParameters([
+                'now' => $now,
+                'character' => $character,
+                'refused' => RaidCharacter::REFUSED,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return RaidCharacter[]
+     */
+    public function getAllWithRole(Raid $raid, int $role)
+    {
+        return $this->createQueryBuilder('rc')
+            ->join('rc.raid', 'r')
+            ->where('rc.raid = :raid')
+            ->andWhere('rc.status = :accept')
+            ->andWhere('rc.role = :role')
+            ->setParameters([
+                'raid' => $raid,
+                'accept' => RaidCharacter::ACCEPT,
+                'role' => $role,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
 }

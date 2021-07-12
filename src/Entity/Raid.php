@@ -2,16 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\RaidRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use App\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RaidRepository;
+use App\Validator as AssertCustom;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=RaidRepository::class)
  */
 class Raid
 {
+    const IDENTIFIER_SIZE = 20;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -20,84 +26,183 @@ class Raid
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $identifier;
+
+    /**
+     * @Assert\NotBlank(
+     *     message = "You must specify a raid name"
+     * )
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "The raid name cannot be longer than 250 characters"
+     * )
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     * @Assert\Length(
+     *     max = 250,
+     *     maxMessage = "The template name cannot be longer than 250 characters"
+     * )
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $templateName;
+
+    /**
+     * @Assert\NotNull(
+     *     message = "You must specify a raid type"
+     * )
+     * @Assert\Choice(
+     *     choices = {10, 20, 25, 40},
+     *     message = "Choose a valid raid type"
+     * )
+     *
      * @ORM\Column(type="smallint")
      */
-    private $raid_type;
+    private $raidType;
 
     /**
+     * @Assert\NotBlank(
+     *     message = "The number of people you are looking for cannot be blank"
+     * )
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     * @Assert\LessThan(
+     *     propertyPath = "raidType",
+     *     message = "The number of people you are looking for must be inferior to the size of the raid"
+     * )
+     * @AssertCustom\GreaterThanMaxTankAndHeal()
+     *
      * @ORM\Column(type="smallint")
      */
-    private $expected_attendee;
-
-	/**
-     * @ORM\Column(type="datetime")
-     */
-    private $start_at;
+    private $expectedAttendee;
 
     /**
+     * @AssertCustom\GreaterThanNow()
      * @ORM\Column(type="datetime")
      */
-    private $end_at;
+    private $startAt;
 
     /**
-     * @ORM\Column(type="text")
+     * @AssertCustom\GreaterThanStartAt()
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $endAt;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
      */
     private $information;
 
     /**
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     *
      * @ORM\Column(type="smallint")
      */
-    private $min_tank;
+    private $minTank;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
-     */
-    private $max_tank;
-
-    /**
+     * @Assert\NotBlank(
+     *     message = "The maximum number of tanks you are looking for cannot be blank"
+     * )
+     * @Assert\GreaterThanOrEqual(
+     *     propertyPath = "minTank",
+     *     message = "The maximum number of tanks cannot be inferior to the minimum"
+     * )
+     *
      * @ORM\Column(type="smallint")
      */
-    private $min_heal;
+    private $maxTank;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @Assert\Positive(
+     *     message = "Cannot use negative value"
+     * )
+     *
+     * @ORM\Column(type="smallint")
      */
-    private $max_heal;
+    private $minHeal;
+
+    /**
+     * @Assert\NotBlank(
+     *     message = "The maximum number of healers you are looking for cannot be blank"
+     * )
+     * @Assert\GreaterThanOrEqual(
+     *     propertyPath = "minHeal",
+     *     message = "The maximum number of healers cannot be inferior to the minimum"
+     * )
+     *
+     * @ORM\Column(type="smallint")
+     */
+    private $maxHeal;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $autoAccept;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPrivate;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updated_at;
+    private $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids")
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="raids", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="raid", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=RaidCharacter::class, mappedBy="raid", cascade={"persist"}, orphanRemoval=true)
      */
     private $raidCharacters;
 
     public function __construct()
     {
+        $this->startAt = new DateTime();
+        $this->endAt = new DateTime();
+        $this->createdAt = new DateTime();
         $this->raidCharacters = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -112,50 +217,62 @@ class Raid
         return $this;
     }
 
-    public function getRaidType(): ?int
+    public function getTemplateName()
     {
-        return $this->raid_type;
+        return $this->templateName;
     }
 
-    public function setRaidType(int $raid_type): self
+    public function setTemplateName($templateName): self
     {
-        $this->raid_type = $raid_type;
+        $this->templateName = $templateName;
+
+        return $this;
+    }
+
+    public function getRaidType(): ?int
+    {
+        return $this->raidType;
+    }
+
+    public function setRaidType(int $raidType): self
+    {
+        $this->raidType = $raidType;
 
         return $this;
     }
 
     public function getExpectedAttendee(): ?int
     {
-        return $this->expected_attendee;
+        return $this->expectedAttendee;
     }
 
-    public function setExpectedAttendee(int $expected_attendee): self
+    public function setExpectedAttendee(int $expectedAttendee): self
     {
-        $this->expected_attendee = $expected_attendee;
+        $this->expectedAttendee = $expectedAttendee;
 
         return $this;
     }
 
     public function getStartAt(): ?\DateTimeInterface
     {
-        return $this->start_at;
+        return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeInterface $start_at): self
+    public function setStartAt(\DateTimeInterface $startAt): self
     {
-        $this->start_at = $start_at;
+        $this->startAt = $startAt;
 
         return $this;
     }
 
     public function getEndAt(): ?\DateTimeInterface
     {
-        return $this->end_at;
+        return $this->endAt;
     }
 
-    public function setEndAt(\DateTimeInterface $end_at): self
+    public function setEndAt(\DateTimeInterface $endAt): self
     {
-        $this->end_at = $end_at;
+        $this->endAt = $endAt;
 
         return $this;
     }
@@ -172,74 +289,119 @@ class Raid
         return $this;
     }
 
-    public function getMinTank(): ?int
+    public function getMaxForRole(string $roleName)
     {
-        return $this->min_tank;
+        switch ($roleName) {
+            case 'tanks':
+                $max = $this->getMaxTank();
+                break;
+            case 'healers':
+                $max = $this->getMaxHeal();
+                break;
+            case 'DPS':
+                $max = ($this->expectedAttendee + 1) - ($this->getMaxTank() + $this->getMaxHeal());
+                break;
+        }
+        return $max;
     }
 
-    public function setMinTank(int $min_tank): self
+    public function getMinTank(): ?int
     {
-        $this->min_tank = $min_tank;
+        return $this->minTank;
+    }
+
+    public function setMinTank(int $minTank): self
+    {
+        $this->minTank = $minTank;
 
         return $this;
     }
 
     public function getMaxTank(): ?int
     {
-        return $this->max_tank;
+        return $this->maxTank;
     }
 
-    public function setMaxTank(?int $max_tank): self
+    public function setMaxTank(?int $maxTank): self
     {
-        $this->max_tank = $max_tank;
+        $this->maxTank = $maxTank;
 
         return $this;
     }
 
     public function getMinHeal(): ?int
     {
-        return $this->min_heal;
+        return $this->minHeal;
     }
 
-    public function setMinHeal(int $min_heal): self
+    public function setMinHeal(int $minHeal): self
     {
-        $this->min_heal = $min_heal;
+        $this->minHeal = $minHeal;
 
         return $this;
     }
 
     public function getMaxHeal(): ?int
     {
-        return $this->max_heal;
+        return $this->maxHeal;
     }
 
-    public function setMaxHeal(?int $max_heal): self
+    public function setMaxHeal(?int $maxHeal): self
     {
-        $this->max_heal = $max_heal;
+        $this->maxHeal = $maxHeal;
+
+        return $this;
+    }
+
+    public function isAutoAccept(): ?bool
+    {
+        return $this->autoAccept;
+    }
+
+    public function setAutoAccept(bool $autoAccept): self
+    {
+        $this->autoAccept = $autoAccept;
+
+        return $this;
+    }
+
+    public function isPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setIsPrivate(bool $isPrivate): self
+    {
+        $this->isPrivate = $isPrivate;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
@@ -256,9 +418,16 @@ class Raid
         return $this;
     }
 
-    /**
-     * @return Collection|RaidCharacter[]
-     */
+    public function hasCharacter(Character $character)
+    {
+        foreach ($this->raidCharacters as $raidCharacter) {
+            if ($raidCharacter->getUserCharacter() === $character) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getRaidCharacters(): Collection
     {
         return $this->raidCharacters;

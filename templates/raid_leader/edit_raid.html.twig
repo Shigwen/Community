@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Raid{% endblock %}
+
+{% block banner_title %}
+	<h1>{{raid.name}}</h1>
+{% endblock %}
+
+{% block body %}
+
+<div class="row col-12">
+    <a class="btn btn-primary rounded-pill btn-lg" href="{{ path('raidleader_events')}}">
+        <i class="fas fa-arrow-left"></i>
+        Back to HQ
+    </a>
+</div>
+
+{% if raid.isPrivate %}
+    <div class="row d-flex justify-content-around mt-5">
+        <div class="col-12 col-md-11 p-md-4 p-xs-1 border border-primary rounded h5">
+            Private raid code : <span class="text-warning">{{ raid.identifier }} </span> <br><br>
+            This raid is private. It will not appear in the public results of the calendar page. <br>
+            Give the code to your raiders so they can fill it in the calendar form to access the raid page.
+        </div>
+    </div>
+{% endif %}
+
+{{ include('raid_parts/_raid_form.html.twig') }}
+
+{% endblock %}

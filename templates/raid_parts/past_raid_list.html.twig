@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Past raid
+{% endblock %}
+
+{% block banner_title %}
+    <h1>Past raid</h1>
+{% endblock %}
+
+{% block body %}
+
+{% if routeToRefer is defined and routeToRefer is not null %}
+    <div class="row col-12">
+        <a class="btn btn-primary rounded-pill btn-lg" href="{{ path(routeToRefer)}}">
+            <i class="fas fa-arrow-left"></i>
+            {{ nameOfPageToRefer }}
+        </a>
+    </div>
+{% endif %}
+
+<div class="row d-flex justify-content-around">
+    <div class="col-12 col-md-11 p-md-4 p-xs-1">
+        {% if raids is empty %}
+            <p class="text-center"> You did not complete any raid with this app yet </p>
+        {% else %}
+            {% set showManageRaidLinks = false %}
+            {{ include('user_raid_leader_parts/_table_raid.html.twig') }}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
