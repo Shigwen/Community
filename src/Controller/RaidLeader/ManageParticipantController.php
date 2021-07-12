@@ -34,7 +34,7 @@ class ManageParticipantController extends AbstractController
 
             if ($raidCharacterOfRaidLeader === $raidCharacter) {
                 $this->addFlash('danger', 'You cannot refuse your own character in your own raid');
-                return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $raidCharacter->getRaid()->getId()]);
+                return $this->redirectToRoute('raidleader_raid_manage_players', ['id' => $raidCharacterOfRaidLeader->getRaid()->getId()]);
             }
 
             $this->addFlash('success', $raidCharacter->getUserCharacter()->getName() .

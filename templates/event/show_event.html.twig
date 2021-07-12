@@ -126,6 +126,7 @@
                     Raid roster - {{ nbrOfPlayers }} / {{raid.expectedAttendee + 1}} players
                 </h3>
                 {% set showMessage = true %}
+                {% set showNbrSubscribe = true %}
                 {{ include('raid_parts/_character_list.html.twig') }}
             </div>
 
