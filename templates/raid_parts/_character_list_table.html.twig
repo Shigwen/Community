@@ -66,11 +66,18 @@
                             {% endif %}
 
                             {% if showBanUser is defined and showBanUser %}
-                                <a class="text-danger text-decoration-none ml-2"
-                                data-bs-toggle="tooltip" data-placement="top" title="Ban this player from future raid"
-                                onclick="confirmModal('Ban user {{ raidCharacter.userCharacter.user.name }}', 'Are you sure ?', '{{ path('raidleader_manage_players_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}' )">
+                                {% if user.hasBlocked(raidCharacter.userCharacter.user) %}
+                                    <a class="text-success ml-2" href="{{ path('raidleader_manage_players_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}"
+                                    data-bs-toggle="tooltip" data-placement="top" title="Unban this player from future raid">
                                     <i class="fas fa-gavel"></i>
-                                </a>
+                                    </a>
+                                {% else %}
+                                    <a class="text-danger text-decoration-none ml-2"
+                                    data-bs-toggle="tooltip" data-placement="top" title="Ban this player from future raid"
+                                    onclick="confirmModal('Ban user {{ raidCharacter.userCharacter.user.name }}', 'Are you sure ?', '{{ path('raidleader_manage_players_ban_hammer', {id: raidCharacter.userCharacter.user.id }) }}?raid={{ raid.id }}' )">
+                                        <i class="fas fa-gavel"></i>
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>

@@ -70,14 +70,13 @@ class RaidController extends AbstractController
                 throw $this->createNotFoundException('Une erreur est survenue');
             }
 
-            if ($raid->isPrivate()) {
-            } else {
+            if (!$raid->isPrivate()) {
                 $raid->setIdentifier(null);
+            } else {
+                $raid->setIdentifier($raid->getIdentifier() ? $raid->getIdentifier() : $identifier->generate(Raid::IDENTIFIER_SIZE));
             }
 
-            $raid
-                ->setIdentifier($raid->getIdentifier() ? $raid->getIdentifier() : $identifier->generate(Raid::IDENTIFIER_SIZE))
-                ->setUpdatedAt(new DateTime());
+            $raid->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
 

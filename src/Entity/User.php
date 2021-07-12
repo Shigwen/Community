@@ -433,8 +433,10 @@ class User implements UserInterface
     {
         $str = '';
         foreach ($this->characters as $character) {
-            $str .= $character->getName() . ' ';
+            $str .= $character->getName() . ', ';
         }
+
+        $str = substr($str, 0, -2);
 
         return $str;
     }
