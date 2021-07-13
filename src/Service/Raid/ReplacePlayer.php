@@ -2,7 +2,6 @@
 
 namespace App\Service\Raid;
 
-use App\Entity\Role;
 use App\Entity\RaidCharacter;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -16,8 +15,8 @@ class ReplacePlayer
     }
 
     /**
-     * Remplace le personnage donné par le plus ancien personnage en 
-     * attente d'inscription pour le même role dans le raid
+     * Replace this character by the most-anciently-subscribed one with the same role and 
+     * which subscription wasn't confirmed or rejected yet
      */
     public function replace(RaidCharacter $raidCharacterToReplace, $role)
     {

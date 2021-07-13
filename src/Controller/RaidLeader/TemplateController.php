@@ -61,8 +61,18 @@ class TemplateController extends AbstractController
 
             // Create new template
             if ($form->get('saveTemplate')->isClicked()) {
-                $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
-                $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
+                $allTemplate = $this->getDoctrine()->getRepository(Raid::class)->getRaidTemplateByUser($this->getUser());
+
+                if (count($allTemplate) < 5) {
+                    $templateService->createTemplate($this->getUser(), $newRaidTemplate, $newRaidCharacter);
+                    $this->addFlash('success', 'The raid template ' . $newRaidTemplate->getTemplateName() . ' has been properly created');
+                } else {
+                    $this->addFlash(
+                        "danger",
+                        "Oops, it seems that you've already reached the maximum of templates allowed for this version of the app. 
+                         Sorry ! Edit an old one you're not using, or delete one to free a slot in order to create a new one"
+                    );
+                }
 
             // Edit chosen raid template
             } else if ($raidTemplateInUse && $form->get('editTemplate')->isClicked()) {

@@ -31,18 +31,6 @@
         {{ include('_navbar.html.twig') }}
     </header>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success text-center mb-2">
-            {{ message }}
-        </div>
-    {% endfor %}
-
-    {% for message in app.flashes('danger') %}
-        <div class="alert alert-danger text-center mb-2">
-            {{ message }}
-        </div>
-    {% endfor %}
-
     {% if app.request.attributes.get('_route') != 'home' and app.request.attributes.get('_route') != 'sign_up' %}
 
         {% block banner %}
@@ -73,6 +61,18 @@
         {% if app.request.attributes.get('_route') == 'home' %}
             {{ include('_ragnaros.html.twig') }}
         {% endif %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success text-center mb-2">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger text-center mb-2">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         {% block body %}{% endblock %}
     </main>

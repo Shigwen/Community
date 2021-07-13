@@ -22,8 +22,8 @@
                     <tr>
                         <th scope="col">Faction</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Game version</th>
-                        <th scope="col">Server</th>
+                        <th scope="col" class="d-none d-lg-table-cell">Game version</th>
+                        <th scope="col" class="d-none d-lg-table-cell">Server</th>
                         <th scope="col">Class</th>
                         <th scope="col" class="d-none d-md-table-cell">Role</th>
                         <th scope="col">Actions</th>
@@ -38,13 +38,13 @@
                                 width="40" height="40" alt="{{ character.faction.name }}">
                             </td>
                             <td>{{ character.name }}</td>
-                            <td>{{ character.server.gameVersion.name }}</td>
-                            <td>{{ character.server.name }}</td>
+                            <td class="d-none d-lg-table-cell">{{ character.server.gameVersion.name }}</td>
+                            <td class="d-none d-lg-table-cell">{{ character.server.name }}</td>
                             <td>
                                 <img src="{{character.characterClass.imageSource}}" 
                                 width="40" height="40" alt="{{character.characterClass.name}}">
                             </td>
-                            <td>
+                            <td class="d-none d-md-table-cell">
                                 {% for role in character.roles %}
                                     <img src="{{ role.imageSource }}" 
                                     width="40" height="40" alt="{{ role.name }}">
