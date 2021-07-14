@@ -48,7 +48,7 @@ class RaidController extends AbstractController
 
         $now = new DateTime();
         if ($now > $raid->getStartAt()) {
-            $this->addFlash('danger', "You cannot modify a raid that already begun");
+            $this->addFlash('danger', 'You cannot modify a raid that already begun');
             return $this->redirectToRoute('raidleader_events');
         }
 
@@ -98,6 +98,12 @@ class RaidController extends AbstractController
      */
     public function managePlayers(Raid $raid): Response
     {
+        $now = new DateTime();
+        if ($now > $raid->getStartAt()) {
+            $this->addFlash('danger', 'You cannot modify a raid that already begun');
+            return $this->redirectToRoute('raidleader_events');
+        }
+
         return $this->render('raid_leader/manage_players.html.twig', [
             'raid' => $raid,
             'user' => $this->getUser(),

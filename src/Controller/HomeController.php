@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Service\Raid\Template;
 use App\Service\Raid\Identifier;
 use App\Form\UserRecoveryPasswordType;
 use Symfony\Component\HttpFoundation\Request;

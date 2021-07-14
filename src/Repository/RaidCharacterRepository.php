@@ -24,6 +24,19 @@ class RaidCharacterRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return RaidCharacter[]
+     */
+    public function getAllOfUser(User $user)
+    {
+        return $this->createQueryBuilder('rc')
+            ->join('rc.userCharacter', 'uc')
+            ->where('uc.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return RaidCharacter
      */
     public function getOfRaidLeaderFromRaid(Raid $raid)

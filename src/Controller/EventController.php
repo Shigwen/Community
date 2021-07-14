@@ -176,7 +176,7 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/unregister", name="unregister")
+     * @Route("/event/{id}/unregister", name="unregister")
      */
     public function unregister(Raid $raid, ReplacePlayer $replacePlayer): Response
     {

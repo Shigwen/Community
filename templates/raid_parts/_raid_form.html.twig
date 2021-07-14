@@ -256,10 +256,8 @@
                                         {% if raidTemplates|length < 5 %}
                                             {{ form_row(form.saveTemplate) }}
                                         {% else %}
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <button type="button" class="btn btn-lg btn-primary text-danger">
-                                                    No fun allowed !
-                                                </button>
+                                            <div class="d-none">
+                                                {{ form_row(form.saveTemplate) }}
                                             </div>
                                         {% endif %}
 

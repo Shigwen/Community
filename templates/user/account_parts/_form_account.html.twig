@@ -8,10 +8,14 @@
                 <br> The mail adress you are currently using is <span class="text-success">{{ user.email }}</span>.
             </summary>
 
-            <p>
-                <br>
+            <p class="mt-4">
                 Do you want to change your location or your password ? You can change either or both here.
             </p>
+
+            <a class="d-block text-right text-danger text-decoration-none ml-2"
+            onclick="confirmModal('Delete your account ?', 'Warning ! The deletion of your account will be permanent as it will lead to the total deletion of all your data, including both your personal information and all the data regarding your raids, characters, templates, and so on. <br> Are you sure to do that ?', '{{ path('user_delete_account') }}' )">
+                Delete your account <i class="fas fa-trash-alt"></i>
+            </a>
 
             {{ form_start(formUser) }}
                 <fieldset>

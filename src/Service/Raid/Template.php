@@ -69,15 +69,6 @@ class Template
     public function createTemplate(User $user, Raid $newRaidTemplate, RaidCharacter $newRaidCharacter)
     {
         $request = $this->requestStack->getCurrentRequest();
-        $allRaidTemplates = $this->em->getRepository(Raid::class)->getRaidTemplateByUser($user);
-
-        if (count($allRaidTemplates) >= 5) {
-            $this->addFlash('danger', "Oops, it seems that you've alreadu reached the maximum of templates allowed
-			for this version of the app. Sorry ! Edit an old one you're not using,
-			or delete one to free a slot in order to create a new one.");
-
-            return $this->redirectToRoute('raidleader_events');
-        }
 
         if (!$newRaidTemplate->getTemplateName()) {
             $newRaidTemplate->setTemplateName($newRaidTemplate->getName());
