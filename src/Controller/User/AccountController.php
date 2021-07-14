@@ -3,6 +3,7 @@
 namespace App\Controller\User;
 
 use App\Entity\Raid;
+use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Character;
 use App\Form\CharacterType;
@@ -10,6 +11,7 @@ use App\Entity\RaidCharacter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -112,6 +114,49 @@ class AccountController extends AbstractController
             'archivedByRaidLeaderRaids' => $this->getDoctrine()->getRepository(Raid::class)
                 ->getForthcomingArchivedByRaidLeader($user),
         ]);
+    }
+
+    /**
+     * @Route("/delete-account", name="delete_account")
+     */
+    public function deleteAccount(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // This own raid 
+        foreach ($user->getRaids() as $raid) {
+            foreach ($raid->getRaidCharacters() as $raidCharacter) {
+                $this->getDoctrine()->getManager()->remove($raidCharacter);
+            }
+            $this->getDoctrine()->getManager()->remove($raid);
+        }
+
+        // Raid subscribe
+        $raidCharacters = $this->getDoctrine()->getRepository(RaidCharacter::class)->getAllOfUser($user);
+        foreach ($raidCharacters as $raidCharacter) {
+            $this->getDoctrine()->getManager()->remove($raidCharacter);
+        }
+
+        // Characters
+        foreach ($user->getCharacters() as $character) {
+            $this->getDoctrine()->getManager()->remove($character);
+        }
+
+        // User blocked
+        foreach ($user->getBlockeds() as $blocked) {
+            $this->getDoctrine()->getManager()->remove($blocked);
+        }
+
+        $this->getDoctrine()->getManager()->remove($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        // Remove session
+        $session = $this->get('session');
+        $session = new Session();
+        $session->invalidate();
+
+        return $this->redirectToRoute('home');
     }
 
     /**
