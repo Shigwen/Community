@@ -17,7 +17,7 @@ class NumberOfPlacesRemaining
         if ($max > 0) {
             $status = RaidCharacter::ACCEPT;
 
-        // Max reached
+            // Max reached
         } else {
             $status = RaidCharacter::WAITING_CONFIRMATION;
         }
@@ -81,6 +81,10 @@ class NumberOfPlacesRemaining
         $dps = 0;
 
         foreach ($raid->getRaidCharacters() as $raidCharacter) {
+            if ($raidCharacter->getUserCharacter()->getUser() === $raid->getUser()) {
+                continue;
+            }
+
             if ($raidCharacter->isAccept()) {
                 if ($raidCharacter->getRole()->isTank()) {
                     $tank++;
@@ -108,7 +112,7 @@ class NumberOfPlacesRemaining
 
         // $role === Role::DPS
         $accepted = $tank + $heal + $dps;
-        $expected = $raid->getExpectedAttendee() + 1;
+        $expected = $raid->getExpectedAttendee();
 
         $totalSpotsLeft = $expected - $accepted;
 

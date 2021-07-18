@@ -33,9 +33,9 @@
                 <div class="d-flex align-items-center">
                     <span class="h5 mt-0 mb-3">
                         The Raid Leader is still looking for
-                        <span class="text-info h4">{{ raid.expectedAttendee + 1 }}</span>
+                        <span class="text-info h4">{{ raid.expectedAttendee }}</span>
                         raiders and
-                        <span class="text-info h4">{{ tanks|length + healers|length + dps|length }}</span>
+                        <span class="text-info h4">{{ (tanks|length + healers|length + dps|length) - 1 }}</span>
                          are actually subscribe
                         <br><br>
 
