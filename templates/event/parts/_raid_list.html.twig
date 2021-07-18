@@ -71,14 +71,24 @@
                             {% endif %}
                         </td>
                         <td>
-                            <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to 
-                            <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
-                            <span class="text-success font-weight-bold">{{ raid.minHeal }}</span> to 
-                            <span class="text-success font-weight-bold">{{ raid.maxHeal }}</span> Healers,
-                            <br>
-
-                            <span class="text-info font-weight-bold">{{ (raid.expectedAttendee + 1) - (raid.minTank + raid.minHeal) }}</span> to 
-                            <span class="text-info font-weight-bold">{{ (raid.expectedAttendee + 1) - (raid.maxTank + raid.maxHeal) }}</span> DPS.
+                            {% if raid.minTank == raid.maxTank %}
+                                <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> Tanks,
+                            {% else %}
+                                <span class="text-warning font-weight-bold">{{ raid.minTank }}</span> to 
+                                <span class="text-warning font-weight-bold">{{ raid.maxTank }}</span> Tanks,
+                            {% endif %}
+                            {% if raid.minHeal == raid.maxHeal %}
+                                <span class="text-warning font-weight-bold">{{ raid.minHeal }}</span> Healers,
+                            {% else %}
+                                <span class="text-warning font-weight-bold">{{ raid.minHeal }}</span> to 
+                                <span class="text-warning font-weight-bold">{{ raid.maxHeal }}</span> Tanks,
+                            {% endif %}
+                            {% if raid.minTank + raid.minHeal == raid.maxTank + raid.maxHeal %}
+                                <span class="text-warning font-weight-bold">{{ (raid.expectedAttendee) - (raid.minTank + raid.minHeal) }}</span> DPS
+                            {% else %}
+                                <span class="text-warning font-weight-bold">{{ raid.expectedAttendee - (raid.minTank + raid.minHeal) }}</span> to 
+                                <span class="text-warning font-weight-bold">{{ raid.expectedAttendee - (raid.maxTank + raid.maxHeal) }}</span> DPS
+                            {% endif %}
                         </td>
                         <td class="text-success d-none d-md-table-cell">{{ raidCharacter.userCharacter.name }}</td>
                         <td class="d-none d-md-table-cell">
